@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">ProTasks</string>
+    <string name="appName">ProTasks</string>
+    <string name="add_email">Introduzca su e-mail</string>
+    <string name="add_password">introduzca su contraseña</string>
+    <string name="init_session">Iniciar Sesión</string>
+    <string name="create_account">¿No tienes cuenta? Crea una</string>
 </resources>
