@@ -1,7 +1,14 @@
 <resources>
     <string name="appName">ProTasks</string>
-    <string name="add_email">Introduzca su e-mail</string>
-    <string name="add_password">introduzca su contraseña</string>
+    <string name="add_email">Introduzca su e-mail/nombre de Usuario</string>
+    <string name="add_password">Introduzca su contraseña</string>
     <string name="init_session">Iniciar Sesión</string>
     <string name="create_account">¿No tienes cuenta? Crea una</string>
+    <string name="name">Nombre</string>
+    <string name="surname">Apellidos</string>
+    <string name="username">Nombre de Usuario</string>
+    <string name="email">E-mail</string>
+    <string name="Password">Contraseña</string>
+    <string name="Password_repeat">Repite la Contraseña</string>
+    <string name="register">Registrarse</string>
 </resources>
