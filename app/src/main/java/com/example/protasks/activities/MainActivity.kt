@@ -1,8 +1,9 @@
-package com.example.protasks
+package com.example.protasks.activities
 
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.protasks.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -10,5 +11,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_screen)
     }
+
+
 
 }

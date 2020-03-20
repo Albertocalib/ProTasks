@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".activities.LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -79,7 +79,6 @@
             android:layout_height="wrap_content"
             android:text="@string/init_session"
             android:textColor="@color/colorPrimary"
-
             android:textSize="16sp" />
 
         <TextView
@@ -87,10 +86,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
+            android:onClick="onClick"
+            android:clickable="true"
             android:gravity="center"
             android:text="@string/create_account"
             android:textColor="@color/colorAccent"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:focusable="true" />
+
+        <ProgressBar
+            android:id="@+id/progress_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp" />
 
 
     </LinearLayout>
