@@ -11,4 +11,5 @@
     <string name="Password">Contraseña</string>
     <string name="Password_repeat">Repite la Contraseña</string>
     <string name="register">Registrarse</string>
+    <string name="imageitem">imageItem</string>
 </resources>

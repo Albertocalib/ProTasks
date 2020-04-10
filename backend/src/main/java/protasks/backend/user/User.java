@@ -1,25 +1,51 @@
 package protasks.backend.user;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import protasks.backend.Board.Board;
+import protasks.backend.Board.BoardUsersPermRel;
+import protasks.backend.Task.Task;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User {
+    @JsonView(Board.class)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="Id")
-    private int id;
+    private long id;
+
     @Column(name="Name")
     private String name;
+
     @Column(name="Surname")
     private String surname;
+
+    @JsonView(Board.class)
     @Column(name="Username")
     private String username;
     @Column(name="Password")
     private String password;
     @Column(name="Email")
     private String email;
+    @JoinTable(
+            name = "rel_tasks_users",
+            joinColumns = @JoinColumn(name = "user_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name="task_id", nullable = false)
+    )
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Task> tasks;
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<BoardUsersPermRel> boardList;
+
 
     public User() {
     }
@@ -29,12 +55,13 @@ public class User {
         this.password = new BCryptPasswordEncoder().encode(password);
         this.username = userName;
         this.email=email;
+        this.boardList=new ArrayList<>();
     }
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -76,5 +103,9 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void addBoard(BoardUsersPermRel board) {
+        this.boardList.add(board);
     }
 }

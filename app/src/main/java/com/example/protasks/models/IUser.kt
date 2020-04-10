@@ -11,7 +11,7 @@ interface IUser {
 
     fun getSurname(): String?
 
-    fun getId(): Int?
+    fun getId(): Long?
 
 
 }
