@@ -22,7 +22,7 @@ class User(@Expose
 
     @Expose
     @SerializedName("Id")
-    private val id: Int? = null
+    private val id: Long? = null
 
     override fun getName(): String? {
         return username
@@ -44,7 +44,7 @@ class User(@Expose
         return username
     }
 
-    override fun getId(): Int? {
+    override fun getId(): Long? {
         return id
     }
 
