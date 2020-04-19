@@ -72,6 +72,12 @@
                 android:textColor="@color/colorAccent" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_checkText" />
+
         <Button
             android:id="@+id/loginButton"
             style="@style/Widget.AppCompat.Button.Colored"

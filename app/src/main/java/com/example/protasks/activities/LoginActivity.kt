@@ -18,23 +18,24 @@ class LoginActivity : AppCompatActivity(), ILoginView, View.OnClickListener {
     private var linkSignUp: TextView? = null
     private var loginPresenter: ILoginPresenter? = null
     private var progressBar: ProgressBar? = null
+    private var keep_login: CheckBox? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         //find view
-        editUser = findViewById<View>(R.id.emailLogin) as EditText
-        editPass = findViewById<View>(R.id.passwordText) as EditText
-        linkSignUp = findViewById<View>(R.id.link_signup) as TextView
-        btnLogin =
-            findViewById<View>(R.id.loginButton) as Button
-        progressBar = findViewById<View>(R.id.progress_login) as ProgressBar
+        editUser = findViewById(R.id.emailLogin)
+        editPass = findViewById(R.id.passwordText)
+        keep_login = findViewById(R.id.checkBox)
+        linkSignUp = findViewById(R.id.link_signup)
+        btnLogin = findViewById(R.id.loginButton)
+        progressBar = findViewById(R.id.progress_login)
         //set listener
         btnLogin!!.setOnClickListener(this)
         //init
-        loginPresenter =
-            LoginPresenterImp(this)
+        loginPresenter = LoginPresenterImp(this,baseContext)
         loginPresenter!!.setProgressBarVisiblity(View.INVISIBLE)
+        loginPresenter!!.cheekKeepLogin()
     }
 
     override fun onClick(v: View) {
@@ -42,9 +43,9 @@ class LoginActivity : AppCompatActivity(), ILoginView, View.OnClickListener {
             R.id.loginButton -> {
                 loginPresenter!!.setProgressBarVisiblity(View.VISIBLE)
                 btnLogin!!.isEnabled = false
-                loginPresenter!!.doLogin(editUser!!.text.toString(), editPass!!.text.toString())
+                loginPresenter!!.doLogin(editUser!!.text.toString(), editPass!!.text.toString(),keep_login!!.isChecked)
             }
-            R.id.link_signup ->{
+            R.id.link_signup -> {
                 goToSignUpActivity()
             }
         }
@@ -63,6 +64,7 @@ class LoginActivity : AppCompatActivity(), ILoginView, View.OnClickListener {
     override fun onSetProgressBarVisibility(visibility: Int) {
         progressBar!!.visibility = visibility
     }
+
     override fun goToSignUpActivity() {
         val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
