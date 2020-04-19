@@ -11,18 +11,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical"
         android:paddingLeft="24dp"
         android:paddingTop="56dp"
-        android:paddingRight="24dp"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:paddingRight="24dp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:textColor="@color/colorAccent"
             android:textColorHint="@color/colorAccent"
             app:hintTextAppearance="@style/TextLabel">
 
@@ -33,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:autofillHints=""
                 android:hint="@string/name"
+                android:textColor="@color/colorAccent"
                 android:inputType="text"
                 android:labelFor="@id/nameText" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -43,6 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:textColor="@color/colorAccent"
             android:textColorHint="@color/colorAccent"
             app:hintTextAppearance="@style/TextLabel">
 
@@ -55,11 +58,13 @@
                 android:labelFor="@id/surnameText"
                 android:textColor="@color/colorAccent" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:textColor="@color/colorAccent"
             android:textColorHint="@color/colorAccent"
             app:hintTextAppearance="@style/TextLabel">
 
@@ -70,13 +75,15 @@
                 android:hint="@string/username"
                 android:inputType="text"
                 android:labelFor="@id/usernameText"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="@color/colorAccent" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:textColor="@color/colorAccent"
             android:textColorHint="@color/colorAccent"
             app:hintTextAppearance="@style/TextLabel">
 
@@ -89,11 +96,13 @@
                 android:labelFor="@id/email"
                 android:textColor="@color/colorAccent" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:textColor="@color/colorAccent"
             android:textColorHint="@color/colorAccent"
             app:hintTextAppearance="@style/TextLabel"
             app:passwordToggleEnabled="true">
@@ -108,11 +117,13 @@
                 android:labelFor="@id/password"
                 android:textColor="@color/colorAccent" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:textColor="@color/colorAccent"
             android:textColorHint="@color/colorAccent"
             app:hintTextAppearance="@style/TextLabel">
 
