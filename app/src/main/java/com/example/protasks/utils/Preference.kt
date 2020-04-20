@@ -33,4 +33,10 @@ class Preference {
         return prefs.getBoolean(Constants.KEY_KEEP_LOGIN, false)
     }
 
+    fun getPrefViewMode(context: Context?): Boolean? {
+        val prefs =
+            PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(Constants.KEY_BOARDS_LIST_VIEW, false)
+    }
+
 }

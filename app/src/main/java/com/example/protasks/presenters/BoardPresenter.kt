@@ -1,11 +1,16 @@
 package com.example.protasks.presenters
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Handler
+import android.util.Base64
 import android.util.Log
 import com.example.protasks.RetrofitInstance
 import com.example.protasks.models.Board
+import com.example.protasks.models.User
 import com.example.protasks.restServices.BoardRestService
+import com.example.protasks.restServices.UserRestService
 import com.example.protasks.utils.Preference
 import com.example.protasks.views.IBoardsView
 import retrofit2.Call
@@ -14,11 +19,12 @@ import retrofit2.Response
 
 
 class BoardPresenter(private var iBoardsView: IBoardsView,private var context: Context):IBoardPresenter {
-    private val retrofitIns: RetrofitInstance<BoardRestService> = RetrofitInstance("api/board/",BoardRestService::class.java)
+    private val retrofitInsBoard: RetrofitInstance<BoardRestService> = RetrofitInstance("api/board/",BoardRestService::class.java)
+    private val retrofitInsUser: RetrofitInstance<UserRestService> = RetrofitInstance("api/user/",UserRestService::class.java)
     private val preference:Preference = Preference()
     override fun getBoards() {
         val username = preference.getEmail(context)
-        val boards = retrofitIns.service.getBoardsByUser(username!!)
+        val boards = retrofitInsBoard.service.getBoardsByUser(username!!)
         boards.enqueue(object : Callback<List<Board>> {
             override fun onFailure(call: Call<List<Board>>?, t: Throwable?) {
                 Log.v("retrofit", t.toString())
@@ -30,6 +36,30 @@ class BoardPresenter(private var iBoardsView: IBoardsView,private var context: C
             }
 
         })
+    }
+    override fun getUser() {
+        val username = preference.getEmail(context)
+        val user = retrofitInsUser.service.getUser(username!!)
+        user.enqueue(object : Callback<User> {
+            override fun onFailure(call: Call<User>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<User>?, response: Response<User>?) {
+                iBoardsView.setUser(response!!.body()!!)
+
+            }
+
+        })
+    }
+
+    override fun getViewPref():Boolean {
+        return preference.getPrefViewMode(context)!!
+
+    }
+    override fun getPhoto(u:User):Bitmap{
+        val imageBytes = Base64.decode(u.getPhoto(), Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
     }
 
 

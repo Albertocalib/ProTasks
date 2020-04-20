@@ -11,14 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.Board
 
 
-class BoardAdapter(private val boards : List<Board>?) :RecyclerView.Adapter<BoardAdapter.ViewHolderBoard>(){
+class BoardAdapter(private val boards : List<Board>?,private val view:Int) :RecyclerView.Adapter<BoardAdapter.ViewHolderBoard>(){
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): BoardAdapter.ViewHolderBoard {
         val view: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.board, parent, false)
+            LayoutInflater.from(parent.context).inflate(view, parent, false)
         return ViewHolderBoard(view)
     }
 

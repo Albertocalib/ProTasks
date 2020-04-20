@@ -13,5 +13,7 @@ interface IUser {
 
     fun getId(): Long?
 
+    fun getPhoto(): String?
+
 
 }
