@@ -12,4 +12,6 @@
     <string name="Password_repeat">Repite la Contraseña</string>
     <string name="register">Registrarse</string>
     <string name="imageitem">imageItem</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
 </resources>
