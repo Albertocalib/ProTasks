@@ -14,4 +14,5 @@
     <string name="imageitem">imageItem</string>
     <string name="open">open</string>
     <string name="close">close</string>
+    <string name="login_checkText">Mantenme logueado</string>
 </resources>
