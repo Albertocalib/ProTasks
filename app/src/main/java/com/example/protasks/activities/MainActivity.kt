@@ -1,12 +1,11 @@
 package com.example.protasks.activities
 
 import android.content.Context
-import android.graphics.BitmapFactory
+import android.content.Intent
 import android.os.Bundle
-import android.util.Base64
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -23,7 +22,6 @@ import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.views.IBoardsView
 import com.google.android.material.navigation.NavigationView
-import kotlinx.android.synthetic.main.nav_header_main.*
 
 
 class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener {
@@ -39,6 +37,7 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener {
     var userPhoto:ImageView? =null
     var userEmail:TextView?=null
     var userCompleteName:TextView?=null
+    var logoutButton:ImageButton?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +68,10 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener {
         userCompleteName = headerView.findViewById(R.id.nameProfile)
         userEmail = headerView.findViewById(R.id.userEmailProfile)
         presenter!!.getUser()
+        logoutButton = headerView.findViewById(R.id.logOutButton)
+        logoutButton!!.setOnClickListener {
+            logOut()
+        }
     }
 
 
@@ -91,6 +94,12 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener {
     }
     override fun onClick(v: View?) {
         TODO("Not yet implemented")
+    }
+    override fun logOut() {
+        presenter!!.removePreferences()
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 
 

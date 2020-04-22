@@ -8,5 +8,6 @@ interface IBoardPresenter {
     fun getBoards()
     fun getUser()
     fun getViewPref():Boolean
-    fun getPhoto(user:User):Bitmap
+    fun getPhoto(u:User):Bitmap
+    fun removePreferences()
 }

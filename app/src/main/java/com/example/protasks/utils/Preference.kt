@@ -1,6 +1,7 @@
 package com.example.protasks.utils
 
 import android.content.Context
+import android.text.method.TextKeyListener.clear
 import androidx.preference.PreferenceManager
 
 class Preference {
@@ -38,5 +39,7 @@ class Preference {
             PreferenceManager.getDefaultSharedPreferences(context)
         return prefs.getBoolean(Constants.KEY_BOARDS_LIST_VIEW, false)
     }
+    fun removePreferences(context: Context?) {
+       PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply()    }
 
 }

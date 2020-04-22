@@ -6,4 +6,5 @@ import com.example.protasks.models.User
 interface IBoardsView {
     fun setBoards(boards:List<Board>)
     fun setUser(user:User)
+    fun logOut()
 }

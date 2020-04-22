@@ -62,5 +62,9 @@ class BoardPresenter(private var iBoardsView: IBoardsView,private var context: C
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
     }
 
+    override fun removePreferences() {
+        preference.removePreferences(context)
+    }
+
 
 }
