@@ -42,4 +42,11 @@ class Preference {
     fun removePreferences(context: Context?) {
        PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply()    }
 
+    fun setPrefViewMode(listMode: Boolean, context: Context?) {
+        val prefs =
+            PreferenceManager.getDefaultSharedPreferences(context)
+        val prefsEditor = prefs.edit()
+        prefsEditor.putBoolean(Constants.KEY_BOARDS_LIST_VIEW, listMode)
+        prefsEditor.apply()
+    }
 }

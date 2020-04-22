@@ -10,4 +10,5 @@ interface IBoardPresenter {
     fun getViewPref():Boolean
     fun getPhoto(u:User):Bitmap
     fun removePreferences()
+    fun setViewPref(listMode:Boolean)
 }

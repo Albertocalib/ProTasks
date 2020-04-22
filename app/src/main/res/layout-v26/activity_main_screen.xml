@@ -11,14 +11,24 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:id="@+id/toolbar"
             android:background="@color/colorPrimary"
             android:elevation="5dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            <ImageButton
+                android:id="@+id/viewModeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:layout_marginEnd="10dp"
+                android:onClick="showPopUp"
+                android:layout_gravity="end"
+                app:srcCompat="@drawable/ic_list" />
 
             <ImageView
                 android:id="@+id/boardView"
@@ -28,17 +38,12 @@
                 android:layout_margin="5dp"
                 android:src="@drawable/logonaranja" />
 
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:background="@android:color/transparent"
-                android:tint="@color/colorAccent"
-                app:srcCompat="@android:drawable/ic_input_add" />
+
 
 
         </androidx.appcompat.widget.Toolbar>
+
+
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id = "@+id/swipeRefresh"

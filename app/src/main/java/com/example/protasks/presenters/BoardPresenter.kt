@@ -66,5 +66,10 @@ class BoardPresenter(private var iBoardsView: IBoardsView,private var context: C
         preference.removePreferences(context)
     }
 
+    override fun setViewPref(listMode:Boolean) {
+        preference.setPrefViewMode(listMode,context)
+
+    }
+
 
 }
