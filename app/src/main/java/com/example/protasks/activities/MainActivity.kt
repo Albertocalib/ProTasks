@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.protasks.BoardAdapter
+import com.example.protasks.BoardAdapterMenu
 import com.example.protasks.R
 import com.example.protasks.models.Board
 import com.example.protasks.models.User
@@ -28,8 +29,10 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
     private var actionBar: ActionBarDrawerToggle? = null
     private var presenter: BoardPresenter? = null
     var recyclerView: RecyclerView? = null
+    var recyclerView2: RecyclerView? = null
     var layoutManager: GridLayoutManager? = null
     var boardAdapter: BoardAdapter? = null
+    var boardAdapterMenu: BoardAdapterMenu? = null
     var context:Context? =null
     var toolbar: Toolbar?=null
     var swipeRefresh: SwipeRefreshLayout? = null
@@ -49,7 +52,6 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
         toolbar=findViewById(R.id.toolbar)
         actionBar = ActionBarDrawerToggle(this,mDrawer,toolbar,R.string.open,R.string.close)
         recyclerView = findViewById(R.id.recycler_board_list)
-        setLayoutManager()
         mDrawer!!.addDrawerListener(actionBar!!)
         actionBar!!.syncState()
         swipeRefresh = findViewById(R.id.swipeRefresh)
@@ -59,6 +61,8 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
             Toast.makeText(this, "Boards Updated", Toast.LENGTH_SHORT).show()
         }
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
+        recyclerView2 =navigationView.findViewById(R.id.recycler_board_navigation_view)
+        setLayoutManager()
         val headerView = navigationView.getHeaderView(0)
         userPhoto = headerView.findViewById(R.id.profilePic)
         userCompleteName = headerView.findViewById(R.id.nameProfile)
@@ -79,6 +83,9 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
             BoardAdapter(boards,R.layout.board)
         }
         recyclerView!!.adapter=boardAdapter
+        boardAdapterMenu = BoardAdapterMenu(boards,R.layout.board_list_mode_menu)
+        recyclerView2!!.adapter=boardAdapterMenu
+
     }
     override fun setUser(user: User) {
         if (user.getPhoto()!=null){
@@ -122,5 +129,6 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
             GridLayoutManager(this,2)
         }
         recyclerView!!.layoutManager = layoutManager
+        recyclerView2!!.layoutManager = GridLayoutManager(this, 1)
     }
 }
