@@ -25,7 +25,7 @@ public class BoardRestController {
         if (boards != null){
             return new ResponseEntity<>(boards, HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 

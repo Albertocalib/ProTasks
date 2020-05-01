@@ -5,6 +5,7 @@ import protasks.backend.TaskList.TaskList;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -33,6 +34,14 @@ public class Board {
             orphanRemoval = true
     )
     private List<BoardUsersPermRel> users;
+
+    @Column(name="write_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date write_date;
+
+    @Column(name="create_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date create_date;
 
     public long getId() {
         return id;
@@ -85,6 +94,24 @@ public class Board {
         this.name = name;
         this.photo = photo;
         this.users=new ArrayList<>();
+        this.create_date=new Date();
+        this.write_date =new Date();
     }
     public Board(){}
+
+    public Date getWrite_date() {
+        return write_date;
+    }
+
+    public void setWrite_date(Date write_date) {
+        this.write_date = write_date;
+    }
+
+    public Date getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(Date create_date) {
+        this.create_date = create_date;
+    }
 }

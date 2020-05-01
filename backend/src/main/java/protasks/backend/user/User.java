@@ -8,6 +8,7 @@ import protasks.backend.Task.Task;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -46,6 +47,18 @@ public class User {
     )
     private List<BoardUsersPermRel> boardList;
 
+    @JsonView(Board.class)
+    @Column (name="Photo",columnDefinition="MEDIUMBLOB")
+    private String photo;
+
+    @Column(name="write_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date write_date;
+
+    @Column(name="create_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date create_date;
+
 
     public User() {
     }
@@ -56,6 +69,8 @@ public class User {
         this.username = userName;
         this.email=email;
         this.boardList=new ArrayList<>();
+        this.create_date=new Date();
+        this.write_date =new Date();
     }
     public long getId() {
         return id;
@@ -107,5 +122,45 @@ public class User {
 
     public void addBoard(BoardUsersPermRel board) {
         this.boardList.add(board);
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public List<BoardUsersPermRel> getBoardList() {
+        return boardList;
+    }
+
+    public void setBoardList(List<BoardUsersPermRel> boardList) {
+        this.boardList = boardList;
+    }
+
+    public Date getWrite_date() {
+        return write_date;
+    }
+
+    public void setWrite_date(Date write_date) {
+        this.write_date = write_date;
+    }
+
+    public Date getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(Date create_date) {
+        this.create_date = create_date;
     }
 }
