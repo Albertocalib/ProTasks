@@ -24,8 +24,15 @@ class User(@Expose
     @SerializedName("Id")
     private val id: Long? = null
 
+    @Expose
+    @SerializedName("photo")
+    private val photo: String? = null
+
+    override fun getPhoto(): String? {
+        return photo
+    }
     override fun getName(): String? {
-        return username
+        return name
     }
 
     override fun getPasswd(): String? {
@@ -41,7 +48,7 @@ class User(@Expose
     }
 
     override fun getSurname(): String? {
-        return username
+        return surname
     }
 
     override fun getId(): Long? {

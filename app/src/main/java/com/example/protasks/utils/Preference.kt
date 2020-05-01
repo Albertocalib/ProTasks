@@ -1,6 +1,7 @@
 package com.example.protasks.utils
 
 import android.content.Context
+import android.text.method.TextKeyListener.clear
 import androidx.preference.PreferenceManager
 
 class Preference {
@@ -33,4 +34,19 @@ class Preference {
         return prefs.getBoolean(Constants.KEY_KEEP_LOGIN, false)
     }
 
+    fun getPrefViewMode(context: Context?): Boolean? {
+        val prefs =
+            PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(Constants.KEY_BOARDS_LIST_VIEW, false)
+    }
+    fun removePreferences(context: Context?) {
+       PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply()    }
+
+    fun setPrefViewMode(listMode: Boolean, context: Context?) {
+        val prefs =
+            PreferenceManager.getDefaultSharedPreferences(context)
+        val prefsEditor = prefs.edit()
+        prefsEditor.putBoolean(Constants.KEY_BOARDS_LIST_VIEW, listMode)
+        prefsEditor.apply()
+    }
 }

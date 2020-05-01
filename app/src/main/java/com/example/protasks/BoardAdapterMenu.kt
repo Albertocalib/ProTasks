@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.Board
 
 
-class BoardAdapter(private val boards : List<Board>?,private val view:Int) :RecyclerView.Adapter<BoardAdapter.ViewHolderBoard>(){
+class BoardAdapterMenu(private val boards : List<Board>?, private val view:Int) :RecyclerView.Adapter<BoardAdapterMenu.ViewHolderBoard>(){
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BoardAdapter.ViewHolderBoard {
+    ): BoardAdapterMenu.ViewHolderBoard {
         val view: View =
             LayoutInflater.from(parent.context).inflate(view, parent, false)
         return ViewHolderBoard(view)
@@ -26,21 +26,16 @@ class BoardAdapter(private val boards : List<Board>?,private val view:Int) :Recy
         return boards!!.size
     }
 
-    override fun onBindViewHolder(holder: BoardAdapter.ViewHolderBoard, position: Int) {
+    override fun onBindViewHolder(holder: BoardAdapterMenu.ViewHolderBoard, position: Int) {
         holder.boardName.text=boards!![position].getName()
-        val imageBytes = Base64.decode(boards[position].getPhoto(), Base64.DEFAULT)
-        val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-        holder.boardImage.setImageBitmap(decodedImage)
     }
 
     class ViewHolderBoard(v: View) : RecyclerView.ViewHolder(v) {
         var boardName: TextView
-        var boardImage: ImageView
         var view:View=v
 
         init {
-            boardName = view.findViewById(R.id.boardName)
-            boardImage = view.findViewById(R.id.boardView)
+            boardName = view.findViewById(R.id.boardNameMenu)
         }
     }
 }
