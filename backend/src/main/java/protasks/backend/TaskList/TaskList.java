@@ -5,6 +5,7 @@ import protasks.backend.Board.Board;
 import protasks.backend.Task.Task;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -19,6 +20,14 @@ public class TaskList {
     private List<Task> tasks;
     @ManyToOne
     private Board board;
+
+    @Column(name="write_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date write_date;
+
+    @Column(name="create_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date create_date;
 
     public long getId() {
         return id;
@@ -50,5 +59,28 @@ public class TaskList {
 
     public void setBoard(Board board) {
         this.board = board;
+    }
+
+    public TaskList(String title,Board board) {
+        this.title = title;
+        this.board = board;
+        this.create_date = new Date();
+        this.write_date =new Date();
+    }
+
+    public Date getWrite_date() {
+        return write_date;
+    }
+
+    public void setWrite_date(Date write_date) {
+        this.write_date = write_date;
+    }
+
+    public Date getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(Date create_date) {
+        this.create_date = create_date;
     }
 }

@@ -41,5 +41,13 @@ public class UserRestController {
         userService.save(newUser);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
+    @GetMapping("/{username}")
+    public ResponseEntity<User> getUser(@PathVariable String username){
+        User user = userService.findByUsernameOrEmailCustom(username);
+        if(user == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
 }
