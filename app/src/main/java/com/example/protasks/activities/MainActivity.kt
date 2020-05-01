@@ -21,6 +21,7 @@ import com.example.protasks.models.Board
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.views.IBoardsView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
     var userCompleteName:TextView?=null
     var logoutButton:ImageButton?=null
     var viewMode:ImageButton?=null
+    var addBoardButton:FloatingActionButton?=null
     private var handler: Handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +75,7 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
             logOut()
         }
         viewMode = headerView.findViewById(R.id.viewModeButton)
+        addBoardButton = findViewById(R.id.button_add_board)
     }
 
 
@@ -130,5 +133,8 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
         }
         recyclerView!!.layoutManager = layoutManager
         recyclerView2!!.layoutManager = GridLayoutManager(this, 1)
+    }
+    fun createBoard(view:View?){
+        //TODO
     }
 }
