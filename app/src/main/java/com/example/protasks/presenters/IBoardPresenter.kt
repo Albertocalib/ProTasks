@@ -11,4 +11,5 @@ interface IBoardPresenter {
     fun getPhoto(u:User):Bitmap
     fun removePreferences()
     fun setViewPref(listMode:Boolean)
+    fun filterBoards(name:String)
 }

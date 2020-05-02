@@ -7,6 +7,7 @@ import android.os.Handler
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -21,6 +22,7 @@ import com.example.protasks.models.Board
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.views.IBoardsView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 
@@ -41,27 +43,35 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
     var userCompleteName:TextView?=null
     var logoutButton:ImageButton?=null
     var viewMode:ImageButton?=null
+    var addBoardButton:FloatingActionButton?=null
+    var searchView:SearchView?=null
     private var handler: Handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_screen)
-        presenter = BoardPresenter(this,baseContext)
+        presenter = BoardPresenter(this, baseContext)
         presenter!!.getBoards()
-        mDrawer=findViewById(R.id.drawer)
-        toolbar=findViewById(R.id.toolbar)
-        actionBar = ActionBarDrawerToggle(this,mDrawer,toolbar,R.string.open,R.string.close)
+        mDrawer = findViewById(R.id.drawer)
+        toolbar = findViewById(R.id.toolbar)
+        actionBar = ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open, R.string.close)
         recyclerView = findViewById(R.id.recycler_board_list)
         mDrawer!!.addDrawerListener(actionBar!!)
         actionBar!!.syncState()
+        searchView = findViewById(R.id.search_view)
         swipeRefresh = findViewById(R.id.swipeRefresh)
         swipeRefresh!!.setOnRefreshListener {
-            presenter!!.getBoards()
+            val text=searchView!!.query.toString()
+            if (text=="") {
+                presenter!!.getBoards()
+            }else{
+                presenter!!.filterBoards(text)
+            }
             swipeRefresh!!.isRefreshing = false;
             Toast.makeText(this, "Boards Updated", Toast.LENGTH_SHORT).show()
         }
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
-        recyclerView2 =navigationView.findViewById(R.id.recycler_board_navigation_view)
+        recyclerView2 = navigationView.findViewById(R.id.recycler_board_navigation_view)
         setLayoutManager()
         val headerView = navigationView.getHeaderView(0)
         userPhoto = headerView.findViewById(R.id.profilePic)
@@ -73,6 +83,20 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
             logOut()
         }
         viewMode = headerView.findViewById(R.id.viewModeButton)
+        addBoardButton = findViewById(R.id.button_add_board)
+        searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                presenter!!.filterBoards(newText)
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                presenter!!.filterBoards(query)
+                return true
+            }
+
+        })
     }
 
 
@@ -130,5 +154,8 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
         }
         recyclerView!!.layoutManager = layoutManager
         recyclerView2!!.layoutManager = GridLayoutManager(this, 1)
+    }
+    fun createBoard(view:View?){
+        //TODO
     }
 }

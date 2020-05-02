@@ -70,6 +70,28 @@ class BoardPresenter(private var iBoardsView: IBoardsView,private var context: C
         preference.setPrefViewMode(listMode,context)
 
     }
+    override fun filterBoards(name:String) {
+        val username = preference.getEmail(context)
+        if (name==""){
+            getBoards()
+        }else {
+            val boards = retrofitInsBoard.service.getBoardsFilterByName(name, username!!)
+            boards.enqueue(object : Callback<List<Board>> {
+                override fun onFailure(call: Call<List<Board>>?, t: Throwable?) {
+                    Log.v("retrofit", t.toString())
+                }
+
+                override fun onResponse(
+                    call: Call<List<Board>>?,
+                    response: Response<List<Board>>?
+                ) {
+                    iBoardsView.setBoards(response!!.body()!!)
+
+                }
+
+            })
+        }
+    }
 
 
 }
