@@ -1,11 +1,13 @@
 package com.example.protasks.activities
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
 import android.widget.*
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -75,6 +77,20 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
         setLayoutManager()
         val headerView = navigationView.getHeaderView(0)
         userPhoto = headerView.findViewById(R.id.profilePic)
+        userPhoto!!.setOnClickListener {
+            val nagDialog= Dialog(this,android.R.style.ThemeOverlay_Material_Dark)
+            nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            nagDialog.setCancelable(false)
+            nagDialog.setContentView(R.layout.image_dialog)
+            val btnClose = nagDialog.findViewById(R.id.btnIvClose) as Button
+            val ivPreview = nagDialog.findViewById(R.id.iv_preview_image) as ImageView
+            ivPreview.setImageDrawable(userPhoto!!.drawable)
+            btnClose.setOnClickListener {
+                nagDialog.dismiss()
+            }
+            nagDialog.show()
+        }
+
         userCompleteName = headerView.findViewById(R.id.nameProfile)
         userEmail = headerView.findViewById(R.id.userEmailProfile)
         presenter!!.getUser()
@@ -158,4 +174,5 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
     fun createBoard(view:View?){
         //TODO
     }
+
 }
