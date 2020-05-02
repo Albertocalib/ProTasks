@@ -56,8 +56,13 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
-                    android:background="@color/colorTasks"
-                    android:queryHint="Buscar tablero"/>
+                    android:background="#ECE8E8"
+                    android:elevation="5dp"
+                    app:iconifiedByDefault="false"
+                    android:focusableInTouchMode="true"
+                    app:queryHint="Tablero"
+                    android:id="@+id/search_view"
+                    />
 
 
                 <androidx.recyclerview.widget.RecyclerView
