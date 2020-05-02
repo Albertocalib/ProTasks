@@ -19,9 +19,19 @@ public class BoardRestController {
     BoardService boardService;
 
     @JsonView(Board.class)
-    @GetMapping("/{username}")
+    @GetMapping("/username={username}")
     public ResponseEntity<List<Board>> getBoards(@PathVariable String username){
         List<Board> boards=boardService.findByUsername(username);
+        if (boards != null){
+            return new ResponseEntity<>(boards, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @JsonView(Board.class)
+    @GetMapping("/boardName={name}&username={username}")
+    public ResponseEntity<List<Board>> getBoardsFilterByName(@PathVariable String name,@PathVariable String username){
+        List<Board> boards=boardService.filterByName(name,username);
         if (boards != null){
             return new ResponseEntity<>(boards, HttpStatus.OK);
         }else{
