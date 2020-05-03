@@ -22,6 +22,7 @@ public class UserRestController {
     @Autowired
     UserService userService;
 
+    @JsonView(User.UserBasicInfo.class)
     @PostMapping("/logIn")
     public ResponseEntity<User> logIn(String username, String password){
         User u=userService.findByUsernameOrEmailCustom(username);
@@ -32,6 +33,7 @@ public class UserRestController {
         }
     }
 
+    @JsonView(User.UserBasicInfo.class)
     @PostMapping(value = "/register/newUser")
     public ResponseEntity<User> register(@RequestBody User newUser){
         if(newUser == null){
