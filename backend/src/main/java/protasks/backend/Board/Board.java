@@ -10,24 +10,26 @@ import java.util.List;
 
 @Entity
 public class Board {
-    @JsonView(Board.class)
+    public interface BoardBasicInfo{}
+    public interface BoardDetailsInfo{}
+    @JsonView(BoardBasicInfo.class)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="Id")
     private long id;
 
-    @JsonView(Board.class)
+    @JsonView(BoardBasicInfo.class)
     @Column(name="Name")
     private String name;
 
-    @JsonView(Board.class)
+    @JsonView(BoardBasicInfo.class)
     @Column (name="Photo",columnDefinition="MEDIUMBLOB")
     private String photo;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "board")
     private List<TaskList> taskLists;
 
-    @JsonView(Board.class)
+    @JsonView(BoardDetailsInfo.class)
     @OneToMany(
             mappedBy = "board",
             cascade = CascadeType.ALL,

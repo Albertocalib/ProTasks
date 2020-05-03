@@ -1,10 +1,13 @@
 package protasks.backend.restControllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import protasks.backend.Board.Board;
+import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.user.User;
 import protasks.backend.user.UserService;
 
@@ -13,6 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/user")
 public class UserRestController {
+    interface UserRequest extends User.UserBasicInfo, User.UserDetailsInfo,Board.BoardBasicInfo, BoardUsersPermRel.UserBasicInfo{}
+
 
     @Autowired
     UserService userService;
@@ -41,6 +46,7 @@ public class UserRestController {
         userService.save(newUser);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
+    @JsonView(UserRequest.class)
     @GetMapping("/{username}")
     public ResponseEntity<User> getUser(@PathVariable String username){
         User user = userService.findByUsernameOrEmailCustom(username);

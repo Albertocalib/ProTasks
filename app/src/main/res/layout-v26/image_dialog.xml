@@ -22,6 +22,7 @@
         android:layout_height="24dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"
         android:background="@drawable/ic_close"
         app:backgroundTint="@color/colorAccent" />
 
@@ -29,9 +30,22 @@
         android:id="@+id/btnDownload"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_margin="10dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/ic_download"
         app:backgroundTint="@color/colorAccent" />
+
+    <Button
+        android:id="@+id/btnChangePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:text="Editar"
+        android:background="@null"
+        app:backgroundTint="@color/colorAccent" />
+
 
 </RelativeLayout>

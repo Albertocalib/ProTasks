@@ -13,25 +13,35 @@ import java.util.List;
 
 @Entity
 public class User {
-    @JsonView(Board.class)
+    public interface UserBasicInfo{}
+    public interface UserDetailsInfo{}
+
+    @JsonView(UserBasicInfo.class)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="Id")
     private long id;
 
+    @JsonView(UserBasicInfo.class)
     @Column(name="Name")
     private String name;
 
+    @JsonView(UserBasicInfo.class)
     @Column(name="Surname")
     private String surname;
 
-    @JsonView(Board.class)
+    @JsonView(UserBasicInfo.class)
     @Column(name="Username")
     private String username;
+
+    @JsonView(UserBasicInfo.class)
     @Column(name="Password")
     private String password;
+
+    @JsonView(UserBasicInfo.class)
     @Column(name="Email")
     private String email;
+
     @JoinTable(
             name = "rel_tasks_users",
             joinColumns = @JoinColumn(name = "user_id", nullable = false),
@@ -40,6 +50,7 @@ public class User {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Task> tasks;
 
+    @JsonView(UserDetailsInfo.class)
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,
@@ -47,14 +58,16 @@ public class User {
     )
     private List<BoardUsersPermRel> boardList;
 
-    @JsonView(Board.class)
+    @JsonView(UserBasicInfo.class)
     @Column (name="Photo",columnDefinition="MEDIUMBLOB")
     private String photo;
 
+    @JsonView(UserBasicInfo.class)
     @Column(name="write_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date write_date;
 
+    @JsonView(UserBasicInfo.class)
     @Column(name="create_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date create_date;

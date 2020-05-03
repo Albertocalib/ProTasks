@@ -10,20 +10,24 @@ import java.util.Objects;
 @Entity
 @Table(name = "boards_users_rel")
 public class BoardUsersPermRel {
+    public interface BoardBasicInfo{}
+    public interface UserBasicInfo{}
 
+    @JsonView(BoardUsersPermRel.class)
     @EmbeddedId
     private BoardUsersPermId id;
 
+    @JsonView(UserBasicInfo.class)
     @ManyToOne
     @MapsId("boardId")
     private Board board;
 
-    @JsonView(Board.class)
+    @JsonView(BoardBasicInfo.class)
     @ManyToOne
     @MapsId("userId")
     private User user;
 
-    @JsonView(Board.class)
+    @JsonView(BoardUsersPermRel.class)
     @Column(name = "rol")
     private Rol rol ;
 

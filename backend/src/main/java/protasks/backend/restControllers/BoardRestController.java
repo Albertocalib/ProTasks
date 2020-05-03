@@ -8,17 +8,19 @@ import org.springframework.web.bind.annotation.*;
 import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardService;
 import protasks.backend.Board.BoardUsersPermRel;
+import protasks.backend.user.User;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/board")
 public class BoardRestController {
+    interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo,BoardUsersPermRel.BoardBasicInfo{}
 
     @Autowired
     BoardService boardService;
 
-    @JsonView(Board.class)
+    @JsonView(BoardsRequest.class)
     @GetMapping("/username={username}")
     public ResponseEntity<List<Board>> getBoards(@PathVariable String username){
         List<Board> boards=boardService.findByUsername(username);
@@ -28,7 +30,7 @@ public class BoardRestController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-    @JsonView(Board.class)
+    @JsonView(BoardsRequest.class)
     @GetMapping("/boardName={name}&username={username}")
     public ResponseEntity<List<Board>> getBoardsFilterByName(@PathVariable String name,@PathVariable String username){
         List<Board> boards=boardService.filterByName(name,username);

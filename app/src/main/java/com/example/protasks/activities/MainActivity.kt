@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.provider.MediaStore
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
@@ -78,6 +79,9 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
         setLayoutManager()
         val headerView = navigationView.getHeaderView(0)
         userPhoto = headerView.findViewById(R.id.profilePic)
+        userCompleteName = headerView.findViewById(R.id.nameProfile)
+        userEmail = headerView.findViewById(R.id.userEmailProfile)
+        presenter!!.getUser()
         userPhoto!!.setOnClickListener {
             val nagDialog = Dialog(this, android.R.style.ThemeOverlay_Material_Dark)
             nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -85,6 +89,7 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
             nagDialog.setContentView(R.layout.image_dialog)
             val btnClose = nagDialog.findViewById(R.id.btnIvClose) as Button
             val btnDownload = nagDialog.findViewById(R.id.btnDownload) as Button
+            val btnChangePhoto = nagDialog.findViewById(R.id.btnChangePhoto) as Button
             val ivPreview = nagDialog.findViewById(R.id.iv_preview_image) as ImageView
             ivPreview.setImageDrawable(userPhoto!!.drawable)
             btnClose.setOnClickListener {
@@ -94,15 +99,18 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
                 presenter!!.saveImage(ivPreview,this)
                 Toast.makeText(this,"Download completed",Toast.LENGTH_SHORT).show()
             }
+            btnChangePhoto.setOnClickListener {
+//                val intent =
+//                    Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+//                intent.type = "image/"
+//                startActivityForResult(
+//                    Intent.createChooser(intent, "Seleccione la imagen"),1998
+//                )
+            }
 
             nagDialog.show()
         }
 
-
-
-        userCompleteName = headerView.findViewById(R.id.nameProfile)
-        userEmail = headerView.findViewById(R.id.userEmailProfile)
-        presenter!!.getUser()
         logoutButton = headerView.findViewById(R.id.logOutButton)
         logoutButton!!.setOnClickListener {
             logOut()
