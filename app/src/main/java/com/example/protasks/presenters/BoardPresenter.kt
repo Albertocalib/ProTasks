@@ -6,11 +6,13 @@ import android.graphics.BitmapFactory
 import android.os.Handler
 import android.util.Base64
 import android.util.Log
+import android.widget.ImageView
 import com.example.protasks.RetrofitInstance
 import com.example.protasks.models.Board
 import com.example.protasks.models.User
 import com.example.protasks.restServices.BoardRestService
 import com.example.protasks.restServices.UserRestService
+import com.example.protasks.utils.ImageHandler
 import com.example.protasks.utils.Preference
 import com.example.protasks.views.IBoardsView
 import retrofit2.Call
@@ -22,6 +24,7 @@ class BoardPresenter(private var iBoardsView: IBoardsView,private var context: C
     private val retrofitInsBoard: RetrofitInstance<BoardRestService> = RetrofitInstance("api/board/",BoardRestService::class.java)
     private val retrofitInsUser: RetrofitInstance<UserRestService> = RetrofitInstance("api/user/",UserRestService::class.java)
     private val preference:Preference = Preference()
+    private val image_handler:ImageHandler= ImageHandler()
     override fun getBoards() {
         val username = preference.getEmail(context)
         val boards = retrofitInsBoard.service.getBoardsByUser(username!!)
@@ -91,6 +94,9 @@ class BoardPresenter(private var iBoardsView: IBoardsView,private var context: C
 
             })
         }
+    }
+    fun saveImage(image:ImageView,context:Context){
+        image_handler.saveImage(image,context)
     }
 
 

@@ -26,12 +26,12 @@
         app:backgroundTint="@color/colorAccent" />
 
     <Button
-        android:id="@+id/btnChangeImg"
+        android:id="@+id/btnDownload"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/ic_search"
+        android:background="@drawable/ic_download"
         app:backgroundTint="@color/colorAccent" />
 
 </RelativeLayout>

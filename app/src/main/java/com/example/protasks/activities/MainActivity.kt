@@ -9,9 +9,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import android.widget.*
-import androidx.appcompat.widget.SearchView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -28,7 +28,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 
-class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
+    PopupMenu.OnMenuItemClickListener {
     private var mDrawer: DrawerLayout? = null
     private var actionBar: ActionBarDrawerToggle? = null
     private var presenter: BoardPresenter? = null
@@ -37,16 +38,16 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
     var layoutManager: GridLayoutManager? = null
     var boardAdapter: BoardAdapter? = null
     var boardAdapterMenu: BoardAdapterMenu? = null
-    var context:Context? =null
-    var toolbar: Toolbar?=null
+    var context: Context? = null
+    var toolbar: Toolbar? = null
     var swipeRefresh: SwipeRefreshLayout? = null
-    var userPhoto:ImageView? =null
-    var userEmail:TextView?=null
-    var userCompleteName:TextView?=null
-    var logoutButton:ImageButton?=null
-    var viewMode:ImageButton?=null
-    var addBoardButton:FloatingActionButton?=null
-    var searchView:SearchView?=null
+    var userPhoto: ImageView? = null
+    var userEmail: TextView? = null
+    var userCompleteName: TextView? = null
+    var logoutButton: ImageButton? = null
+    var viewMode: ImageButton? = null
+    var addBoardButton: FloatingActionButton? = null
+    var searchView: SearchView? = null
     private var handler: Handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,10 +64,10 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
         searchView = findViewById(R.id.search_view)
         swipeRefresh = findViewById(R.id.swipeRefresh)
         swipeRefresh!!.setOnRefreshListener {
-            val text=searchView!!.query.toString()
-            if (text=="") {
+            val text = searchView!!.query.toString()
+            if (text == "") {
                 presenter!!.getBoards()
-            }else{
+            } else {
                 presenter!!.filterBoards(text)
             }
             swipeRefresh!!.isRefreshing = false;
@@ -78,18 +79,26 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
         val headerView = navigationView.getHeaderView(0)
         userPhoto = headerView.findViewById(R.id.profilePic)
         userPhoto!!.setOnClickListener {
-            val nagDialog= Dialog(this,android.R.style.ThemeOverlay_Material_Dark)
+            val nagDialog = Dialog(this, android.R.style.ThemeOverlay_Material_Dark)
             nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             nagDialog.setCancelable(false)
             nagDialog.setContentView(R.layout.image_dialog)
             val btnClose = nagDialog.findViewById(R.id.btnIvClose) as Button
+            val btnDownload = nagDialog.findViewById(R.id.btnDownload) as Button
             val ivPreview = nagDialog.findViewById(R.id.iv_preview_image) as ImageView
             ivPreview.setImageDrawable(userPhoto!!.drawable)
             btnClose.setOnClickListener {
                 nagDialog.dismiss()
             }
+            btnDownload.setOnClickListener {
+                presenter!!.saveImage(ivPreview,this)
+                Toast.makeText(this,"Download completed",Toast.LENGTH_SHORT).show()
+            }
+
             nagDialog.show()
         }
+
+
 
         userCompleteName = headerView.findViewById(R.id.nameProfile)
         userEmail = headerView.findViewById(R.id.userEmailProfile)
@@ -100,45 +109,49 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
         }
         viewMode = headerView.findViewById(R.id.viewModeButton)
         addBoardButton = findViewById(R.id.button_add_board)
-        searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView!!.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
 
-            override fun onQueryTextChange(newText: String): Boolean {
-                presenter!!.filterBoards(newText)
-                return true
-            }
+                override fun onQueryTextChange(newText: String): Boolean {
+                    presenter!!.filterBoards(newText)
+                    return true
+                }
 
-            override fun onQueryTextSubmit(query: String): Boolean {
-                presenter!!.filterBoards(query)
-                return true
-            }
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    presenter!!.filterBoards(query)
+                    return true
+                }
 
-        })
+            })
     }
 
 
     override fun setBoards(boards: List<Board>) {
-        boardAdapter = if (presenter!!.getViewPref()){
-            BoardAdapter(boards,R.layout.board_list_mode)
-        }else{
-            BoardAdapter(boards,R.layout.board)
+        boardAdapter = if (presenter!!.getViewPref()) {
+            BoardAdapter(boards, R.layout.board_list_mode)
+        } else {
+            BoardAdapter(boards, R.layout.board)
         }
-        recyclerView!!.adapter=boardAdapter
-        boardAdapterMenu = BoardAdapterMenu(boards,R.layout.board_list_mode_menu)
-        recyclerView2!!.adapter=boardAdapterMenu
+        recyclerView!!.adapter = boardAdapter
+        boardAdapterMenu = BoardAdapterMenu(boards, R.layout.board_list_mode_menu)
+        recyclerView2!!.adapter = boardAdapterMenu
 
     }
+
     override fun setUser(user: User) {
-        if (user.getPhoto()!=null){
-            val decodedImage=presenter!!.getPhoto(user)
+        if (user.getPhoto() != null) {
+            val decodedImage = presenter!!.getPhoto(user)
             userPhoto!!.setImageBitmap(decodedImage)
         }
-        userEmail!!.text=user.getEmail()
-        val completeName=user.getName()!! +" "+ user.getSurname()!!
-        userCompleteName!!.text=completeName
+        userEmail!!.text = user.getEmail()
+        val completeName = user.getName()!! + " " + user.getSurname()!!
+        userCompleteName!!.text = completeName
     }
+
     override fun onClick(v: View?) {
         TODO("Not yet implemented")
     }
+
     override fun logOut() {
         presenter!!.removePreferences()
         val intent = Intent(this, LoginActivity::class.java)
@@ -147,14 +160,14 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
     }
 
     fun showPopUp(view: View) {
-        val menu = PopupMenu(this,view)
+        val menu = PopupMenu(this, view)
         menu.setOnMenuItemClickListener(this)
         menu.inflate(R.menu.view_mode_button)
         menu.show()
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
-        val b=item!!.itemId==R.id.listViewMode
+        val b = item!!.itemId == R.id.listViewMode
         presenter!!.setViewPref(b)
         recyclerView!!.adapter = null
         recyclerView!!.layoutManager = null
@@ -162,16 +175,18 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener, Pop
         setLayoutManager()
         return true
     }
-    private fun setLayoutManager(){
-        layoutManager=if (presenter!!.getViewPref()) {
+
+    private fun setLayoutManager() {
+        layoutManager = if (presenter!!.getViewPref()) {
             GridLayoutManager(this, 1)
-        }else{
-            GridLayoutManager(this,2)
+        } else {
+            GridLayoutManager(this, 2)
         }
         recyclerView!!.layoutManager = layoutManager
         recyclerView2!!.layoutManager = GridLayoutManager(this, 1)
     }
-    fun createBoard(view:View?){
+
+    fun createBoard(view: View?) {
         //TODO
     }
 
