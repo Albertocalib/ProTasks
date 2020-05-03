@@ -17,4 +17,7 @@ interface UserRestService {
 
     @GET("{username}")
     fun getUser (@Path("username") username:String): Call<User>
+
+    @PUT("updatePhoto/{username}")
+    fun updatePhoto(@Body photo: String?,@Path("username")username: String?): Call<User>?
 }

@@ -72,15 +72,13 @@ public class TaskList {
         return write_date;
     }
 
-    public void setWrite_date(Date write_date) {
-        this.write_date = write_date;
+    public void setWrite_date() {
+        this.write_date = new Date();
     }
 
     public Date getCreate_date() {
         return create_date;
     }
 
-    public void setCreate_date(Date create_date) {
-        this.create_date = create_date;
-    }
+
 }

@@ -1,5 +1,6 @@
 package com.example.protasks.activities
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -96,16 +97,15 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
                 nagDialog.dismiss()
             }
             btnDownload.setOnClickListener {
-                presenter!!.saveImage(ivPreview,this)
+                presenter!!.downloadImage(ivPreview,this)
                 Toast.makeText(this,"Download completed",Toast.LENGTH_SHORT).show()
             }
             btnChangePhoto.setOnClickListener {
-//                val intent =
-//                    Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-//                intent.type = "image/"
-//                startActivityForResult(
-//                    Intent.createChooser(intent, "Seleccione la imagen"),1998
-//                )
+                val intent = Intent(
+                    Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                )
+                startActivityForResult(intent, 2)
             }
 
             nagDialog.show()
@@ -198,4 +198,12 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
         //TODO
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            presenter!!.setImage(data!!.data!!,this)
+
+
+        }
+    }
 }

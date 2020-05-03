@@ -55,5 +55,17 @@ public class UserRestController {
         }
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+    @JsonView(User.UserBasicInfo.class)
+    @PutMapping(value = "/updatePhoto/{username}")
+    public ResponseEntity<User> updatePhoto(@RequestBody String photo, @PathVariable String username){
+        User user = userService.findByUsernameOrEmailCustom(username);
+        if (user==null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        user.setWrite_date();
+        user.setPhoto(photo);
+        userService.save(user);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
 
 }

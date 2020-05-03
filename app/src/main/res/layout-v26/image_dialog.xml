@@ -44,7 +44,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:text="Editar"
-        android:background="@null"
+        android:background="@android:color/transparent"
         app:backgroundTint="@color/colorAccent" />
 
 

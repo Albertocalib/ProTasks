@@ -2,6 +2,7 @@ package com.example.protasks.models
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 
 class User(@Expose
@@ -26,7 +27,14 @@ class User(@Expose
 
     @Expose
     @SerializedName("photo")
-    private val photo: String? = null
+    private var photo: String? = null
+    @Expose
+    @SerializedName("create_date")
+    private val create_date: Date? = null
+
+    @Expose
+    @SerializedName("write_date")
+    private val write_date: Date? = null
 
     override fun getPhoto(): String? {
         return photo
@@ -53,6 +61,9 @@ class User(@Expose
 
     override fun getId(): Long? {
         return id
+    }
+    fun setPhoto(img:String){
+        photo=img
     }
 
 

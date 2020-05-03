@@ -12,7 +12,7 @@ import java.io.IOException
 
 class ImageHandler {
 
-    fun saveImage(image:ImageView,context: Context) {
+    fun downloadImage(image:ImageView,context: Context) {
         val draw: BitmapDrawable = image.drawable as BitmapDrawable
         var outStream: FileOutputStream? = null
         val sdCard = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
