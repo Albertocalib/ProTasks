@@ -101,6 +101,7 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
                 Toast.makeText(this,"Download completed",Toast.LENGTH_SHORT).show()
             }
             btnChangePhoto.setOnClickListener {
+                nagDialog.dismiss()
                 val intent = Intent(
                     Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI
