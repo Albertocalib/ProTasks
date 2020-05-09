@@ -19,8 +19,10 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager2.widget.ViewPager2
 import com.example.protasks.BoardAdapter
 import com.example.protasks.BoardAdapterMenu
+import com.example.protasks.FragmentManagerDialog
 import com.example.protasks.R
 import com.example.protasks.models.Board
 import com.example.protasks.models.User
@@ -28,6 +30,8 @@ import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.views.IBoardsView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
@@ -132,6 +136,41 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
                 }
 
             })
+        addBoardButton!!.setOnClickListener {
+            val nagDialog2 = Dialog(this, android.R.style.ThemeOverlay_Material_Dark)
+            nagDialog2.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            nagDialog2.setCancelable(false)
+            nagDialog2.setContentView(R.layout.add_elements)
+            val tabLayout: TabLayout = nagDialog2.findViewById(R.id.tabsDialog)
+            val viewPager: ViewPager2 = nagDialog2.findViewById(R.id.view_pager)
+
+            val adapter = FragmentManagerDialog(this)
+
+            viewPager.adapter = adapter
+
+
+            val mediator = TabLayoutMediator(tabLayout, viewPager) {
+                    tab: TabLayout.Tab, position: Int ->
+                if (position==0) {
+                    tab.text = "Tablero"
+                }else{
+                    tab.text ="Tarea"
+                }
+            }
+            mediator.attach()
+            val toolbar:Toolbar = nagDialog2.findViewById(R.id.toolbar)
+            toolbar.setNavigationOnClickListener{ nagDialog2.dismiss()}
+            toolbar.title="Añadir elemento"
+            toolbar.inflateMenu(R.menu.create_elements_menu)
+            toolbar.setOnMenuItemClickListener{
+                when (it.itemId) {
+                    R.id.action_save -> {nagDialog2.dismiss()}
+                }
+                true
+            }
+            nagDialog2.show()
+        }
+
     }
 
 
