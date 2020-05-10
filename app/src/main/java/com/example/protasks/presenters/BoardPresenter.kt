@@ -103,10 +103,7 @@ class BoardPresenter(private var iBoardsView: IBoardsView,private var context: C
     fun setImage(uri:Uri,context: Context){
         val imageStream = context.contentResolver.openInputStream(uri)
         val thumbnail = BitmapFactory.decodeStream(imageStream)
-        val baos = ByteArrayOutputStream()
-        thumbnail.compress(Bitmap.CompressFormat.PNG, 60, baos)
-        val b: ByteArray = baos.toByteArray()
-        val img = Base64.encodeToString(b, Base64.NO_WRAP)
+        val img=bitmap2Base64(thumbnail)
         val username = preference.getEmail(context)
         val user = retrofitInsUser.service.updatePhoto(img,username)
         user!!.enqueue(object : Callback<User> {
@@ -121,6 +118,31 @@ class BoardPresenter(private var iBoardsView: IBoardsView,private var context: C
 
         })
 
+    }
+    fun createBoard(name:String,b:Bitmap){
+        val img=bitmap2Base64(b)
+        val b1=Board()
+        b1.setPhoto(img)
+        b1.setName(name)
+        b1.setId(34)
+        val username = preference.getEmail(context)
+        val board=retrofitInsBoard.service.createBoard(b1,username!!)
+        board.enqueue(object : Callback<Board> {
+            override fun onFailure(call: Call<Board>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Board>?, response: Response<Board>?) {
+                iBoardsView.getBoards()
+            }
+
+        })
+    }
+    fun bitmap2Base64(b:Bitmap):String{
+        val baos = ByteArrayOutputStream()
+        b.compress(Bitmap.CompressFormat.PNG, 60, baos)
+        val b1: ByteArray = baos.toByteArray()
+        return Base64.encodeToString(b1, Base64.NO_WRAP)
     }
 
 

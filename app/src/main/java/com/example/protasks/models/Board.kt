@@ -18,11 +18,11 @@ class Board {
 
     @Expose
     @SerializedName("taskLists")
-    private var taskLists: List<TaskList?>? = null
+    private var taskLists: List<TaskList?>? = ArrayList()
 
     @Expose
     @SerializedName("users")
-    private val users: List<BoardUsersPermRel>? = null
+    private val users: ArrayList<BoardUsersPermRel>? = ArrayList()
 
     fun getPhoto(): String? {
         return photo
@@ -58,5 +58,12 @@ class Board {
 
     fun setTaskLists(taskLists: List<TaskList?>?) {
         this.taskLists = taskLists
+    }
+    fun addUserOwner(u:User){
+        val b=BoardUsersPermRel()
+        b.setRol(Rol.OWNER)
+        b.setUser(u)
+        b.setBoard(this)
+        this.users!!.add(b)
     }
 }

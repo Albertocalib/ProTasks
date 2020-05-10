@@ -73,10 +73,6 @@ public class Task {
         this.position = position;
     }
 
-    public void setPosition(long position) {
-        this.position = position;
-    }
-
     public List<User> getUsers() {
         return users;
     }

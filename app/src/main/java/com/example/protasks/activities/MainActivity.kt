@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
@@ -55,6 +57,7 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
     var addBoardButton: FloatingActionButton? = null
     var searchView: SearchView? = null
     private var handler: Handler = Handler()
+    private var imageBoard: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,8 +104,8 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
                 nagDialog.dismiss()
             }
             btnDownload.setOnClickListener {
-                presenter!!.downloadImage(ivPreview,this)
-                Toast.makeText(this,"Download completed",Toast.LENGTH_SHORT).show()
+                presenter!!.downloadImage(ivPreview, this)
+                Toast.makeText(this, "Download completed", Toast.LENGTH_SHORT).show()
             }
             btnChangePhoto.setOnClickListener {
                 nagDialog.dismiss()
@@ -110,7 +113,7 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
                     Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                 )
-                startActivityForResult(intent, 2)
+                startActivityForResult(intent, 1111)
             }
 
             nagDialog.show()
@@ -143,28 +146,46 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
             nagDialog2.setContentView(R.layout.add_elements)
             val tabLayout: TabLayout = nagDialog2.findViewById(R.id.tabsDialog)
             val viewPager: ViewPager2 = nagDialog2.findViewById(R.id.view_pager)
+            val toolbar: Toolbar = nagDialog2.findViewById(R.id.toolbar)
+            toolbar.setNavigationOnClickListener { nagDialog2.dismiss() }
+            toolbar.title = "Añadir elemento"
+            toolbar.inflateMenu(R.menu.create_elements_menu)
+            toolbar.menu.getItem(0).isEnabled = false
 
-            val adapter = FragmentManagerDialog(this)
+            val adapter = FragmentManagerDialog(this, boardAdapterMenu!!.getBoards(), toolbar)
 
             viewPager.adapter = adapter
 
 
-            val mediator = TabLayoutMediator(tabLayout, viewPager) {
-                    tab: TabLayout.Tab, position: Int ->
-                if (position==0) {
-                    tab.text = "Tablero"
-                }else{
-                    tab.text ="Tarea"
+            val mediator =
+                TabLayoutMediator(tabLayout, viewPager) { tab: TabLayout.Tab, position: Int ->
+                    if (position == 0) {
+                        tab.text = "Tablero"
+
+                    } else {
+                        tab.text = "Tarea"
+                    }
                 }
-            }
             mediator.attach()
-            val toolbar:Toolbar = nagDialog2.findViewById(R.id.toolbar)
-            toolbar.setNavigationOnClickListener{ nagDialog2.dismiss()}
-            toolbar.title="Añadir elemento"
-            toolbar.inflateMenu(R.menu.create_elements_menu)
-            toolbar.setOnMenuItemClickListener{
+            toolbar.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.action_save -> {nagDialog2.dismiss()}
+                    R.id.action_save -> {
+                        if (tabLayout.selectedTabPosition == 0) {
+                            var b:Bitmap? = null
+                            if (adapter.boardTab.colorNew != null) {
+                                adapter.boardTab.setTextToImage(
+                                    adapter.boardTab.colorNew!!,
+                                    adapter.boardTab.textView!!.text.toString()
+                                )
+                                b = adapter.boardTab.image
+                            }else if (imageBoard != null) {
+                                b = imageBoard
+                            }
+                            presenter!!.createBoard(adapter.boardTab.textView!!.text.toString(),b!!)
+
+                        }
+                        nagDialog2.dismiss()
+                    }
                 }
                 true
             }
@@ -234,16 +255,18 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
         recyclerView2!!.layoutManager = GridLayoutManager(this, 1)
     }
 
-    fun createBoard(view: View?) {
-        //TODO
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            presenter!!.setImage(data!!.data!!,this)
+        if (requestCode == 1111 && resultCode == Activity.RESULT_OK) {
+            presenter!!.setImage(data!!.data!!, this)
 
-
+        } else if (resultCode == Activity.RESULT_OK) {
+            val imageStream = this.contentResolver.openInputStream(data!!.data!!)
+            imageBoard = BitmapFactory.decodeStream(imageStream)
         }
+    }
+    override fun getBoards(){
+        presenter!!.getBoards()
     }
 }
