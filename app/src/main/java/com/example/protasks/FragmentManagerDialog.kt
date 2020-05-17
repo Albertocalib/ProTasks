@@ -11,14 +11,15 @@ class FragmentManagerDialog(fm: FragmentActivity,val boards:List<Board>,val t: T
     FragmentStateAdapter(fm) {
     val boardTab=Board_tab.newInstance(t)
     val tabTab=Task_tab.newInstance(boards)
+    val listTab=List_tab.newInstance(boards,t)
 
-    override fun getItemCount(): Int = 2
+    override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> boardTab
-            1 -> tabTab
-            else -> Board_tab.newInstance(t)
+            1 -> listTab
+            else -> tabTab
         }
     }
 }

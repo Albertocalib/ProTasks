@@ -159,11 +159,16 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
 
             val mediator =
                 TabLayoutMediator(tabLayout, viewPager) { tab: TabLayout.Tab, position: Int ->
-                    if (position == 0) {
-                        tab.text = "Tablero"
-
-                    } else {
-                        tab.text = "Tarea"
+                    when (position) {
+                        0 -> {
+                            tab.text = "Tablero"
+                        }
+                        1 -> {
+                            tab.text = "Lista"
+                        }
+                        else -> {
+                            tab.text= "Tarea"
+                        }
                     }
                 }
             mediator.attach()
@@ -182,6 +187,9 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
                                 b = imageBoard
                             }
                             presenter!!.createBoard(adapter.boardTab.textView!!.text.toString(),b!!)
+
+                        }else if (tabLayout.selectedTabPosition == 1) {
+                            presenter!!.createTaskList(adapter.listTab.boardName!!,adapter.listTab.textView!!.text.toString())
 
                         }
                         nagDialog2.dismiss()
