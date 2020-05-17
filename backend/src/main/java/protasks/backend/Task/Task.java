@@ -33,6 +33,8 @@ public class Task {
     private Date create_date;
 
     public Task() {
+        this.create_date=new Date();
+        this.write_date =new Date();
     }
     public Task(String title,String description,long position) {
         this.title=title;
@@ -40,6 +42,13 @@ public class Task {
         this.position=position;
         this.create_date=new Date();
         this.write_date =new Date();
+    }
+    public Task(String title,String description) {
+        this.title=title;
+        this.description=description;
+        this.create_date=new Date();
+        this.write_date =new Date();
+        this.position=taskList.getTasks().size();
     }
     public long getId() {
         return id;

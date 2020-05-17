@@ -10,14 +10,22 @@ import java.util.List;
 
 @Entity
 public class TaskList {
+    public interface TaskListBasicInfo{}
+
+    @JsonView(TaskList.TaskListBasicInfo.class)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="Id")
     private long id;
+
+    @JsonView(TaskList.TaskListBasicInfo.class)
     @Column(name="Title")
     private String title;
+
     @OneToMany(mappedBy = "taskList")
     private List<Task> tasks;
+
+    @JsonView(TaskList.TaskListBasicInfo.class)
     @ManyToOne
     private Board board;
 
@@ -68,6 +76,11 @@ public class TaskList {
         this.write_date =new Date();
     }
 
+    public TaskList() {
+        this.create_date = new Date();
+        this.write_date =new Date();
+    }
+
     public Date getWrite_date() {
         return write_date;
     }
@@ -79,6 +92,8 @@ public class TaskList {
     public Date getCreate_date() {
         return create_date;
     }
+
+    public void addTask(Task t){this.tasks.add(t);}
 
 
 }

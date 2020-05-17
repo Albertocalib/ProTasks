@@ -61,7 +61,7 @@ public class BoardRestController {
             u.addBoard(bs);
             boardService.save(b);
             userService.save(u);
-            return new ResponseEntity<>(new Board(), HttpStatus.CREATED);
+            return new ResponseEntity<>(b, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
