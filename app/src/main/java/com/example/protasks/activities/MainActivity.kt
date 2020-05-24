@@ -57,6 +57,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
         presenter = BoardPresenter(this, baseContext)
         presenter!!.getBoards()
         toolbar = findViewById(R.id.toolbar)
+        val changeViewModeButton:ImageButton = toolbar!!.findViewById(R.id.viewModeButton)
+        changeViewModeButton.visibility=View.INVISIBLE
         mDrawer = findViewById(R.id.drawer)
         actionBar = ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open, R.string.close)
         mDrawer!!.addDrawerListener(actionBar!!)

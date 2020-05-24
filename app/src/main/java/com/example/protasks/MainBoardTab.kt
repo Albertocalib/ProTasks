@@ -45,6 +45,7 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
     ): View? {
         val view = inflater.inflate(R.layout.main_content, container, false)
         changeViewModeButton = t.findViewById(R.id.viewModeButton)
+        changeViewModeButton!!.visibility=View.VISIBLE
         changeViewModeButton!!.setOnClickListener {
             val menu = PopupMenu(cont, it)
             menu.setOnMenuItemClickListener(this)
