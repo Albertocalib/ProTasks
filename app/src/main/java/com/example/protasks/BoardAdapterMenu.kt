@@ -26,9 +26,6 @@ class BoardAdapterMenu(private val boards : List<Board>?, private val view:Int) 
         return boards!!.size
     }
 
-    fun getBoards():List<Board>{
-        return this.boards!!
-    }
 
     override fun onBindViewHolder(holder: BoardAdapterMenu.ViewHolderBoard, position: Int) {
         holder.boardName.text=boards!![position].getName()

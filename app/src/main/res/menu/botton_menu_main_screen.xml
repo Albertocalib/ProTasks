@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/nav_search1"
+        android:id="@+id/nav_home"
         android:icon="@drawable/ic_dashboard"
         android:title="Tableros"/>
 
