@@ -43,4 +43,7 @@ class BoardAdapter(private val boards : List<Board>?,private val view:Int) :Recy
             boardImage = view.findViewById(R.id.boardView)
         }
     }
+    fun getBoards():List<Board>{
+        return this.boards!!
+    }
 }
