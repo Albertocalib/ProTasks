@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
                             tab.text = "Lista"
                         }
                         else -> {
-                            tab.text= "Tarea"
+                            tab.text = "Tarea"
                         }
                     }
                 }
@@ -176,20 +176,34 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
                 when (it.itemId) {
                     R.id.action_save -> {
                         if (tabLayout.selectedTabPosition == 0) {
-                            var b:Bitmap? = null
+                            var b: Bitmap? = null
                             if (adapter.boardTab.colorNew != null) {
                                 adapter.boardTab.setTextToImage(
                                     adapter.boardTab.colorNew!!,
                                     adapter.boardTab.textView!!.text.toString()
                                 )
                                 b = adapter.boardTab.image
-                            }else if (imageBoard != null) {
+                            } else if (imageBoard != null) {
                                 b = imageBoard
                             }
-                            presenter!!.createBoard(adapter.boardTab.textView!!.text.toString(),b!!)
+                            presenter!!.createBoard(
+                                adapter.boardTab.textView!!.text.toString(),
+                                b!!
+                            )
 
-                        }else if (tabLayout.selectedTabPosition == 1) {
-                            presenter!!.createTaskList(adapter.listTab.boardName!!,adapter.listTab.textView!!.text.toString())
+                        } else if (tabLayout.selectedTabPosition == 1) {
+                            presenter!!.createTaskList(
+                                adapter.listTab.boardName!!,
+                                adapter.listTab.textView!!.text.toString()
+                            )
+
+                        } else {
+                            presenter!!.createTask(
+                                adapter.taskTab.boardName!!,
+                                adapter.taskTab.textView!!.text.toString(),
+                                adapter.taskTab.lName!!,
+                                adapter.taskTab.descriptionView!!.text.toString()
+                            )
 
                         }
                         nagDialog2.dismiss()
@@ -274,7 +288,8 @@ class MainActivity : AppCompatActivity(), IBoardsView, View.OnClickListener,
             imageBoard = BitmapFactory.decodeStream(imageStream)
         }
     }
-    override fun getBoards(){
+
+    override fun getBoards() {
         presenter!!.getBoards()
     }
 }

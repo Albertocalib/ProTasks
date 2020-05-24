@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardService;
 import protasks.backend.Board.BoardUsersPermRel;
+import protasks.backend.TaskList.TaskList;
 import protasks.backend.user.User;
 import protasks.backend.user.UserService;
 
@@ -18,7 +19,7 @@ import static protasks.backend.Rol.Rol.OWNER;
 @RestController
 @RequestMapping("/api/board")
 public class BoardRestController {
-    interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo,BoardUsersPermRel.BoardBasicInfo{}
+    interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo,BoardUsersPermRel.BoardBasicInfo, TaskList.TaskListBasicInfo{}
 
     @Autowired
     BoardService boardService;

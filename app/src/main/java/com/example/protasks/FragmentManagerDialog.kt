@@ -7,11 +7,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.protasks.models.Board
 
 
-class FragmentManagerDialog(fm: FragmentActivity,val boards:List<Board>,val t: Toolbar) :
+class FragmentManagerDialog(fm: FragmentActivity, boards:List<Board>,t: Toolbar) :
     FragmentStateAdapter(fm) {
     val boardTab=Board_tab.newInstance(t)
-    val tabTab=Task_tab.newInstance(boards)
-    val listTab=List_tab.newInstance(boards,t)
+    val taskTab=TaskTab.newInstance(boards,t)
+    val listTab=ListTab.newInstance(boards,t)
 
     override fun getItemCount(): Int = 3
 
@@ -19,7 +19,7 @@ class FragmentManagerDialog(fm: FragmentActivity,val boards:List<Board>,val t: T
         return when (position) {
             0 -> boardTab
             1 -> listTab
-            else -> tabTab
+            else -> taskTab
         }
     }
 }

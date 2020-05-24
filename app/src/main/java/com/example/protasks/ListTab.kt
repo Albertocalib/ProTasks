@@ -11,12 +11,11 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import com.example.protasks.models.Board
 import java.util.ArrayList
 
-class List_tab(private val boards: List<Board>, private val t: Toolbar) : Fragment() {
+class ListTab(private val boards: List<Board>, private val t: Toolbar) : Fragment() {
     var textView: TextView? = null
     var boardName: String? = null
 
@@ -72,7 +71,7 @@ class List_tab(private val boards: List<Board>, private val t: Toolbar) : Fragme
     }
 
     companion object {
-        fun newInstance(boards: List<Board>,t: Toolbar): List_tab = List_tab(boards,t)
+        fun newInstance(boards: List<Board>,t: Toolbar): ListTab = ListTab(boards,t)
     }
 
 

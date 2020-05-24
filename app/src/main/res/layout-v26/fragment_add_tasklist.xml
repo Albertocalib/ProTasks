@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:hint="Nombre de la lista"
             android:importantForAutofill="no"
-            android:labelFor="@id/passwordText"
+            android:textColorHint="@color/design_default_color_on_secondary"
             android:textColor="@color/design_default_color_on_secondary" />
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -26,6 +26,7 @@ public class Board {
     @Column (name="Photo",columnDefinition="MEDIUMBLOB")
     private String photo;
 
+    @JsonView(BoardDetailsInfo.class)
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "board")
     private List<TaskList> taskLists;
 

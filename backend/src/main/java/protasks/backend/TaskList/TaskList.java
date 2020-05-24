@@ -19,13 +19,12 @@ public class TaskList {
     private long id;
 
     @JsonView(TaskList.TaskListBasicInfo.class)
-    @Column(name="Title")
+    @Column(name="title")
     private String title;
 
     @OneToMany(mappedBy = "taskList")
     private List<Task> tasks;
 
-    @JsonView(TaskList.TaskListBasicInfo.class)
     @ManyToOne
     private Board board;
 

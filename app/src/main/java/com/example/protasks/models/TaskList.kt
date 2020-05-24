@@ -9,7 +9,7 @@ class TaskList {
     private var id: Long = 0
 
     @Expose
-    @SerializedName("Title")
+    @SerializedName("title")
     private var title: String? = null
 
     @Expose

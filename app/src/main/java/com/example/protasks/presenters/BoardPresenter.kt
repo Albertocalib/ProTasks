@@ -16,6 +16,7 @@ import com.example.protasks.models.TaskList
 import com.example.protasks.models.User
 import com.example.protasks.restServices.BoardRestService
 import com.example.protasks.restServices.TaskListRestService
+import com.example.protasks.restServices.TaskRestService
 import com.example.protasks.restServices.UserRestService
 import com.example.protasks.utils.ImageHandler
 import com.example.protasks.utils.Preference
@@ -34,6 +35,8 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
         RetrofitInstance("api/user/", UserRestService::class.java)
     private val retrofitInsTaskList: RetrofitInstance<TaskListRestService> =
         RetrofitInstance("api/list/", TaskListRestService::class.java)
+    private val retrofitInsTask: RetrofitInstance<TaskRestService> =
+        RetrofitInstance("api/task/", TaskRestService::class.java)
     private val preference: Preference = Preference()
     private val image_handler: ImageHandler = ImageHandler()
     override fun getBoards() {
@@ -139,7 +142,6 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
         val b1 = Board()
         b1.setPhoto(img)
         b1.setName(name)
-        b1.setId(34)
         val username = preference.getEmail(context)
         val board = retrofitInsBoard.service.createBoard(b1, username!!)
         board.enqueue(object : Callback<Board> {
@@ -172,7 +174,26 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
             }
 
             override fun onResponse(call: Call<TaskList>?, response: Response<TaskList>?) {
+                iBoardsView.getBoards()
                 Toast.makeText(context, "List Created", Toast.LENGTH_SHORT).show()
+
+            }
+
+        })
+
+    }
+    fun createTask(boardName: String,taskName:String,listName: String,description:String){
+        val username = preference.getEmail(context)
+        val t = Task(taskName,description)
+        val task = retrofitInsTask.service.createTask(t, boardName, listName,username!!)
+        task.enqueue(object : Callback<Task> {
+            override fun onFailure(call: Call<Task>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
+                iBoardsView.getBoards()
+                Toast.makeText(context, "Task Created", Toast.LENGTH_SHORT).show()
 
             }
 
