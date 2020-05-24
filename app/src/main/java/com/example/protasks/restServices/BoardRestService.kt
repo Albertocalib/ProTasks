@@ -8,7 +8,14 @@ import retrofit2.http.*
 
 
 interface BoardRestService {
-    @GET("{username}")
+    @GET("username={username}")
     fun getBoardsByUser (@Path("username") username:String): Call<List<Board>>
+
+    @GET("boardName={name}&username={username}")
+    fun getBoardsFilterByName (@Path("name") name:String,@Path("username") username:String): Call<List<Board>>
+
+    @POST("newBoard/username={username}")
+    fun createBoard(@Body board: Board?,@Path("username") username:String):Call<Board>
+
 
 }

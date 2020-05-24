@@ -8,15 +8,16 @@ class Task(@Expose
            @SerializedName("title")
            private var title: String?, @Expose
            @SerializedName("description")
-           private var description: String?,
-           @Expose
-           @SerializedName("position")
-           private var position: Int?
+           private var description: String?
 ) : ITask {
 
     @Expose
     @SerializedName("Id")
     private val id: Int? = null
+
+    @Expose
+    @SerializedName("position")
+    private var position: Int? =null
 
 
     override fun getTitle(): String? {
