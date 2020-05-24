@@ -9,7 +9,7 @@ import com.example.protasks.models.Board
 
 class FragmentManagerDialog(fm: FragmentActivity, boards:List<Board>,t: Toolbar) :
     FragmentStateAdapter(fm) {
-    val boardTab=Board_tab.newInstance(t)
+    val boardTab=BoardTab.newInstance(t)
     val taskTab=TaskTab.newInstance(boards,t)
     val listTab=ListTab.newInstance(boards,t)
 

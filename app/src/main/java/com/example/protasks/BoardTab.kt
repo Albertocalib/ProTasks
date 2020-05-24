@@ -23,7 +23,7 @@ import top.defaults.colorpicker.ColorPickerPopup
 import top.defaults.colorpicker.ColorPickerPopup.ColorPickerObserver
 
 
-class Board_tab(private val t: Toolbar) : Fragment() {
+class BoardTab(private val t: Toolbar) : Fragment() {
     var image: Bitmap? = null
     var textView: TextView? = null
     var colorNew:Int?=null
@@ -108,7 +108,7 @@ class Board_tab(private val t: Toolbar) : Fragment() {
     }
 
     companion object {
-        fun newInstance(t: Toolbar): Board_tab = Board_tab(t)
+        fun newInstance(t: Toolbar): BoardTab = BoardTab(t)
     }
 
     fun setTextToImage(color:Int,boardName:String){
