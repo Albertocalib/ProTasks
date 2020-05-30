@@ -26,5 +26,7 @@ public class TaskService {
         return this.taskRepository.findByUsername(username);
     }
 
+    public List<Task> filterByName(String name,String username){return this.taskRepository.filterTasksByName(name,username);}
+
 }
 

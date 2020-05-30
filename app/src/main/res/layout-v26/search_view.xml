@@ -16,11 +16,24 @@
         android:focusableInTouchMode="true"
         app:iconifiedByDefault="false"
         app:queryHint="Buscar" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:text="Tareas"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_task_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:text="Tableros"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_board_search"

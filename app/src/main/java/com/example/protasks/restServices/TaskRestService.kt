@@ -1,8 +1,6 @@
 package com.example.protasks.restServices
 
-import com.example.protasks.models.Board
 import com.example.protasks.models.Task
-import com.example.protasks.models.TaskList
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -14,4 +12,8 @@ interface TaskRestService {
 
     @GET("username={username}")
     fun getTasksByUser (@Path("username") username:String): Call<List<Task>>
+
+    @GET("taskName={name}&username={username}")
+    fun getTasksFilterByName (@Path("name") name:String,@Path("username") username:String): Call<List<Task>>
+
 }

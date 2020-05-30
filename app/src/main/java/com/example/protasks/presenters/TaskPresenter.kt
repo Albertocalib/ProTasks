@@ -55,6 +55,28 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
 
         })
     }
+    override fun filterTasks(name: String) {
+        val username = preference.getEmail(context)
+        if (name == "") {
+            getTasks()
+        } else {
+            val tasks = retrofitInsTask.service.getTasksFilterByName(name, username!!)
+            tasks.enqueue(object : Callback<List<Task>> {
+                override fun onFailure(call: Call<List<Task>>?, t: Throwable?) {
+                    Log.v("retrofit", t.toString())
+                }
+
+                override fun onResponse(
+                    call: Call<List<Task>>?,
+                    response: Response<List<Task>>?
+                ) {
+                    view.setTasks(response!!.body()!!)
+
+                }
+
+            })
+        }
+    }
 
 
 }

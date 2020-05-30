@@ -6,4 +6,5 @@ import com.example.protasks.models.User
 
 interface ITaskPresenter {
     fun getTasks()
+    fun filterTasks(name:String)
 }

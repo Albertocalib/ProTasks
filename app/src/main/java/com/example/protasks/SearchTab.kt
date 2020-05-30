@@ -60,11 +60,13 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView{
 
                 override fun onQueryTextChange(newText: String): Boolean {
                     presenter!!.filterBoards(newText)
+                    taskPresenter!!.filterTasks(newText)
                     return true
                 }
 
                 override fun onQueryTextSubmit(query: String): Boolean {
                     presenter!!.filterBoards(query)
+                    taskPresenter!!.filterTasks(query)
                     return true
                 }
 
