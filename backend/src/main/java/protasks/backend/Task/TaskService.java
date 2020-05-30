@@ -22,5 +22,9 @@ public class TaskService {
     public List<Task> findByTaskList(TaskList t ) {
         return this.taskRepository.findByTaskList(t);
     }
+    public List<Task> findByUsername(String username){
+        return this.taskRepository.findByUsername(username);
+    }
+
 }
 

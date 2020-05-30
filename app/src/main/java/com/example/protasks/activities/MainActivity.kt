@@ -22,10 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
-import com.example.protasks.BoardAdapter
-import com.example.protasks.BoardAdapterMenu
-import com.example.protasks.MainBoardTab
-import com.example.protasks.R
+import com.example.protasks.*
 import com.example.protasks.models.Board
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
@@ -112,7 +109,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
                     fragment=MainBoardTab.newInstance(toolbar!!,this)
                 }
                 R.id.nav_search -> {
-                    fragment=MainBoardTab.newInstance(toolbar!!,this)
+                    fragment=SearchTab.newInstance(this)
 
                 }
                 R.id.nav_notifications -> {
