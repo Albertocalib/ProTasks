@@ -4,12 +4,8 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
-import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import android.widget.*
@@ -20,12 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.viewpager2.widget.ViewPager2
-import com.example.protasks.BoardAdapter
-import com.example.protasks.BoardAdapterMenu
-import com.example.protasks.MainBoardTab
-import com.example.protasks.R
+import com.example.protasks.*
 import com.example.protasks.models.Board
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
@@ -63,6 +54,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
         actionBar = ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open, R.string.close)
         mDrawer!!.addDrawerListener(actionBar!!)
         actionBar!!.syncState()
+        presenter!!.getUser()
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
         recyclerView2 = navigationView.findViewById(R.id.recycler_board_navigation_view)
         setLayoutManager()
@@ -112,7 +104,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
                     fragment=MainBoardTab.newInstance(toolbar!!,this)
                 }
                 R.id.nav_search -> {
-                    fragment=MainBoardTab.newInstance(toolbar!!,this)
+                    fragment=SearchTab.newInstance(this)
 
                 }
                 R.id.nav_notifications -> {

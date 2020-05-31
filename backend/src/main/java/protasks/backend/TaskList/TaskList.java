@@ -5,6 +5,7 @@ import protasks.backend.Board.Board;
 import protasks.backend.Task.Task;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -73,11 +74,13 @@ public class TaskList {
         this.board = board;
         this.create_date = new Date();
         this.write_date =new Date();
+        this.tasks=new ArrayList<>();
     }
 
     public TaskList() {
         this.create_date = new Date();
         this.write_date =new Date();
+        this.tasks=new ArrayList<>();
     }
 
     public Date getWrite_date() {

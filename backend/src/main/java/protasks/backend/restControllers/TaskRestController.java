@@ -5,27 +5,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import protasks.backend.Board.Board;
-import protasks.backend.Board.BoardService;
-import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.Task.Task;
 import protasks.backend.Task.TaskService;
 import protasks.backend.TaskList.TaskList;
 import protasks.backend.TaskList.TaskListService;
-import protasks.backend.user.User;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/task")
 public class TaskRestController {
+    interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo {}
+
     @Autowired
     TaskListService listService;
 
     @Autowired
     TaskService taskService;
 
-    @JsonView(TaskList.TaskListBasicInfo.class)
+    @JsonView(TaskRequest.class)
     @PostMapping(value = "/newTask/board={boardName}&list={listName}&username={username}")
     public ResponseEntity<Task> createTask(@RequestBody Task task, @PathVariable String boardName, @PathVariable String listName , @PathVariable String username){
         if(boardName == null || task==null || username==null ||listName==null){
@@ -38,6 +36,28 @@ public class TaskRestController {
             return new ResponseEntity<>(task1, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @JsonView(TaskRequest.class)
+    @GetMapping("/username={username}")
+    public ResponseEntity<List<Task>> getTasksByUsername(@PathVariable String username){
+        List<Task> tasks=taskService.findByUsername(username);
+        if (tasks != null){
+            return new ResponseEntity<>(tasks, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @JsonView(TaskRequest.class)
+    @GetMapping("/taskName={name}&username={username}")
+    public ResponseEntity<List<Task>> getTasksFilterByName(@PathVariable String name, @PathVariable String username){
+        List<Task> tasks=taskService.filterByName(name,username);
+        if (tasks != null){
+            return new ResponseEntity<>(tasks, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 

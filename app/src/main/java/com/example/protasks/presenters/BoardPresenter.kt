@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Handler
 import android.util.Base64
 import android.util.Log
 import android.widget.ImageView
