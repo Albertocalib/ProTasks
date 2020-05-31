@@ -17,6 +17,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
     var boardName: String? = null
     var lName: String? = null
     var descriptionView: TextView? = null
+    private val anyElementSelected="Ningun elemento seleccionado"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,7 +29,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
         descriptionView = view.findViewById(R.id.taskDescription)
         val mySpinner: Spinner = view.findViewById(R.id.spinnerBoardTask)
         val listName = ArrayList<String>()
-        listName.add("Ningun elemento seleccionado")
+        listName.add(anyElementSelected)
         for (e in boards) {
             listName.add(e.getName()!!)
         }
@@ -41,7 +42,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
 
         val mySpinnerList: Spinner = view.findViewById(R.id.spinnerTaskList)
         val listNamesTaskList = ArrayList<String>()
-        listNamesTaskList.add("Ningun elemento seleccionado")
+        listNamesTaskList.add(anyElementSelected)
         val myAdapterTaskList = ArrayAdapter(
             requireActivity().baseContext,
             android.R.layout.simple_list_item_1, listNamesTaskList
@@ -66,7 +67,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
                 myAdapterTaskList.addAll(listNamesTaskL)
                 myAdapterTaskList.notifyDataSetChanged()
                 t.menu.getItem(0).isEnabled =
-                    (mySpinner.selectedItem.toString() != "Ningun elemento seleccionado") && textView!!.text.toString() != "" && mySpinnerList.selectedItem.toString() != "Ningun elemento seleccionado"
+                    (mySpinner.selectedItem.toString() != anyElementSelected) && textView!!.text.toString() != "" && mySpinnerList.selectedItem.toString() != anyElementSelected
             }
 
         }
@@ -83,15 +84,15 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
             ) {
                 lName = mySpinnerList.selectedItem.toString()
                 t.menu.getItem(0).isEnabled =
-                    (mySpinner.selectedItem.toString() != "Ningun elemento seleccionado") && textView!!.text.toString() != "" && mySpinnerList.selectedItem.toString() != "Ningun elemento seleccionado"
+                    (mySpinner.selectedItem.toString() != anyElementSelected) && textView!!.text.toString() != "" && mySpinnerList.selectedItem.toString() != anyElementSelected
                             && descriptionView!!.text.toString() != ""
             }
 
         }
-        textView!!.addTextChangedListener(object : TextWatcher {
+        val textWatcher: TextWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 t.menu.getItem(0).isEnabled =
-                    (mySpinner.selectedItem.toString() != "Ningun elemento seleccionado") && textView!!.text.toString() != "" && mySpinnerList.selectedItem.toString() != "Ningun elemento seleccionado"
+                    (mySpinner.selectedItem.toString() != anyElementSelected) && textView!!.text.toString() != "" && mySpinnerList.selectedItem.toString() != anyElementSelected
                             && descriptionView!!.text.toString() != ""
             }
 
@@ -106,26 +107,9 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
                 before: Int, count: Int
             ) {
             }
-        })
-        descriptionView!!.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                t.menu.getItem(0).isEnabled =
-                    (mySpinner.selectedItem.toString() != "Ningun elemento seleccionado") && textView!!.text.toString() != "" && mySpinnerList.selectedItem.toString() != "Ningun elemento seleccionado"
-                            && descriptionView!!.text.toString() != ""
-            }
-
-            override fun beforeTextChanged(
-                s: CharSequence, start: Int,
-                count: Int, after: Int
-            ) {
-            }
-
-            override fun onTextChanged(
-                s: CharSequence, start: Int,
-                before: Int, count: Int
-            ) {
-            }
-        })
+        }
+        textView!!.addTextChangedListener(textWatcher)
+        descriptionView!!.addTextChangedListener(textWatcher)
 
         return view
     }
@@ -133,7 +117,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
     fun getTaskListByBoard(position: Int): ArrayList<String> {
         val taskList = boards[position].getTaskLists()!!
         val listName = ArrayList<String>()
-        listName.add("Ningun elemento seleccionado")
+        listName.add(anyElementSelected)
         for (list in taskList) {
             listName.add(list!!.getTitle()!!)
         }

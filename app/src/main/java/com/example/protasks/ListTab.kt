@@ -62,7 +62,7 @@ class ListTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
                 id: Long
             ) {
                 t.menu.getItem(0).isEnabled =(mySpinner.selectedItem.toString()!= "Ningun elemento seleccionado")&& textView!!.text.toString() != ""
-                boardName=mySpinner.selectedItem.toString();
+                boardName=mySpinner.selectedItem.toString()
             }
 
         }

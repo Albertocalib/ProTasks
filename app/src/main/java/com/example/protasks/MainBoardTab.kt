@@ -64,7 +64,7 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
             } else {
                 presenter!!.filterBoards(text)
             }
-            swipeRefresh!!.isRefreshing = false;
+            swipeRefresh!!.isRefreshing = false
             Toast.makeText(cont, "Boards Updated", Toast.LENGTH_SHORT).show()
         }
         addBoardButton = view.findViewById(R.id.button_add_board)
