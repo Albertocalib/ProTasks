@@ -15,5 +15,8 @@ interface ITask {
 
     fun setPosition(position:Int)
 
+    fun getTaskList():TaskList
+    fun setTaskList(tasklist:TaskList)
+
 
 }
