@@ -1,6 +1,7 @@
 package com.example.protasks.utils
 
 import android.content.Context
+import android.text.method.TextKeyListener.clear
 import androidx.preference.PreferenceManager
 
 class Preference {

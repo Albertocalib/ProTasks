@@ -5,8 +5,6 @@ import org.springframework.stereotype.Component;
 import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardRepository;
 import protasks.backend.Board.BoardUsersPermRel;
-import protasks.backend.Task.Task;
-import protasks.backend.Task.TaskRepository;
 import protasks.backend.TaskList.TaskList;
 import protasks.backend.user.User;
 import protasks.backend.user.UserRepository;
@@ -28,9 +26,6 @@ public class DatabaseInitializer {
     @Autowired
     private BoardRepository boardRepository;
 
-    @Autowired
-    private TaskRepository taskRepository;
-
 
     @PostConstruct
     public void init() throws Exception {
@@ -50,10 +45,6 @@ public class DatabaseInitializer {
         tl.add(t3);
         b1.setTaskLists(tl);
         boardRepository.save(b1);
-        Task task=new Task("TAREA 1","DESCRIPCIÓN 1",t);
-        taskRepository.save(task);
-
-
         BoardUsersPermRel bs = new BoardUsersPermRel(b1, u1, OWNER);
         b1.addUser(bs);
         u1.addBoard(bs);

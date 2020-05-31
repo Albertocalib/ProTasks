@@ -1,6 +1,5 @@
 package protasks.backend.Task;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import protasks.backend.TaskList.TaskList;
 import protasks.backend.user.User;
 
@@ -10,26 +9,18 @@ import java.util.List;
 
 @Entity
 public class Task {
-    public interface TaskListBasicInfo{}
-
-    @JsonView(Task.TaskListBasicInfo.class)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="Id")
     private long id;
-
-    @JsonView(Task.TaskListBasicInfo.class)
     @Column(name="Title")
     private String title;
-
     @Column(name="Description")
     private String description;
     @Column(name="Position")
     private long position;
     @ManyToMany(mappedBy = "tasks")
     private List<User> users ;
-
-    @JsonView(Task.TaskListBasicInfo.class)
     @ManyToOne
     private TaskList taskList;
 

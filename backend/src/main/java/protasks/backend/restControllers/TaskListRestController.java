@@ -11,6 +11,7 @@ import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.TaskList.TaskList;
 import protasks.backend.TaskList.TaskListService;
 import protasks.backend.user.User;
+import protasks.backend.user.UserService;
 
 import java.util.List;
 

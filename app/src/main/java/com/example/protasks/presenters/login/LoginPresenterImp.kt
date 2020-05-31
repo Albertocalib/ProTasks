@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.example.protasks.RetrofitInstance
+import com.example.protasks.activities.LoginActivity
 import com.example.protasks.restServices.UserRestService
 import com.example.protasks.models.User
 import com.example.protasks.utils.Preference
@@ -12,11 +13,13 @@ import com.example.protasks.views.ILoginView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 class LoginPresenterImp(private var iLoginView: ILoginView, private var context: Context) :
     ILoginPresenter {
-    private var handler: Handler = Handler(Looper.getMainLooper())
+    private var handler: Handler
     private val retrofitIns:RetrofitInstance<UserRestService> = RetrofitInstance("api/user/",UserRestService::class.java)
     private val preference:Preference = Preference()
     override fun doLogin(userName: String, password: String, keep_login: Boolean) {
@@ -49,4 +52,7 @@ class LoginPresenterImp(private var iLoginView: ILoginView, private var context:
     }
 
 
+    init {
+        handler = Handler(Looper.getMainLooper())
+    }
 }
