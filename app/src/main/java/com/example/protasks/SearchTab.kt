@@ -1,23 +1,13 @@
 package com.example.protasks
 
-import android.app.Activity
-import android.app.Dialog
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
-import android.widget.*
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.viewpager2.widget.ViewPager2
 import com.example.protasks.models.Board
 import com.example.protasks.models.Task
 import com.example.protasks.models.User
@@ -25,10 +15,6 @@ import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.views.IBoardsView
 import com.example.protasks.views.ITasksView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.activity_main_screen.*
 
 
 class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView{

@@ -24,7 +24,6 @@ import com.example.protasks.views.IBoardsView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.activity_main_screen.*
 
 
 class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment(),IBoardsView,PopupMenu.OnMenuItemClickListener{
