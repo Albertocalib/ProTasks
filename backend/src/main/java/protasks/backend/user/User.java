@@ -2,7 +2,6 @@ package protasks.backend.user;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.Task.Task;
 

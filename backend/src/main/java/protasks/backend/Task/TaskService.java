@@ -2,7 +2,6 @@ package protasks.backend.Task;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import protasks.backend.Board.Board;
 import protasks.backend.TaskList.TaskList;
 
 import java.util.List;
