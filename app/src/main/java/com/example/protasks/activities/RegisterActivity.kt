@@ -107,7 +107,7 @@ class RegisterActivity : AppCompatActivity(), IRegisterView, View.OnClickListene
         btnRegister!!.isEnabled = true
         if (result!!) {
             val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent);
+            startActivity(intent)
             Toast.makeText(this, "Register Success", Toast.LENGTH_SHORT).show()
         } else Toast.makeText(this, "Register Fail, because the user or the email already exists" , Toast.LENGTH_LONG).show()
     }
