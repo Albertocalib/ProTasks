@@ -18,6 +18,7 @@ import java.util.ArrayList
 class ListTab(private val boards: List<Board>, private val t: Toolbar) : Fragment() {
     var textView: TextView? = null
     var boardName: String? = null
+    val anySelectedItem:String="Ningún elemento seleccionado"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,7 +30,7 @@ class ListTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
         textView = view.findViewById(R.id.addList)
         textView!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                t.menu.getItem(0).isEnabled =(mySpinner.selectedItem.toString()!= "Ningun elemento seleccionado")&& textView!!.text.toString() != ""
+                t.menu.getItem(0).isEnabled =(mySpinner.selectedItem.toString()!= anySelectedItem)&& textView!!.text.toString() != ""
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int,
@@ -40,7 +41,7 @@ class ListTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
                                        before: Int, count: Int) {
             }})
         val listName = ArrayList<String>()
-        listName.add("Ningun elemento seleccionado")
+        listName.add(anySelectedItem)
         for (e in boards) {
             listName.add(e.getName()!!)
         }
@@ -61,7 +62,7 @@ class ListTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
                 position: Int,
                 id: Long
             ) {
-                t.menu.getItem(0).isEnabled =(mySpinner.selectedItem.toString()!= "Ningun elemento seleccionado")&& textView!!.text.toString() != ""
+                t.menu.getItem(0).isEnabled =(mySpinner.selectedItem.toString()!= anySelectedItem)&& textView!!.text.toString() != ""
                 boardName=mySpinner.selectedItem.toString()
             }
 
