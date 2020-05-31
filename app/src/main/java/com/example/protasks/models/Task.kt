@@ -4,23 +4,20 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 
-class Task(
-    @Expose
-    @SerializedName("title")
-    private var title: String?, @Expose
-    @SerializedName("description")
-    private var description: String?, @Expose
-    @SerializedName("taskList")
-    private var tasklist: TaskList? = null
+class Task(@Expose
+           @SerializedName("title")
+           private var title: String?, @Expose
+           @SerializedName("description")
+           private var description: String?
 ) : ITask {
 
     @Expose
-    @SerializedName("id")
+    @SerializedName("Id")
     private val id: Int? = null
 
     @Expose
     @SerializedName("position")
-    private var position: Int? = null
+    private var position: Int? =null
 
 
     override fun getTitle(): String? {
@@ -40,21 +37,15 @@ class Task(
     }
 
     override fun setTitle(title: String) {
-        this.title = title
+        this.title=title
     }
 
     override fun setDescription(description: String) {
-        this.description = description
+        this.description=description
     }
 
     override fun setPosition(position: Int) {
-        this.position = position
-    }
-    override fun getTaskList():TaskList{
-        return tasklist!!
-    }
-    override fun setTaskList(tasklist:TaskList){
-        this.tasklist=tasklist
+        this.position=position
     }
 
 

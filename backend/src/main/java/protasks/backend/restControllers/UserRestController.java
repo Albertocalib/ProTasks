@@ -11,6 +11,7 @@ import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.user.User;
 import protasks.backend.user.UserService;
 
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")

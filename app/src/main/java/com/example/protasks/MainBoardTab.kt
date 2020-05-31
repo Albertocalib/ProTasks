@@ -24,6 +24,7 @@ import com.example.protasks.views.IBoardsView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.android.synthetic.main.activity_main_screen.*
 
 
 class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment(),IBoardsView,PopupMenu.OnMenuItemClickListener{
@@ -67,6 +68,7 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
             swipeRefresh!!.isRefreshing = false;
             Toast.makeText(cont, "Boards Updated", Toast.LENGTH_SHORT).show()
         }
+        presenter!!.getUser()
         addBoardButton = view.findViewById(R.id.button_add_board)
         searchView!!.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
