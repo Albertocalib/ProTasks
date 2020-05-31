@@ -68,7 +68,6 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
             swipeRefresh!!.isRefreshing = false;
             Toast.makeText(cont, "Boards Updated", Toast.LENGTH_SHORT).show()
         }
-        presenter!!.getUser()
         addBoardButton = view.findViewById(R.id.button_add_board)
         searchView!!.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {

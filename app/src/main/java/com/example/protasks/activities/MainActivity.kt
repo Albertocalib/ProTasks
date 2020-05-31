@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
         actionBar = ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open, R.string.close)
         mDrawer!!.addDrawerListener(actionBar!!)
         actionBar!!.syncState()
+        presenter!!.getUser()
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
         recyclerView2 = navigationView.findViewById(R.id.recycler_board_navigation_view)
         setLayoutManager()
