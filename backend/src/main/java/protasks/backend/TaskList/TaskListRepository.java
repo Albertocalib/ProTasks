@@ -20,4 +20,13 @@ public interface TaskListRepository extends JpaRepository<TaskList, Long> {
             "and LOWER(tl.title)=LOWER(:list)", nativeQuery = true)
     List<TaskList> findTaskList(@Param("username") String username, @Param("board") String board, @Param("list") String list);
 
+    @Query(value = "SELECT tl.* FROM task_list tl " +
+            "join board b on b.id=tl.board_id " +
+            "join boards_users_rel bur on bur.board_id=b.id " +
+            "join user u on bur.user_id=u.id " +
+            "WHERE (LOWER(u.username) = LOWER(:username) " +
+            "or LOWER(u.email) = LOWER(:username)) " +
+            "and LOWER(b.name)=LOWER(:board) ", nativeQuery = true)
+    List<TaskList> findTaskListByBoardName(@Param("username") String username, @Param("board") String board);
+
 }

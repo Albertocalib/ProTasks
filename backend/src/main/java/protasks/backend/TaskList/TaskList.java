@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 public class TaskList {
     public interface TaskListBasicInfo{}
-
+    public interface TaskListExtendedInfo{}
     @JsonView(TaskList.TaskListBasicInfo.class)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,6 +23,7 @@ public class TaskList {
     @Column(name="title")
     private String title;
 
+    @JsonView(TaskList.TaskListExtendedInfo.class)
     @OneToMany(mappedBy = "taskList")
     private List<Task> tasks;
 

@@ -7,7 +7,7 @@ interface ITask {
 
     fun getPosition(): Int?
 
-    fun getId(): Int?
+    fun getId(): Long?
 
     fun setTitle(title:String)
 

@@ -52,6 +52,10 @@ public class DatabaseInitializer {
         boardRepository.save(b1);
         Task task=new Task("TAREA 1","DESCRIPCIÓN 1",t);
         taskRepository.save(task);
+        task=new Task("TAREA 2","DESCRIPCIÓN 2",t2);
+        taskRepository.save(task);
+        task=new Task("TAREA 3","DESCRIPCIÓN 3",t3);
+        taskRepository.save(task);
 
 
         BoardUsersPermRel bs = new BoardUsersPermRel(b1, u1, OWNER);
