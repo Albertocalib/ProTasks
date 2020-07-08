@@ -16,7 +16,7 @@ class Task(
 
     @Expose
     @SerializedName("id")
-    private val id: Int? = null
+    private var id: Long? = null
 
     @Expose
     @SerializedName("position")
@@ -35,7 +35,7 @@ class Task(
         return position
     }
 
-    override fun getId(): Int? {
+    override fun getId(): Long? {
         return id
     }
 
@@ -55,6 +55,9 @@ class Task(
     }
     override fun setTaskList(tasklist:TaskList){
         this.tasklist=tasklist
+    }
+    fun setId(id:Long){
+        this.id=id
     }
 
 

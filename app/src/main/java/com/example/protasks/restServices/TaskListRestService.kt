@@ -9,5 +9,7 @@ interface TaskListRestService {
     @POST("newList/board={boardName}&username={username}")
     fun createList(@Body taskList: TaskList?,@Path("boardName") boardName:String,@Path("username") username:String):Call<TaskList>
 
+    @GET("board={boardName}&username={username}")
+    fun getTaskListsByBoard(@Path("boardName") boardName:String,@Path("username") username:String):Call<List<TaskList>>
 
 }

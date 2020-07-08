@@ -24,5 +24,8 @@ public class TaskListService {
     public List<TaskList> findTaskList(String username, String boardName, String list) {
         return this.taskListRepository.findTaskList(username, boardName, list);
     }
+    public List<TaskList> findTasksListsByBoardName(String username,String boardName){
+        return this.taskListRepository.findTaskListByBoardName(username,boardName);
+    }
 }
 

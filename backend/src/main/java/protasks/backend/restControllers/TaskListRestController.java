@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardService;
 import protasks.backend.Board.BoardUsersPermRel;
+import protasks.backend.Task.Task;
 import protasks.backend.TaskList.TaskList;
 import protasks.backend.TaskList.TaskListService;
 import protasks.backend.user.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static protasks.backend.Rol.Rol.OWNER;
@@ -20,7 +22,7 @@ import static protasks.backend.Rol.Rol.OWNER;
 @RequestMapping("/api/list")
 public class TaskListRestController {
     interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo,BoardUsersPermRel.BoardBasicInfo{}
-
+    interface TaskListRequest extends TaskList.TaskListExtendedInfo,TaskList.TaskListBasicInfo, Task.TaskListBasicInfo{}
     @Autowired
     TaskListService listService;
 
@@ -41,6 +43,19 @@ public class TaskListRestController {
             return new ResponseEntity<>(t, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @JsonView(TaskListRequest.class)
+    @GetMapping(value = "/board={boardName}&username={username}")
+    public ResponseEntity<List<TaskList>> getTaskListsByBoard(@PathVariable String boardName, @PathVariable String username){
+        if(boardName == null || username==null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        List<TaskList> tl=listService.findTasksListsByBoardName(username,boardName);
+        if (tl!=null){
+            return new ResponseEntity<>(tl, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.CREATED);
     }
 
 

@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.MainActivity" android:windowSoftInputMode="adjustNothing"/>
+        <activity android:name=".activities.BoardInsideActivity" android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".activities.RegisterActivity"
             android:windowSoftInputMode="adjustResize"/>
     </application>

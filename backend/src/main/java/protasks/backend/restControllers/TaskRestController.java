@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/task")
 public class TaskRestController {
-    interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo {}
+    interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo {}
 
     @Autowired
     TaskListService listService;

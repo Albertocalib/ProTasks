@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 public class Task {
     public interface TaskListBasicInfo{}
+    public interface TaskListExtendedInfo{}
 
     @JsonView(Task.TaskListBasicInfo.class)
     @Id
@@ -29,7 +30,7 @@ public class Task {
     @ManyToMany(mappedBy = "tasks")
     private List<User> users ;
 
-    @JsonView(Task.TaskListBasicInfo.class)
+    @JsonView(Task.TaskListExtendedInfo.class)
     @ManyToOne
     private TaskList taskList;
 

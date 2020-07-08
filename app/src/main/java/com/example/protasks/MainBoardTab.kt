@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.example.protasks.activities.BoardInsideActivity
 import com.example.protasks.models.Board
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
@@ -26,7 +27,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 
-class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment(),IBoardsView,PopupMenu.OnMenuItemClickListener{
+class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment(),IBoardsView,PopupMenu.OnMenuItemClickListener,
+    BoardAdapter.OnItemClickListener {
     private var presenter: BoardPresenter? = null
     var recyclerView: RecyclerView? = null
     var layoutManager: GridLayoutManager? = null
@@ -165,9 +167,9 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
     }
     override fun setBoards(boards: List<Board>) {
         boardAdapter = if (presenter!!.getViewPref()) {
-            BoardAdapter(boards, R.layout.board_list_mode)
+            BoardAdapter(boards, R.layout.board_list_mode,this)
         } else {
-            BoardAdapter(boards, R.layout.board)
+            BoardAdapter(boards, R.layout.board,this)
         }
         recyclerView!!.adapter = boardAdapter
     }
@@ -209,8 +211,11 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
         }
     }
 
-
-
+    override fun onItemClicked(text: TextView) {
+        val intent = Intent(context, BoardInsideActivity::class.java)
+        intent.putExtra("BOARD_NAME", text.text)
+        startActivity(intent)
+    }
 
 
 }

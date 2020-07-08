@@ -3,6 +3,7 @@ package com.example.protasks
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,7 +53,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
 
         mySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
+                Log.i("TASKSPINNER", "Nothing Selected")
             }
 
             override fun onItemSelected(
@@ -73,7 +74,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
         }
         mySpinnerList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
+                Log.i("TASKSPINNER2", "Nothing Selected")
             }
 
             override fun onItemSelected(
@@ -100,12 +101,14 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
                 s: CharSequence, start: Int,
                 count: Int, after: Int
             ) {
+                // I don't want to do anything beforeTextChanged
             }
 
             override fun onTextChanged(
                 s: CharSequence, start: Int,
                 before: Int, count: Int
             ) {
+                // I don't want to do anything onTextChanged
             }
         }
         textView!!.addTextChangedListener(textWatcher)
