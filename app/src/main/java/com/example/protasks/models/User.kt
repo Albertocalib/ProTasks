@@ -22,7 +22,7 @@ class User(@Expose
 ) : IUser {
 
     @Expose
-    @SerializedName("Id")
+    @SerializedName("id")
     private val id: Long? = null
 
     @Expose

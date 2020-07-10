@@ -9,7 +9,11 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-public class Task {
+public class Task implements Comparable<Task> {
+    @Override
+    public int compareTo(Task o) {
+        return Long.compare(this.position, o.getPosition());
+    }
     public interface TaskListBasicInfo{}
     public interface TaskListExtendedInfo{}
 
@@ -25,8 +29,11 @@ public class Task {
 
     @Column(name="Description")
     private String description;
+
+    @JsonView(Task.TaskListBasicInfo.class)
     @Column(name="Position")
     private long position;
+
     @ManyToMany(mappedBy = "tasks")
     private List<User> users ;
 
@@ -60,7 +67,7 @@ public class Task {
         this.create_date=new Date();
         this.write_date =new Date();
         this.taskList=list;
-        this.position = taskList.getTasks().size();
+        this.position = taskList.getTasks().size()+1;
     }
     public long getId() {
         return id;
@@ -90,7 +97,7 @@ public class Task {
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(long position) {
         this.position = position;
     }
 

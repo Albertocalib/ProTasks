@@ -58,5 +58,42 @@ public class TaskListRestController {
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.CREATED);
     }
 
+    @JsonView(TaskList.TaskListBasicInfo.class)
+    @PutMapping(value = "/id={id}&position={position}")
+    public ResponseEntity<TaskList> getTaskListsByBoard(@PathVariable Long id, @PathVariable Long position){
+        if(id == null || position==null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        TaskList tl=listService.findById(id);
+        if (tl!=null){
+            updatePositions(tl,position);
+            return new ResponseEntity<>(tl, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    private void updatePositions(TaskList tl,long newPosition){
+        List<TaskList> lists=tl.getBoard().getTaskLists();
+        lists.sort(TaskList::compareTo);
+        int initialPosition;
+        int finalPosition;
+        int incr;
+        if (tl.getPosition()<newPosition){
+            initialPosition=(int)tl.getPosition()-1;
+            finalPosition=(int) newPosition;
+            incr=-1;
+        }else{
+            finalPosition=(int)tl.getPosition();
+            initialPosition=(int) newPosition-1;
+            incr=1;
+        }
+        for (int i = initialPosition; i <finalPosition ; i++) {
+            TaskList tln=lists.get(i);
+            tln.setPosition(tln.getPosition()+incr);
+            this.listService.save(tln);
+        }
+        tl.setPosition(newPosition);
+        this.listService.save(tl);
+    }
+
 
 }

@@ -10,7 +10,12 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-public class TaskList {
+public class TaskList implements Comparable<TaskList> {
+    @Override
+    public int compareTo(TaskList o) {
+        return Long.compare(this.position, o.getPosition());
+    }
+
     public interface TaskListBasicInfo{}
     public interface TaskListExtendedInfo{}
     @JsonView(TaskList.TaskListBasicInfo.class)
@@ -37,6 +42,9 @@ public class TaskList {
     @Column(name="create_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date create_date;
+
+    @Column(name="position")
+    private long position;
 
     public long getId() {
         return id;
@@ -70,18 +78,36 @@ public class TaskList {
         this.board = board;
     }
 
-    public TaskList(String title,Board board) {
+    public void setWrite_date(Date write_date) {
+        this.write_date = write_date;
+    }
+
+    public void setCreate_date(Date create_date) {
+        this.create_date = create_date;
+    }
+
+    public long getPosition() {
+        return position;
+    }
+
+    public void setPosition(long position) {
+        this.position = position;
+    }
+
+    public TaskList(String title, Board board) {
         this.title = title;
         this.board = board;
         this.create_date = new Date();
         this.write_date =new Date();
         this.tasks=new ArrayList<>();
+        this.position=board.getTaskLists().size()+1;
     }
 
     public TaskList() {
         this.create_date = new Date();
         this.write_date =new Date();
         this.tasks=new ArrayList<>();
+        this.position=0;
     }
 
     public Date getWrite_date() {
@@ -97,6 +123,8 @@ public class TaskList {
     }
 
     public void addTask(Task t){this.tasks.add(t);}
+
+
 
 
 }
