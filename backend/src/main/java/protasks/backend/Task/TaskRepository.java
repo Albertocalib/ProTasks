@@ -24,4 +24,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "join user u on bur.user_id=u.id " +
             "WHERE (LOWER(u.username) = LOWER(:username) or LOWER(u.email) = LOWER(:username)) and LOWER(t.title) like CONCAT(CONCAT('%',LOWER(:name)),'%')",nativeQuery = true)
     List<Task> filterTasksByName(@Param("name") String name,@Param("username") String username);
+    Task findById(long id);
 }

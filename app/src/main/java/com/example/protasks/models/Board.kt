@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 class Board {
     @Expose
-    @SerializedName("Id")
+    @SerializedName("id")
     private var id: Long = 0
 
     @Expose

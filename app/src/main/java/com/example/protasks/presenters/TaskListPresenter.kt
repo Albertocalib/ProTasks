@@ -25,12 +25,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
+import java.text.FieldPosition
 
 
 class TaskListPresenter(private var view: IInsideBoardsView, private var context: Context) :
     ITaskListPresenter {
     private val retrofitInsTaskList: RetrofitInstance<TaskListRestService> =
         RetrofitInstance("api/list/", TaskListRestService::class.java)
+    private val retrofitInsTask: RetrofitInstance<TaskRestService> =
+        RetrofitInstance("api/task/", TaskRestService::class.java)
     private val preference: Preference = Preference()
     private val image_handler: ImageHandler = ImageHandler()
 
@@ -102,6 +105,31 @@ class TaskListPresenter(private var view: IInsideBoardsView, private var context
 
         })
     }
+    override fun updateTaskListPosition(id:Long,position: Long) {
+        val taskList = retrofitInsTaskList.service.updateTaskListPosition(id,position)
+        taskList.enqueue(object : Callback<TaskList> {
+            override fun onFailure(call: Call<TaskList>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
 
+            override fun onResponse(call: Call<TaskList>?, response: Response<TaskList>?) {
+                Log.v("retrofit", response.toString())
+            }
+
+        })
+    }
+    override fun updateTaskPosition(id:Long,newPosition:Long,newTaskList:Long){
+        val task = retrofitInsTask.service.updateTaskPosition(id,newPosition,newTaskList)
+        task.enqueue(object : Callback<Task> {
+            override fun onFailure(call: Call<Task>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
+                Log.v("retrofit", response.toString())
+            }
+
+        })
+    }
 
 }

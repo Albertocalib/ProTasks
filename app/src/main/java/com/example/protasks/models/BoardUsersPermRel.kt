@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 class BoardUsersPermRel {
 
     @Expose
-    @SerializedName("Id")
+    @SerializedName("id")
     private var id: BoardUsersPermId? = null
 
     @Expose

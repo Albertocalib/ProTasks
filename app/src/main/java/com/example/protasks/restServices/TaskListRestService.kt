@@ -12,4 +12,8 @@ interface TaskListRestService {
     @GET("board={boardName}&username={username}")
     fun getTaskListsByBoard(@Path("boardName") boardName:String,@Path("username") username:String):Call<List<TaskList>>
 
+    @PUT("id={id}&position={position}")
+    fun updateTaskListPosition(@Path("id") id:Long,@Path("position") position:Long):Call<TaskList>
+
+
 }

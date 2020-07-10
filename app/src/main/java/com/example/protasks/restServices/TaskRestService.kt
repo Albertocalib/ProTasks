@@ -16,4 +16,6 @@ interface TaskRestService {
     @GET("taskName={name}&username={username}")
     fun getTasksFilterByName (@Path("name") name:String,@Path("username") username:String): Call<List<Task>>
 
+    @PUT("id={id}&newPosition={newPosition}&newTaskList={newTaskList}")
+    fun updateTaskPosition(@Path("id") id:Long,@Path("newPosition") newPosition:Long,@Path("newTaskList")newTaskList:Long):Call<Task>
 }

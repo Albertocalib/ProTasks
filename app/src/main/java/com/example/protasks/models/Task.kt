@@ -12,8 +12,8 @@ class Task(
     private var description: String?, @Expose
     @SerializedName("taskList")
     private var tasklist: TaskList? = null
-) : ITask {
-
+) : ITask,Comparable<Task> {
+    override fun compareTo(other: Task): Int = this.position!!.compareTo(other.position!!)
     @Expose
     @SerializedName("id")
     private var id: Long? = null

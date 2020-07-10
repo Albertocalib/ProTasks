@@ -13,14 +13,15 @@ import java.util.*
 class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView {
     private var lists: List<TaskList> = ArrayList()
     private var boardName: String? = null
+    private var presenter: TaskListPresenter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val presenter = TaskListPresenter(this, baseContext)
+        presenter = TaskListPresenter(this, baseContext)
         boardName = intent.getStringExtra("BOARD_NAME")
-        presenter.getLists(boardName!!)
+        presenter!!.getLists(boardName!!)
         if (savedInstanceState == null) {
-            showFragment(BoardFragment(lists))
+            showFragment(BoardFragment(lists,presenter!!))
         }
     }
 
@@ -32,6 +33,6 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView {
 
     override fun setTaskLists(taskList: List<TaskList>) {
         lists = taskList
-        showFragment(BoardFragment(lists))
+        showFragment(BoardFragment(lists,presenter!!))
     }
 }

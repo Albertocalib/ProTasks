@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 class TaskList {
     @Expose
-    @SerializedName("Id")
+    @SerializedName("id")
     private var id: Long = 0
 
     @Expose
@@ -19,6 +19,10 @@ class TaskList {
     @Expose
     @SerializedName("board")
     private var board: Board? = null
+
+    @Expose
+    @SerializedName("position")
+    private var position: Int? = null
 
     fun getId(): Long {
         return id
@@ -51,4 +55,12 @@ class TaskList {
     fun setBoard(board: Board?) {
         this.board = board
     }
+    fun getPosition(): Int {
+        return position!!
+    }
+
+    fun setPosition(position: Int) {
+        this.position = position
+    }
+
 }

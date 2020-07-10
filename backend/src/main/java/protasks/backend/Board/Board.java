@@ -95,6 +95,7 @@ public class Board {
         this.users=new ArrayList<>();
         this.create_date=new Date();
         this.write_date =new Date();
+        this.taskLists = new ArrayList<>();
     }
     public Board(){}
 

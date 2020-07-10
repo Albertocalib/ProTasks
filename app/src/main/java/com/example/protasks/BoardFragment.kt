@@ -8,10 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.ScrollView
-import android.widget.TextView
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
@@ -19,17 +16,20 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.TaskList
+import com.example.protasks.presenters.TaskListPresenter
 import com.woxthebox.draglistview.BoardView
 import com.woxthebox.draglistview.BoardView.BoardCallback
 import com.woxthebox.draglistview.BoardView.BoardListener
 import com.woxthebox.draglistview.ColumnProperties
 import com.woxthebox.draglistview.DragItem
 import java.util.*
+import kotlin.collections.HashMap
 
-class BoardFragment(private val taskLists: List<TaskList>) :
+class BoardFragment(private val taskLists: List<TaskList>,private val presenter:TaskListPresenter) :
     Fragment() {
     private var mBoardView: BoardView? = null
     private var mColumns = 0
+    private var listMap :HashMap<String,Long>? = HashMap()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -59,7 +59,12 @@ class BoardFragment(private val taskLists: List<TaskList>) :
                 toRow: Int
             ) {
                 if (fromColumn != toColumn || fromRow != toRow) {
-                    //Toast.makeText(getContext(), "End - column: " + toColumn + " row: " + toRow, Toast.LENGTH_SHORT).show();
+                    val task =
+                        mBoardView!!.getAdapter(toColumn).itemList[toRow] as Pair<*, *>
+                    val columnName = mBoardView!!.getHeaderView(toColumn).findViewById<TextView>(R.id.text).text
+                    val id= listMap!![columnName]
+                    presenter.updateTaskPosition(task.first!! as Long,toRow.toLong()+1,id!!)
+
                 }
             }
 
@@ -100,7 +105,9 @@ class BoardFragment(private val taskLists: List<TaskList>) :
             }
 
             override fun onColumnDragEnded(position: Int) {
-                //Toast.makeText(getContext(), "Column drag ended at " + position, Toast.LENGTH_SHORT).show();
+                val columnName = mBoardView!!.getHeaderView(position).findViewById<TextView>(R.id.text).text
+                val id= listMap!![columnName]
+                presenter.updateTaskListPosition(id!!, position.toLong()+1)
             }
         })
         mBoardView!!.setBoardCallback(object : BoardCallback {
@@ -147,7 +154,8 @@ class BoardFragment(private val taskLists: List<TaskList>) :
     private fun addColumn(list: TaskList) {
         val mItemArray =
             ArrayList<Pair<Long, String>>()
-        for (task in list.getTasks()!!) {
+        val tasks=list.getTasks()!!.sortedWith(compareBy { it!!.getPosition() })
+        for (task in tasks) {
             mItemArray.add(
                 Pair(
                     task!!.getId() as Long,
@@ -161,6 +169,7 @@ class BoardFragment(private val taskLists: List<TaskList>) :
             View.inflate(activity, R.layout.column_header, null)
         (header.findViewById<View>(R.id.text) as TextView).text = list.getTitle()
         (header.findViewById<View>(R.id.item_count) as TextView).text = "" + list.getTasks()!!.size
+        listMap!![list.getTitle()!!] = list.getId()
         header.setOnClickListener { v ->
             val id =
                 sCreatedItems++.toLong()
@@ -315,8 +324,8 @@ class BoardFragment(private val taskLists: List<TaskList>) :
 
     companion object {
         private var sCreatedItems = 0
-        fun newInstance(taskLists: List<TaskList>): BoardFragment {
-            return BoardFragment(taskLists)
+        fun newInstance(taskLists: List<TaskList>,presenter:TaskListPresenter): BoardFragment {
+            return BoardFragment(taskLists,presenter)
         }
     }
 
