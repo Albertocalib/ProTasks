@@ -53,44 +53,16 @@
                 android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:background="#EFEFEF"
-                app:menu="@menu/botton_menu_main_screen" />
+                app:menu="@menu/bottom_menu_main_screen" />
         </RelativeLayout>
 
 
     </LinearLayout>
 
 
-    <com.google.android.material.navigation.NavigationView
+    <include
         android:id="@+id/navigation_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/nav_header_height"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="Tableros"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_board_navigation_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </androidx.recyclerview.widget.RecyclerView>
-        </LinearLayout>
-
-    </com.google.android.material.navigation.NavigationView>
+        layout="@layout/navigation_view"/>
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

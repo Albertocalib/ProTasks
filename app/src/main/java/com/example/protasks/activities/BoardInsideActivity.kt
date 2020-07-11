@@ -1,7 +1,13 @@
 package com.example.protasks.activities
 
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.example.protasks.BoardFragment
 import com.example.protasks.R
@@ -14,12 +20,24 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView {
     private var lists: List<TaskList> = ArrayList()
     private var boardName: String? = null
     private var presenter: TaskListPresenter? = null
+    var toolbar: Toolbar? = null
+    private var mDrawer: DrawerLayout? = null
+    private var actionBar: ActionBarDrawerToggle? = null
+    private var changeViewModeButton: ImageButton? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         presenter = TaskListPresenter(this, baseContext)
         boardName = intent.getStringExtra("BOARD_NAME")
+        findViewById<TextView>(R.id.boardName).text=boardName
         presenter!!.getLists(boardName!!)
+        toolbar = findViewById(R.id.toolbar)
+        changeViewModeButton = toolbar!!.findViewById(R.id.viewModeButton)
+        mDrawer = findViewById(R.id.drawer)
+        actionBar = ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open, R.string.close)
+        mDrawer!!.addDrawerListener(actionBar!!)
+        actionBar!!.syncState()
         if (savedInstanceState == null) {
             showFragment(BoardFragment(lists,presenter!!))
         }

@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#EFEFEF"
-        app:menu="@menu/botton_menu_main_screen" />
+        app:menu="@menu/bottom_menu_main_screen" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

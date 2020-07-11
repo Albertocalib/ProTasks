@@ -111,10 +111,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
                     fragment=MainBoardTab.newInstance(toolbar!!,this)
 
                 }
-                R.id.nav_settings->{
-                    fragment=MainBoardTab.newInstance(toolbar!!,this)
-
-                }
             }
             supportFragmentManager.beginTransaction().replace(R.id.fragment_main_screen,fragment!!).commit()
             true
