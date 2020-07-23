@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
 import com.example.protasks.presenters.TaskListPresenter
 import com.woxthebox.draglistview.BoardView
@@ -153,18 +154,20 @@ class BoardFragment(private val taskLists: List<TaskList>,private val presenter:
 
     private fun addColumn(list: TaskList) {
         val mItemArray =
-            ArrayList<Pair<Long, String>>()
+            ArrayList<Triple<Long, Task,Boolean>>()
         val tasks=list.getTasks()!!.sortedWith(compareBy { it!!.getPosition() })
         for (task in tasks) {
+            task!!.setTaskList(list)
             mItemArray.add(
-                Pair(
-                    task!!.getId() as Long,
-                    task.getTitle()
+                Triple(
+                    task.getId() as Long,
+                    task,
+                    false
                 )
             )
         }
         val listAdapter =
-            TaskAdapterInsideBoard(mItemArray, R.layout.column_item, R.id.item_layout, true)
+            TaskAdapterInsideBoard(mItemArray, false,R.layout.column_item, R.id.item_layout, true)
         val header =
             View.inflate(activity, R.layout.column_header, null)
         (header.findViewById<View>(R.id.text) as TextView).text = list.getTitle()

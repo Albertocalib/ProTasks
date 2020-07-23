@@ -5,17 +5,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.core.util.Pair
+import com.example.protasks.models.Board
+import com.example.protasks.models.Task
 import com.woxthebox.draglistview.DragItemAdapter
 import java.util.*
 
 internal class TaskAdapterInsideBoard(
-    list: ArrayList<Pair<Long, String>>,
+    list: ArrayList<Triple<Long, Task,Boolean>>,
+    private val listMode: Boolean,
     private val mLayoutId: Int,
     private val mGrabHandleId: Int,
     private val mDragOnLongPress: Boolean
 ) :
-    DragItemAdapter<Pair<Long, String>, TaskAdapterInsideBoard.ViewHolder>() {
+    DragItemAdapter<Triple<Long, Task, Boolean>, TaskAdapterInsideBoard.ViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -30,18 +34,25 @@ internal class TaskAdapterInsideBoard(
         position: Int
     ) {
         super.onBindViewHolder(holder, position)
-        val text = mItemList[position]!!.second
+        val text = mItemList[position]!!.second.getTitle()
         holder.mText.text = text
+        holder.listText.text = mItemList[position]!!.second.getTaskList().getTitle()
+        if (!mItemList[position]!!.third || !listMode){
+            holder.listText.visibility = View.GONE
+            holder.cardView.visibility = View.GONE
+        }
         holder.itemView.tag = mItemList[position]
     }
 
     override fun getUniqueItemId(position: Int): Long {
-        return mItemList[position]!!.first!!
+        return mItemList[position]!!.first
     }
 
     internal inner class ViewHolder(itemView: View) :
         DragItemAdapter.ViewHolder(itemView, mGrabHandleId, mDragOnLongPress) {
         var mText: TextView
+        var listText: TextView
+        var cardView: CardView
         override fun onItemClicked(view: View) {
             Toast.makeText(view.context, "Item clicked", Toast.LENGTH_SHORT).show()
         }
@@ -53,6 +64,9 @@ internal class TaskAdapterInsideBoard(
 
         init {
             mText = itemView.findViewById<View>(R.id.text) as TextView
+            listText = itemView.findViewById<View>(R.id.text2) as TextView
+            cardView = itemView.findViewById<View>(R.id.cardTitle) as CardView
+
         }
     }
 

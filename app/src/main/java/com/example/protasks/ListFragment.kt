@@ -24,6 +24,7 @@ import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
 import com.example.protasks.presenters.TaskListPresenter
 import com.woxthebox.draglistview.DragItem
@@ -35,7 +36,7 @@ import com.woxthebox.draglistview.swipe.ListSwipeItem.SwipeDirection
 import java.util.*
 
 class ListFragment(private val taskLists: List<TaskList>, private val presenter: TaskListPresenter) : Fragment() {
-    private var mItemArray: ArrayList<Pair<Long, String>>? =
+    private var mItemArray: ArrayList<Triple<Long, Task,Boolean>>? =
         null
     private var mDragListView: DragListView? = null
     private var mRefreshLayout: MySwipeRefreshLayout? = null
@@ -69,16 +70,20 @@ class ListFragment(private val taskLists: List<TaskList>, private val presenter:
             }
         })
         mItemArray =
-            ArrayList<Pair<Long, String>>()
+            ArrayList<Triple<Long, Task,Boolean>>()
         for (list in taskLists){
             val tasks=list.getTasks()!!.sortedWith(compareBy { it!!.getPosition() })
+            var firstElement=true
             for (task in tasks) {
+                task!!.setTaskList(list)
                 mItemArray!!.add(
-                    Pair(
-                        task!!.getId() as Long,
-                        task.getTitle()
+                    Triple(
+                        task.getId() as Long,
+                        task,
+                        firstElement
                     )
                 )
+                firstElement=false
             }
 
         }
@@ -117,7 +122,7 @@ class ListFragment(private val taskLists: List<TaskList>, private val presenter:
     private fun setupListRecyclerView() {
         mDragListView!!.setLayoutManager(LinearLayoutManager(context))
         val listAdapter =
-            TaskAdapterInsideBoard(mItemArray!!, R.layout.column_item, R.id.item_layout, true)
+            TaskAdapterInsideBoard(mItemArray!!, true,R.layout.column_item, R.id.item_layout, true)
         mDragListView!!.setAdapter(listAdapter, true)
         mDragListView!!.setCanDragHorizontally(false)
         mDragListView!!.setCustomDragItem(
