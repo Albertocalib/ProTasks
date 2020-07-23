@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import android.widget.*
@@ -16,7 +17,10 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.protasks.*
+import com.example.protasks.BoardAdapterMenu
+import com.example.protasks.BoardFragment
+import com.example.protasks.ListFragment
+import com.example.protasks.R
 import com.example.protasks.models.Board
 import com.example.protasks.models.TaskList
 import com.example.protasks.models.User
@@ -28,7 +32,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import java.util.*
 
-class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView {
+class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,PopupMenu.OnMenuItemClickListener {
     private var lists: List<TaskList> = ArrayList()
     private var boardName: String? = null
     private var presenter: TaskListPresenter? = null
@@ -57,6 +61,13 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView {
         presenter!!.getLists(boardName!!)
         toolbar = findViewById(R.id.toolbar)
         changeViewModeButton = toolbar!!.findViewById(R.id.viewModeButton)
+        changeViewModeButton!!.visibility= View.VISIBLE
+        changeViewModeButton!!.setOnClickListener {
+            val menu = PopupMenu(baseContext, it)
+            menu.setOnMenuItemClickListener(this)
+            menu.inflate(R.menu.view_mode_button)
+            menu.show()
+        }
         mDrawer = findViewById(R.id.drawer)
         actionBar = ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open, R.string.close)
         mDrawer!!.addDrawerListener(actionBar!!)
@@ -185,5 +196,17 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView {
 
         }
     }
+
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        fragment = if (item!!.itemId == R.id.listViewMode){
+            ListFragment(lists,presenter!!)
+        }else{
+            BoardFragment(lists,presenter!!)
+        }
+        showFragment(fragment!!)
+        return true
+    }
+
+
 
 }
