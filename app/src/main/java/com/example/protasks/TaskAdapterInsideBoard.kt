@@ -37,9 +37,9 @@ internal class TaskAdapterInsideBoard(
         val text = mItemList[position]!!.second.getTitle()
         holder.mText.text = text
         holder.listText.text = mItemList[position]!!.second.getTaskList().getTitle()
-        if (!mItemList[position]!!.third || !listMode){
-            holder.listText.visibility = View.GONE
-            holder.cardView.visibility = View.GONE
+        if (mItemList[position]!!.third && listMode){
+            holder.listText.visibility = View.VISIBLE
+            holder.cardView.visibility = View.VISIBLE
         }
         holder.itemView.tag = mItemList[position]
     }

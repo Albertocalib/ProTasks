@@ -61,7 +61,7 @@ class BoardFragment(private val taskLists: List<TaskList>,private val presenter:
             ) {
                 if (fromColumn != toColumn || fromRow != toRow) {
                     val task =
-                        mBoardView!!.getAdapter(toColumn).itemList[toRow] as Pair<*, *>
+                        mBoardView!!.getAdapter(toColumn).itemList[toRow] as Triple<*, *,*>
                     val columnName = mBoardView!!.getHeaderView(toColumn).findViewById<TextView>(R.id.text).text
                     val id= listMap!![columnName]
                     presenter.updateTaskPosition(task.first!! as Long,toRow.toLong()+1,id!!)

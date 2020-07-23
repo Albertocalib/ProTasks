@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:duplicateParentState="true"
+            android:visibility="gone"
             android:foreground="@drawable/card_view_selector"
             card_view:cardBackgroundColor="#ffffff"
             card_view:cardCornerRadius="4dp"
@@ -29,7 +30,7 @@
             android:id="@+id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="test test test"
+            android:visibility="gone"
             android:textSize="16sp"/>
         </androidx.cardview.widget.CardView>
 
