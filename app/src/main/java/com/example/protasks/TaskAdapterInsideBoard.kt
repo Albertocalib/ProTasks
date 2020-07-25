@@ -3,6 +3,7 @@ package com.example.protasks
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
@@ -38,6 +39,9 @@ internal class TaskAdapterInsideBoard(
         holder.mText.text = text
         holder.listText.text = mItemList[position]!!.second.getTaskList().getTitle()
         if (mItemList[position]!!.third && listMode){
+            holder.cardViewTask.visibility=View.GONE
+            holder.mText.visibility = View.GONE
+            holder.image.visibility=View.GONE
             holder.listText.visibility = View.VISIBLE
             holder.cardView.visibility = View.VISIBLE
         }
@@ -53,6 +57,8 @@ internal class TaskAdapterInsideBoard(
         var mText: TextView
         var listText: TextView
         var cardView: CardView
+        var cardViewTask: CardView
+        var image:ImageView
         override fun onItemClicked(view: View) {
             Toast.makeText(view.context, "Item clicked", Toast.LENGTH_SHORT).show()
         }
@@ -66,6 +72,8 @@ internal class TaskAdapterInsideBoard(
             mText = itemView.findViewById<View>(R.id.text) as TextView
             listText = itemView.findViewById<View>(R.id.text2) as TextView
             cardView = itemView.findViewById<View>(R.id.cardTitle) as CardView
+            cardViewTask = itemView.findViewById(R.id.card2) as CardView
+            image =itemView.findViewById(R.id.imageTaskInside) as ImageView
 
         }
     }

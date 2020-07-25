@@ -18,6 +18,7 @@ package com.example.protasks
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.ListView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
@@ -27,6 +28,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
 import com.example.protasks.presenters.TaskListPresenter
+import com.woxthebox.draglistview.BoardView
 import com.woxthebox.draglistview.DragItem
 import com.woxthebox.draglistview.DragListView
 import com.woxthebox.draglistview.DragListView.DragListListenerAdapter
@@ -35,8 +37,11 @@ import com.woxthebox.draglistview.swipe.ListSwipeItem
 import com.woxthebox.draglistview.swipe.ListSwipeItem.SwipeDirection
 import java.util.*
 
-class ListFragment(private val taskLists: List<TaskList>, private val presenter: TaskListPresenter) : Fragment() {
-    private var mItemArray: ArrayList<Triple<Long, Task,Boolean>>? =
+class ListFragment(
+    private val taskLists: List<TaskList>,
+    private val presenter: TaskListPresenter
+) : Fragment() {
+    private var mItemArray: ArrayList<Triple<Long, Task, Boolean>>? =
         null
     private var mDragListView: DragListView? = null
     private var mRefreshLayout: MySwipeRefreshLayout? = null
@@ -59,36 +64,70 @@ class ListFragment(private val taskLists: List<TaskList>, private val presenter:
         mDragListView!!.setDragListListener(object : DragListListenerAdapter() {
             override fun onItemDragStarted(position: Int) {
                 mRefreshLayout!!.isEnabled = false
+//                val tripleEl =
+//                    mDragListView!!.adapter.itemList[position] as Triple<*, *, *>
+//                if (tripleEl.third as Boolean && position + 1 < mDragListView!!.adapter.itemList.size) {
+//                    val nextTriple =
+//                        mDragListView!!.getAdapter().itemList[position] as Triple<*, *, *>
+//                    val t: Task = nextTriple.second as Task
+//                    val task = tripleEl.second as Task
+//                    if (t.getTaskList() == task.getTaskList()) {
+//                        val newTriple = Triple(nextTriple.first, nextTriple.second, true)
+//                        mDragListView!!.adapter.removeItem(position + 1)
+//                        mDragListView!!.adapter.addItem(position + 1, newTriple)
+//                        mDragListView!!.adapter.notifyDataSetChanged()
+//
+//                    }
+//
+//                }
                 //Toast.makeText(mDragListView.getContext(), "Start - position: " + position, Toast.LENGTH_SHORT).show();
             }
 
             override fun onItemDragEnded(fromPosition: Int, toPosition: Int) {
                 mRefreshLayout!!.isEnabled = true
                 if (fromPosition != toPosition) {
-                    //Toast.makeText(mDragListView.getContext(), "End - position: " + toPosition, Toast.LENGTH_SHORT).show();
+//                    val tripleEl =
+//                        mDragListView!!.adapter.itemList[toPosition] as Triple<*, *, *>
+//                    if (tripleEl.third as Boolean){
+//                        val newTriple = Triple(tripleEl.first, tripleEl.second, false)
+//                        mDragListView!!.adapter.removeItem(toPosition)
+//                        mDragListView!!.adapter.addItem(toPosition, newTriple)
+//                        mDragListView!!.adapter.notifyDataSetChanged()
+//                    }
                 }
             }
         })
         mItemArray =
-            ArrayList<Triple<Long, Task,Boolean>>()
-        for (list in taskLists){
-            val tasks=list.getTasks()!!.sortedWith(compareBy { it!!.getPosition() })
-            var firstElement=true
+            ArrayList<Triple<Long, Task, Boolean>>()
+        for (list in taskLists) {
+            val tasks = list.getTasks()!!.sortedWith(compareBy { it!!.getPosition() })
+            val taskFake:Task=Task("","",list)
+            mItemArray!!.add(
+                Triple(
+                    (100000..Long.MAX_VALUE).random(),
+                    taskFake,
+                    true
+                )
+            )
             for (task in tasks) {
                 task!!.setTaskList(list)
                 mItemArray!!.add(
                     Triple(
                         task.getId() as Long,
                         task,
-                        firstElement
+                        false
                     )
                 )
-                firstElement=false
             }
 
         }
         mRefreshLayout!!.setScrollingView(mDragListView!!.recyclerView)
-        mRefreshLayout!!.setColorSchemeColors(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+        mRefreshLayout!!.setColorSchemeColors(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.colorPrimary
+            )
+        )
         mRefreshLayout!!.setOnRefreshListener(OnRefreshListener {
             mRefreshLayout!!.postDelayed(
                 Runnable { mRefreshLayout!!.setRefreshing(false) }, 2000
@@ -114,6 +153,21 @@ class ListFragment(private val taskLists: List<TaskList>, private val presenter:
                 }
             }
         })
+        mDragListView!!.setDragListCallback(object : DragListView.DragListCallback {
+            override fun canDragItemAtPosition(dragPosition: Int): Boolean {
+                val tripleEl =
+                    mDragListView!!.adapter.itemList[dragPosition] as Triple<*, *, *>
+                val firstElement= tripleEl.third as Boolean
+                return !firstElement
+            }
+
+            override fun canDropItemAtPosition(dropPosition: Int): Boolean {
+                val tripleEl =
+                    mDragListView!!.adapter.itemList[dropPosition] as Triple<*, *, *>
+                val firstElement= tripleEl.third as Boolean
+                return !firstElement
+            }
+        })
         setupListRecyclerView()
         return view
     }
@@ -122,7 +176,7 @@ class ListFragment(private val taskLists: List<TaskList>, private val presenter:
     private fun setupListRecyclerView() {
         mDragListView!!.setLayoutManager(LinearLayoutManager(context))
         val listAdapter =
-            TaskAdapterInsideBoard(mItemArray!!, true,R.layout.column_item, R.id.item_layout, true)
+            TaskAdapterInsideBoard(mItemArray!!, true, R.layout.column_item, R.id.item_layout, true)
         mDragListView!!.setAdapter(listAdapter, true)
         mDragListView!!.setCanDragHorizontally(false)
         mDragListView!!.setCustomDragItem(
@@ -152,8 +206,8 @@ class ListFragment(private val taskLists: List<TaskList>, private val presenter:
     }
 
     companion object {
-        fun newInstance(taskLists: List<TaskList>,presenter:TaskListPresenter): ListFragment {
-            return ListFragment(taskLists,presenter)
+        fun newInstance(taskLists: List<TaskList>, presenter: TaskListPresenter): ListFragment {
+            return ListFragment(taskLists, presenter)
         }
     }
 }
