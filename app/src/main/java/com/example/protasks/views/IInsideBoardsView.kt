@@ -6,4 +6,5 @@ import com.example.protasks.models.User
 
 interface IInsideBoardsView {
     fun setTaskLists(taskList: List<TaskList>)
+    fun updateTasks(listsUpdated:List<TaskList>)
 }

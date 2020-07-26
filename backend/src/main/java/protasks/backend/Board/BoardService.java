@@ -19,5 +19,8 @@ public class BoardService {
     public void save(Board board){
         this.boardRepository.save(board);
     }
+    public Board findBoardByTaskListId(Long id){
+        return this.boardRepository.findBoardByTaskListId(id);
+    }
 }
 

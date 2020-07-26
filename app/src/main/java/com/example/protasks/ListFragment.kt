@@ -25,6 +25,7 @@ import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.example.protasks.models.Board
 import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
 import com.example.protasks.presenters.TaskListPresenter
@@ -36,6 +37,7 @@ import com.woxthebox.draglistview.swipe.ListSwipeHelper.OnSwipeListenerAdapter
 import com.woxthebox.draglistview.swipe.ListSwipeItem
 import com.woxthebox.draglistview.swipe.ListSwipeItem.SwipeDirection
 import java.util.*
+import kotlin.collections.HashMap
 
 class ListFragment(
     private val taskLists: List<TaskList>,
@@ -64,36 +66,27 @@ class ListFragment(
         mDragListView!!.setDragListListener(object : DragListListenerAdapter() {
             override fun onItemDragStarted(position: Int) {
                 mRefreshLayout!!.isEnabled = false
-//                val tripleEl =
-//                    mDragListView!!.adapter.itemList[position] as Triple<*, *, *>
-//                if (tripleEl.third as Boolean && position + 1 < mDragListView!!.adapter.itemList.size) {
-//                    val nextTriple =
-//                        mDragListView!!.getAdapter().itemList[position] as Triple<*, *, *>
-//                    val t: Task = nextTriple.second as Task
-//                    val task = tripleEl.second as Task
-//                    if (t.getTaskList() == task.getTaskList()) {
-//                        val newTriple = Triple(nextTriple.first, nextTriple.second, true)
-//                        mDragListView!!.adapter.removeItem(position + 1)
-//                        mDragListView!!.adapter.addItem(position + 1, newTriple)
-//                        mDragListView!!.adapter.notifyDataSetChanged()
-//
-//                    }
-//
-//                }
-                //Toast.makeText(mDragListView.getContext(), "Start - position: " + position, Toast.LENGTH_SHORT).show();
             }
 
             override fun onItemDragEnded(fromPosition: Int, toPosition: Int) {
                 mRefreshLayout!!.isEnabled = true
                 if (fromPosition != toPosition) {
-//                    val tripleEl =
-//                        mDragListView!!.adapter.itemList[toPosition] as Triple<*, *, *>
-//                    if (tripleEl.third as Boolean){
-//                        val newTriple = Triple(tripleEl.first, tripleEl.second, false)
-//                        mDragListView!!.adapter.removeItem(toPosition)
-//                        mDragListView!!.adapter.addItem(toPosition, newTriple)
-//                        mDragListView!!.adapter.notifyDataSetChanged()
-//                    }
+                    val tripleEl =
+                        mDragListView!!.adapter.itemList[toPosition] as Triple<*, *, *>
+                    val tripleElBef =
+                        mDragListView!!.adapter.itemList[toPosition-1] as Triple<*, *, *>
+                    val taskBef=tripleElBef.second as Task
+                    val task=tripleEl.second as Task
+                    if (taskBef.getTaskList().getTitle()!=task.getTaskList().getTitle()){
+                        presenter.updateTaskPosition(task.getId()!!,taskBef.getPosition()!!.toLong()+1,taskBef.getTaskList().getId(),true)
+                    }else{
+                        if (fromPosition<toPosition){
+                            presenter.updateTaskPosition(task.getId()!!,taskBef.getPosition()!!.toLong(),task.getTaskList().getId(),true)
+                        }else{
+                            presenter.updateTaskPosition(task.getId()!!,taskBef.getPosition()!!.toLong()+1,task.getTaskList().getId(),true)
+                        }
+                    }
+
                 }
             }
         })
@@ -102,6 +95,7 @@ class ListFragment(
         for (list in taskLists) {
             val tasks = list.getTasks()!!.sortedWith(compareBy { it!!.getPosition() })
             val taskFake:Task=Task("","",list)
+            taskFake.setPosition(0)
             mItemArray!!.add(
                 Triple(
                     (100000..Long.MAX_VALUE).random(),

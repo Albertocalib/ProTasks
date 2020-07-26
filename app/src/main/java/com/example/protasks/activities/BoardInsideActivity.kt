@@ -206,6 +206,11 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
         showFragment(fragment!!)
         return true
     }
+    override fun updateTasks(listsUpdated:List<TaskList>){
+        lists=listsUpdated
+        fragment = ListFragment(lists,presenter!!)
+        showFragment(fragment!!)
+    }
 
 
 

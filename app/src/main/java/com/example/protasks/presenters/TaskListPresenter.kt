@@ -118,7 +118,7 @@ class TaskListPresenter(private var view: IInsideBoardsView, private var context
 
         })
     }
-    override fun updateTaskPosition(id:Long,newPosition:Long,newTaskList:Long){
+    override fun updateTaskPosition(id:Long,newPosition:Long,newTaskList:Long,listMode:Boolean){
         val task = retrofitInsTask.service.updateTaskPosition(id,newPosition,newTaskList)
         task.enqueue(object : Callback<Task> {
             override fun onFailure(call: Call<Task>?, t: Throwable?) {
@@ -126,7 +126,22 @@ class TaskListPresenter(private var view: IInsideBoardsView, private var context
             }
 
             override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
-                Log.v("retrofit", response.toString())
+                if (listMode){
+                    updateLists(newTaskList)
+                }
+            }
+
+        })
+    }
+    fun updateLists(id:Long){
+        val taskList = retrofitInsTaskList.service.getTaskBoardListsByListId(id)
+        taskList.enqueue(object : Callback<List<TaskList>> {
+            override fun onFailure(call: Call<List<TaskList>>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<List<TaskList>>?, response: Response<List<TaskList>>?) {
+                view.updateTasks(response!!.body()!!)
             }
 
         })
