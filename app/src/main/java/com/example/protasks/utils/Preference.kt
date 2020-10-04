@@ -20,11 +20,11 @@ class Preference {
         return prefs.getString(Constants.KEY_EMAIL, null)
     }
 
-    fun saveKeepLogin(keep_login: Boolean, context: Context?) {
+    fun saveKeepLogin(keepLogin: Boolean, context: Context?) {
         val prefs =
             PreferenceManager.getDefaultSharedPreferences(context)
         val prefsEditor = prefs.edit()
-        prefsEditor.putBoolean(Constants.KEY_KEEP_LOGIN, keep_login)
+        prefsEditor.putBoolean(Constants.KEY_KEEP_LOGIN, keepLogin)
         prefsEditor.apply()
     }
 
@@ -47,5 +47,17 @@ class Preference {
         val prefsEditor = prefs.edit()
         prefsEditor.putBoolean(Constants.KEY_BOARDS_LIST_VIEW, listMode)
         prefsEditor.apply()
+    }
+    fun setModeView(listMode: Boolean, context: Context?){
+        val prefs =
+            PreferenceManager.getDefaultSharedPreferences(context)
+        val prefsEditor = prefs.edit()
+        prefsEditor.putBoolean(Constants.MODE_VIEW, listMode)
+        prefsEditor.apply()
+    }
+    fun getModeView(context: Context?):Boolean? {
+        val prefs =
+            PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(Constants.MODE_VIEW, false)
     }
 }

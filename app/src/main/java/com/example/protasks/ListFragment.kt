@@ -15,33 +15,28 @@
  */
 package com.example.protasks
 
-import android.content.Context
 import android.os.Bundle
-import android.view.*
-import android.widget.ListView
-import android.widget.TextView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import com.example.protasks.models.Board
 import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
 import com.example.protasks.presenters.TaskListPresenter
-import com.woxthebox.draglistview.BoardView
-import com.woxthebox.draglistview.DragItem
 import com.woxthebox.draglistview.DragListView
 import com.woxthebox.draglistview.DragListView.DragListListenerAdapter
-import com.woxthebox.draglistview.swipe.ListSwipeHelper.OnSwipeListenerAdapter
+import com.woxthebox.draglistview.swipe.ListSwipeHelper
 import com.woxthebox.draglistview.swipe.ListSwipeItem
 import com.woxthebox.draglistview.swipe.ListSwipeItem.SwipeDirection
 import java.util.*
-import kotlin.collections.HashMap
 
 class ListFragment(
     private val taskLists: List<TaskList>,
-    private val presenter: TaskListPresenter
+    private val presenter: TaskListPresenter,
+    private val boardName: String
 ) : Fragment() {
     private var mItemArray: ArrayList<Triple<Long, Task, Boolean>>? =
         null
@@ -74,16 +69,31 @@ class ListFragment(
                     val tripleEl =
                         mDragListView!!.adapter.itemList[toPosition] as Triple<*, *, *>
                     val tripleElBef =
-                        mDragListView!!.adapter.itemList[toPosition-1] as Triple<*, *, *>
-                    val taskBef=tripleElBef.second as Task
-                    val task=tripleEl.second as Task
-                    if (taskBef.getTaskList().getTitle()!=task.getTaskList().getTitle()){
-                        presenter.updateTaskPosition(task.getId()!!,taskBef.getPosition()!!.toLong()+1,taskBef.getTaskList().getId(),true)
-                    }else{
-                        if (fromPosition<toPosition){
-                            presenter.updateTaskPosition(task.getId()!!,taskBef.getPosition()!!.toLong(),task.getTaskList().getId(),true)
-                        }else{
-                            presenter.updateTaskPosition(task.getId()!!,taskBef.getPosition()!!.toLong()+1,task.getTaskList().getId(),true)
+                        mDragListView!!.adapter.itemList[toPosition - 1] as Triple<*, *, *>
+                    val taskBef = tripleElBef.second as Task
+                    val task = tripleEl.second as Task
+                    if (taskBef.getTaskList().getTitle() != task.getTaskList().getTitle()) {
+                        presenter.updateTaskPosition(
+                            task.getId()!!,
+                            taskBef.getPosition()!!.toLong() + 1,
+                            taskBef.getTaskList().getId(),
+                            true
+                        )
+                    } else {
+                        if (fromPosition < toPosition) {
+                            presenter.updateTaskPosition(
+                                task.getId()!!,
+                                taskBef.getPosition()!!.toLong(),
+                                task.getTaskList().getId(),
+                                true
+                            )
+                        } else {
+                            presenter.updateTaskPosition(
+                                task.getId()!!,
+                                taskBef.getPosition()!!.toLong() + 1,
+                                task.getTaskList().getId(),
+                                true
+                            )
                         }
                     }
 
@@ -94,7 +104,7 @@ class ListFragment(
             ArrayList<Triple<Long, Task, Boolean>>()
         for (list in taskLists) {
             val tasks = list.getTasks()!!.sortedWith(compareBy { it!!.getPosition() })
-            val taskFake:Task=Task("","",list)
+            val taskFake: Task = Task("", "", list)
             taskFake.setPosition(0)
             mItemArray!!.add(
                 Triple(
@@ -122,12 +132,12 @@ class ListFragment(
                 R.color.colorPrimary
             )
         )
-        mRefreshLayout!!.setOnRefreshListener(OnRefreshListener {
+        mRefreshLayout!!.setOnRefreshListener {
             mRefreshLayout!!.postDelayed(
-                Runnable { mRefreshLayout!!.setRefreshing(false) }, 2000
+                { presenter.getLists(boardName) }, 2000
             )
-        })
-        mDragListView!!.setSwipeListener(object : OnSwipeListenerAdapter() {
+        }
+        mDragListView!!.setSwipeListener(object : ListSwipeHelper.OnSwipeListenerAdapter() {
             override fun onItemSwipeStarted(item: ListSwipeItem) {
                 mRefreshLayout!!.isEnabled = false
             }
@@ -151,14 +161,14 @@ class ListFragment(
             override fun canDragItemAtPosition(dragPosition: Int): Boolean {
                 val tripleEl =
                     mDragListView!!.adapter.itemList[dragPosition] as Triple<*, *, *>
-                val firstElement= tripleEl.third as Boolean
+                val firstElement = tripleEl.third as Boolean
                 return !firstElement
             }
 
             override fun canDropItemAtPosition(dropPosition: Int): Boolean {
                 val tripleEl =
                     mDragListView!!.adapter.itemList[dropPosition] as Triple<*, *, *>
-                val firstElement= tripleEl.third as Boolean
+                val firstElement = tripleEl.third as Boolean
                 return !firstElement
             }
         })
@@ -173,35 +183,11 @@ class ListFragment(
             TaskAdapterInsideBoard(mItemArray!!, true, R.layout.column_item, R.id.item_layout, true)
         mDragListView!!.setAdapter(listAdapter, true)
         mDragListView!!.setCanDragHorizontally(false)
-        mDragListView!!.setCustomDragItem(
-            MyDragItem(
-                context,
-                R.layout.column_item
-            )
-        )
-    }
-
-
-    private class MyDragItem internal constructor(
-        context: Context?,
-        layoutId: Int
-    ) :
-        DragItem(context, layoutId) {
-        override fun onBindDragView(
-            clickedView: View,
-            dragView: View
-        ) {
-            val text =
-                (clickedView.findViewById<View>(R.id.text) as TextView).text
-            (dragView.findViewById<View>(R.id.text) as TextView).text = text
-            dragView.findViewById<View>(R.id.item_layout)
-                .setBackgroundColor(dragView.resources.getColor(R.color.colorPrimary))
-        }
     }
 
     companion object {
-        fun newInstance(taskLists: List<TaskList>, presenter: TaskListPresenter): ListFragment {
-            return ListFragment(taskLists, presenter)
+        fun newInstance(taskLists: List<TaskList>, presenter: TaskListPresenter,boardName:String): ListFragment {
+            return ListFragment(taskLists, presenter,boardName)
         }
     }
 }

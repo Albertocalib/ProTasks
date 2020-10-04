@@ -26,6 +26,7 @@ import com.example.protasks.models.TaskList
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.presenters.TaskListPresenter
+import com.example.protasks.utils.Preference
 import com.example.protasks.views.IBoardsView
 import com.example.protasks.views.IInsideBoardsView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -51,6 +52,8 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     var userCompleteName: TextView? = null
     var logoutButton: ImageButton? = null
     var viewMode: ImageButton? = null
+    private val preference = Preference()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -153,7 +156,13 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
 
     override fun setTaskLists(taskList: List<TaskList>) {
         lists = taskList
-        showFragment(BoardFragment(lists,presenter!!))
+        fragment = if (preference.getModeView(this)==true){
+            ListFragment(lists,presenter!!,boardName!!)
+        }else{
+            BoardFragment(lists,presenter!!)
+
+        }
+        showFragment(fragment!!)
     }
     override fun setBoards(boards: List<Board>) {
         boardAdapterMenu = BoardAdapterMenu(boards, R.layout.board_list_mode_menu)
@@ -198,17 +207,24 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
-        fragment = if (item!!.itemId == R.id.listViewMode){
-            ListFragment(lists,presenter!!)
+        if (item!!.itemId==R.id.listViewMode){
+            fragment = ListFragment(lists,presenter!!,boardName!!)
+            preference.setModeView(true,this)
         }else{
-            BoardFragment(lists,presenter!!)
+            fragment = BoardFragment(lists,presenter!!)
+            preference.setModeView(false,this)
         }
         showFragment(fragment!!)
         return true
     }
     override fun updateTasks(listsUpdated:List<TaskList>){
         lists=listsUpdated
-        fragment = ListFragment(lists,presenter!!)
+        fragment = if (preference.getModeView(this)==true){
+            ListFragment(lists,presenter!!,boardName!!)
+        }else{
+            BoardFragment(lists,presenter!!)
+
+        }
         showFragment(fragment!!)
     }
 
