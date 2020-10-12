@@ -4,13 +4,13 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import androidx.cardview.widget.CardView
-import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
-import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.presenters.TaskListPresenter
 import com.example.protasks.utils.BottomSheet
 import com.woxthebox.draglistview.BoardView
@@ -26,7 +25,6 @@ import com.woxthebox.draglistview.BoardView.BoardCallback
 import com.woxthebox.draglistview.BoardView.BoardListener
 import com.woxthebox.draglistview.ColumnProperties
 import com.woxthebox.draglistview.DragItem
-import kotlinx.android.synthetic.main.task.view.*
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -156,6 +154,8 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
         for (list in taskLists) {
             addColumn(list)
         }
+        addColumnCreateColumn()
+
     }
 
     private fun addColumn(list: TaskList) {
@@ -187,6 +187,26 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
             (header.findViewById<View>(R.id.item_count) as TextView).text =
                 mItemArray.size.toString()
         }
+        val layoutManager = LinearLayoutManager(context)
+        val columnProperties = ColumnProperties.Builder.newBuilder(listAdapter)
+            .setLayoutManager(layoutManager)
+            .setHasFixedItemSize(false)
+            .setColumnBackgroundColor(Color.TRANSPARENT)
+            .setItemsSectionBackgroundColor(Color.TRANSPARENT)
+            .setHeader(header)
+            .setColumnDragView(header)
+            .build()
+        mBoardView!!.addColumn(columnProperties)
+        mColumns++
+    }
+    private fun addColumnCreateColumn() {
+        val mItemArray =
+            ArrayList<Triple<Long, Task,Boolean>>()
+        val listAdapter =
+            TaskAdapterInsideBoard(mItemArray, false,R.layout.column_item, R.id.item_layout_add_tasklist, false)
+        val header =
+            View.inflate(activity, R.layout.column_add_tasklist_item, null)
+        val buttonAddTaskList= (header.findViewById<View>(R.id.btAddTaskList) as Button)
         val layoutManager = LinearLayoutManager(context)
         val columnProperties = ColumnProperties.Builder.newBuilder(listAdapter)
             .setLayoutManager(layoutManager)
