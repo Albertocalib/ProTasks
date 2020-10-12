@@ -120,36 +120,40 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
             toolbar.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.action_save -> {
-                        if (tabLayout.selectedTabPosition == 0) {
-                            var b: Bitmap? = null
-                            if (adapter.boardTab.colorNew != null) {
-                                adapter.boardTab.setTextToImage(
-                                    adapter.boardTab.colorNew!!,
-                                    adapter.boardTab.textView!!.text.toString()
+                        when (tabLayout.selectedTabPosition) {
+                            0 -> {
+                                var b: Bitmap? = null
+                                if (adapter.boardTab.colorNew != null) {
+                                    adapter.boardTab.setTextToImage(
+                                        adapter.boardTab.colorNew!!,
+                                        adapter.boardTab.textView!!.text.toString()
+                                    )
+                                    b = adapter.boardTab.image
+                                } else if (imageBoard != null) {
+                                    b = imageBoard
+                                }
+                                presenter!!.createBoard(
+                                    adapter.boardTab.textView!!.text.toString(),
+                                    b!!
                                 )
-                                b = adapter.boardTab.image
-                            } else if (imageBoard != null) {
-                                b = imageBoard
+
                             }
-                            presenter!!.createBoard(
-                                adapter.boardTab.textView!!.text.toString(),
-                                b!!
-                            )
+                            1 -> {
+                                presenter!!.createTaskList(
+                                    adapter.listTab.boardName!!,
+                                    adapter.listTab.textView!!.text.toString()
+                                )
 
-                        } else if (tabLayout.selectedTabPosition == 1) {
-                            presenter!!.createTaskList(
-                                adapter.listTab.boardName!!,
-                                adapter.listTab.textView!!.text.toString()
-                            )
+                            }
+                            else -> {
+                                presenter!!.createTask(
+                                    adapter.taskTab.boardName!!,
+                                    adapter.taskTab.textView!!.text.toString(),
+                                    adapter.taskTab.lName!!,
+                                    adapter.taskTab.descriptionView!!.text.toString()
+                                )
 
-                        } else {
-                            presenter!!.createTask(
-                                adapter.taskTab.boardName!!,
-                                adapter.taskTab.textView!!.text.toString(),
-                                adapter.taskTab.lName!!,
-                                adapter.taskTab.descriptionView!!.text.toString()
-                            )
-
+                            }
                         }
                         nagDialog2.dismiss()
                     }

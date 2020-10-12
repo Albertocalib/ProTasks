@@ -13,20 +13,26 @@ import androidx.cardview.widget.CardView
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
+import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.presenters.TaskListPresenter
+import com.example.protasks.utils.BottomSheet
 import com.woxthebox.draglistview.BoardView
 import com.woxthebox.draglistview.BoardView.BoardCallback
 import com.woxthebox.draglistview.BoardView.BoardListener
 import com.woxthebox.draglistview.ColumnProperties
 import com.woxthebox.draglistview.DragItem
+import kotlinx.android.synthetic.main.task.view.*
 import java.util.*
 import kotlin.collections.HashMap
 
-class BoardFragment(private val taskLists: List<TaskList>,private val presenter:TaskListPresenter) :
+
+class BoardFragment(private val taskLists: List<TaskList>, private val presenter:TaskListPresenter,
+                    private val supportFragmentManager:FragmentManager,private val boardName:String) :
     Fragment() {
     private var mBoardView: BoardView? = null
     private var mColumns = 0
@@ -173,12 +179,11 @@ class BoardFragment(private val taskLists: List<TaskList>,private val presenter:
         (header.findViewById<View>(R.id.text) as TextView).text = list.getTitle()
         (header.findViewById<View>(R.id.item_count) as TextView).text = "" + list.getTasks()!!.size
         listMap!![list.getTitle()!!] = list.getId()
-        header.setOnClickListener { v ->
-            val id =
-                sCreatedItems++.toLong()
-            val item: Pair<*, *> =
-                Pair(id, "Test $id")
-            mBoardView!!.addItem(mBoardView!!.getColumnOfHeader(v), 0, item, true)
+        val buttonAddTask= (header.findViewById<View>(R.id.btnAddTask) as Button)
+        buttonAddTask.setOnClickListener { v ->
+            val columnName = (header.findViewById<TextView>(R.id.text)).text
+            val bottomSheet = BottomSheet(boardName,columnName.toString(),presenter)
+            bottomSheet.show(supportFragmentManager, "bottomSheet")
             (header.findViewById<View>(R.id.item_count) as TextView).text =
                 mItemArray.size.toString()
         }
@@ -327,8 +332,8 @@ class BoardFragment(private val taskLists: List<TaskList>,private val presenter:
 
     companion object {
         private var sCreatedItems = 0
-        fun newInstance(taskLists: List<TaskList>,presenter:TaskListPresenter): BoardFragment {
-            return BoardFragment(taskLists,presenter)
+        fun newInstance(taskLists: List<TaskList>,presenter:TaskListPresenter,supportFragmentManager:FragmentManager,boardName: String): BoardFragment {
+            return BoardFragment(taskLists,presenter,supportFragmentManager,boardName)
         }
     }
 

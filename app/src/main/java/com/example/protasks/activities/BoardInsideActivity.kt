@@ -100,7 +100,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
             true
         }
         if (savedInstanceState == null) {
-            showFragment(BoardFragment(lists,presenter!!))
+            showFragment(BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!))
         }
         boardPresenter = BoardPresenter(this, baseContext)
         boardPresenter!!.getUser()
@@ -159,7 +159,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
         fragment = if (preference.getModeView(this)==true){
             ListFragment(lists,presenter!!,boardName!!)
         }else{
-            BoardFragment(lists,presenter!!)
+            BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!)
 
         }
         showFragment(fragment!!)
@@ -211,7 +211,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
             fragment = ListFragment(lists,presenter!!,boardName!!)
             preference.setModeView(true,this)
         }else{
-            fragment = BoardFragment(lists,presenter!!)
+            fragment = BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!)
             preference.setModeView(false,this)
         }
         showFragment(fragment!!)
@@ -222,7 +222,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
         fragment = if (preference.getModeView(this)==true){
             ListFragment(lists,presenter!!,boardName!!)
         }else{
-            BoardFragment(lists,presenter!!)
+            BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!)
 
         }
         showFragment(fragment!!)

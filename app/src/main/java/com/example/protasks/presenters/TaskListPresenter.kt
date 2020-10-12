@@ -146,5 +146,22 @@ class TaskListPresenter(private var view: IInsideBoardsView, private var context
 
         })
     }
+    fun createTask(boardName: String,taskName:String,listName: String,description:String){
+        val username = preference.getEmail(context)
+        val t = Task(taskName,description)
+        val task = retrofitInsTask.service.createTask(t, boardName, listName,username!!)
+        task.enqueue(object : Callback<Task> {
+            override fun onFailure(call: Call<Task>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
+                Toast.makeText(context, "Task Created", Toast.LENGTH_SHORT).show()
+                getLists(boardName)
+            }
+
+        })
+
+    }
 
 }
