@@ -15,31 +15,46 @@ import com.google.android.material.textfield.TextInputEditText
 class BottomSheet(
     private val boardName: String,
     private val listName: String,
-    private val presenter: TaskListPresenter
+    private val presenter: TaskListPresenter,
+    private val taskSheet:Boolean
 ) : BottomSheetDialogFragment() {
     var name: TextInputEditText? = null
     var description: TextInputEditText? = null
-    var createTaskBtn: Button? = null
+    var createBtn: Button? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val v: View = inflater.inflate(R.layout.task_dialog, container, false)
-        name = v.findViewById(R.id.taskname)
-        description = v.findViewById(R.id.taskDescription)
-        createTaskBtn = v.findViewById(R.id.createTaskBtn)
-        createTaskBtn!!.isEnabled = false
-        createTaskBtn!!.background.alpha = 150
+        val viewId:Int
+        val nameFieldId:Int
+        val buttonNameId:Int
+        if (taskSheet){
+            viewId=R.layout.task_dialog
+            nameFieldId=R.id.taskname
+            buttonNameId=R.id.createTaskBtn
+        }else{
+            viewId=R.layout.tasklist_dialog
+            nameFieldId=R.id.taskListName
+            buttonNameId=R.id.createTaskListBtn
+        }
+        val v: View = inflater.inflate(viewId, container, false)
+        name = v.findViewById(nameFieldId)
+        if (taskSheet) {
+            description = v.findViewById(R.id.taskDescription)
+        }
+        createBtn = v.findViewById(buttonNameId)
+        createBtn!!.isEnabled = false
+        createBtn!!.background.alpha = 150
         val textWatcher: TextWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val notEmpty = name!!.text.toString() != ""
                 if (notEmpty){
-                    createTaskBtn!!.background.alpha = 255
+                    createBtn!!.background.alpha = 255
                 }else{
-                    createTaskBtn!!.background.alpha = 150
+                    createBtn!!.background.alpha = 150
                 }
-                createTaskBtn!!.isEnabled = notEmpty
+                createBtn!!.isEnabled = notEmpty
 
             }
 
@@ -58,15 +73,24 @@ class BottomSheet(
             }
         }
         name!!.addTextChangedListener(textWatcher)
-        createTaskBtn!!.setOnClickListener {
-            presenter.createTask(
-                boardName,
-                name!!.text.toString(),
-                listName,
-                description!!.text.toString()
-            )
+        createBtn!!.setOnClickListener {
+            if (taskSheet){
+                presenter.createTask(
+                    boardName,
+                    name!!.text.toString(),
+                    listName,
+                    description!!.text.toString()
+                )
+            }else{
+                presenter.createTaskList(
+                    boardName,
+                    name!!.text.toString()
+                )
+            }
+
             dismiss()
         }
         return v
+
     }
 }

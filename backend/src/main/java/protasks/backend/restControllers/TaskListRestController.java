@@ -36,7 +36,7 @@ public class TaskListRestController {
         if(boardName == null || list==null || username==null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        List<Board> b=boardService.filterByName(boardName,username);
+        List<Board> b=boardService.filterBoardsByNameUnique(boardName,username);
         if (b!=null && b.size()==1){
             TaskList t= new TaskList(list.getTitle(),b.get(0));
             listService.save(t);

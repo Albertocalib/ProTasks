@@ -71,25 +71,25 @@ class TaskListPresenter(private var view: IInsideBoardsView, private var context
         return Base64.encodeToString(b1, Base64.NO_WRAP)
     }
 
-//    fun createTaskList(boardName: String, listName: String) {
-//        val username = preference.getEmail(context)
-//        val t = TaskList()
-//        t.setTitle(listName)
-//        val taskList = retrofitInsTaskList.service.createList(t, boardName, username!!)
-//        taskList.enqueue(object : Callback<TaskList> {
-//            override fun onFailure(call: Call<TaskList>?, t: Throwable?) {
-//                Log.v("retrofit", t.toString())
-//            }
-//
-//            override fun onResponse(call: Call<TaskList>?, response: Response<TaskList>?) {
-//                iBoardsView.getBoards()
-//                Toast.makeText(context, "List Created", Toast.LENGTH_SHORT).show()
-//
-//            }
-//
-//        })
-//
-//    }
+    fun createTaskList(boardName: String, listName: String) {
+        val username = preference.getEmail(context)
+        val t = TaskList()
+        t.setTitle(listName)
+        val taskList = retrofitInsTaskList.service.createList(t, boardName, username!!)
+        taskList.enqueue(object : Callback<TaskList> {
+            override fun onFailure(call: Call<TaskList>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<TaskList>?, response: Response<TaskList>?) {
+                Toast.makeText(context, "List Created", Toast.LENGTH_SHORT).show()
+                getLists(boardName)
+
+            }
+
+        })
+
+    }
 
     override fun getLists(boardName: String) {
         val username = preference.getEmail(context)
