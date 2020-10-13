@@ -36,7 +36,7 @@ public class TaskListRestController {
         if(boardName == null || list==null || username==null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        List<Board> b=boardService.filterByName(boardName,username);
+        List<Board> b=boardService.filterBoardsByNameUnique(boardName,username);
         if (b!=null && b.size()==1){
             TaskList t= new TaskList(list.getTitle(),b.get(0));
             listService.save(t);
@@ -60,7 +60,7 @@ public class TaskListRestController {
 
     @JsonView(TaskList.TaskListBasicInfo.class)
     @PutMapping(value = "/id={id}&position={position}")
-    public ResponseEntity<TaskList> getTaskListsByBoard(@PathVariable Long id, @PathVariable Long position){
+    public ResponseEntity<TaskList> updatePosition(@PathVariable Long id, @PathVariable Long position){
         if(id == null || position==null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -93,6 +93,19 @@ public class TaskListRestController {
         }
         tl.setPosition(newPosition);
         this.listService.save(tl);
+    }
+
+    @JsonView(TaskListRequest.class)
+    @GetMapping(value = "/id={id}")
+    public ResponseEntity<List<TaskList>> getTaskBoardListsByListId(@PathVariable("id") Long id){
+        if(id == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Board b=boardService.findBoardByTaskListId(id);
+        if (b!=null){
+            return new ResponseEntity<>(b.getTaskLists(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.CREATED);
     }
 
 

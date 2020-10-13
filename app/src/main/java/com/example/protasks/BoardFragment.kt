@@ -4,19 +4,22 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import androidx.cardview.widget.CardView
-import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
 import com.example.protasks.presenters.TaskListPresenter
+import com.example.protasks.utils.BottomSheet
 import com.woxthebox.draglistview.BoardView
 import com.woxthebox.draglistview.BoardView.BoardCallback
 import com.woxthebox.draglistview.BoardView.BoardListener
@@ -25,7 +28,9 @@ import com.woxthebox.draglistview.DragItem
 import java.util.*
 import kotlin.collections.HashMap
 
-class BoardFragment(private val taskLists: List<TaskList>,private val presenter:TaskListPresenter) :
+
+class BoardFragment(private val taskLists: List<TaskList>, private val presenter:TaskListPresenter,
+                    private val supportFragmentManager:FragmentManager,private val boardName:String) :
     Fragment() {
     private var mBoardView: BoardView? = null
     private var mColumns = 0
@@ -60,10 +65,10 @@ class BoardFragment(private val taskLists: List<TaskList>,private val presenter:
             ) {
                 if (fromColumn != toColumn || fromRow != toRow) {
                     val task =
-                        mBoardView!!.getAdapter(toColumn).itemList[toRow] as Pair<*, *>
+                        mBoardView!!.getAdapter(toColumn).itemList[toRow] as Triple<*, *,*>
                     val columnName = mBoardView!!.getHeaderView(toColumn).findViewById<TextView>(R.id.text).text
                     val id= listMap!![columnName]
-                    presenter.updateTaskPosition(task.first!! as Long,toRow.toLong()+1,id!!)
+                    presenter.updateTaskPosition(task.first!! as Long,toRow.toLong()+1,id!!,false)
 
                 }
             }
@@ -149,35 +154,62 @@ class BoardFragment(private val taskLists: List<TaskList>,private val presenter:
         for (list in taskLists) {
             addColumn(list)
         }
+        addColumnCreateColumn()
+
     }
 
     private fun addColumn(list: TaskList) {
         val mItemArray =
-            ArrayList<Pair<Long, String>>()
+            ArrayList<Triple<Long, Task,Boolean>>()
         val tasks=list.getTasks()!!.sortedWith(compareBy { it!!.getPosition() })
         for (task in tasks) {
+            task!!.setTaskList(list)
             mItemArray.add(
-                Pair(
-                    task!!.getId() as Long,
-                    task.getTitle()
+                Triple(
+                    task.getId() as Long,
+                    task,
+                    false
                 )
             )
         }
         val listAdapter =
-            TaskAdapterInsideBoard(mItemArray, R.layout.column_item, R.id.item_layout, true)
+            TaskAdapterInsideBoard(mItemArray, false,R.layout.column_item, R.id.item_layout, true)
         val header =
             View.inflate(activity, R.layout.column_header, null)
         (header.findViewById<View>(R.id.text) as TextView).text = list.getTitle()
         (header.findViewById<View>(R.id.item_count) as TextView).text = "" + list.getTasks()!!.size
         listMap!![list.getTitle()!!] = list.getId()
-        header.setOnClickListener { v ->
-            val id =
-                sCreatedItems++.toLong()
-            val item: Pair<*, *> =
-                Pair(id, "Test $id")
-            mBoardView!!.addItem(mBoardView!!.getColumnOfHeader(v), 0, item, true)
+        val buttonAddTask= (header.findViewById<View>(R.id.btnAddTask) as Button)
+        buttonAddTask.setOnClickListener { v ->
+            val columnName = (header.findViewById<TextView>(R.id.text)).text
+            val bottomSheet = BottomSheet(boardName,columnName.toString(),presenter,true)
+            bottomSheet.show(supportFragmentManager, "bottomSheet")
             (header.findViewById<View>(R.id.item_count) as TextView).text =
                 mItemArray.size.toString()
+        }
+        val layoutManager = LinearLayoutManager(context)
+        val columnProperties = ColumnProperties.Builder.newBuilder(listAdapter)
+            .setLayoutManager(layoutManager)
+            .setHasFixedItemSize(false)
+            .setColumnBackgroundColor(Color.TRANSPARENT)
+            .setItemsSectionBackgroundColor(Color.TRANSPARENT)
+            .setHeader(header)
+            .setColumnDragView(header)
+            .build()
+        mBoardView!!.addColumn(columnProperties)
+        mColumns++
+    }
+    private fun addColumnCreateColumn() {
+        val mItemArray =
+            ArrayList<Triple<Long, Task,Boolean>>()
+        val listAdapter =
+            TaskAdapterInsideBoard(mItemArray, false,R.layout.column_item, R.id.item_layout_add_tasklist, false)
+        val header =
+            View.inflate(activity, R.layout.column_add_tasklist_item, null)
+        val buttonAddTaskList= (header.findViewById<View>(R.id.btAddTaskList) as Button)
+        buttonAddTaskList.setOnClickListener {
+            val bottomSheet = BottomSheet(boardName,"",presenter,false)
+            bottomSheet.show(supportFragmentManager, "bottomSheet")
         }
         val layoutManager = LinearLayoutManager(context)
         val columnProperties = ColumnProperties.Builder.newBuilder(listAdapter)
@@ -324,8 +356,8 @@ class BoardFragment(private val taskLists: List<TaskList>,private val presenter:
 
     companion object {
         private var sCreatedItems = 0
-        fun newInstance(taskLists: List<TaskList>,presenter:TaskListPresenter): BoardFragment {
-            return BoardFragment(taskLists,presenter)
+        fun newInstance(taskLists: List<TaskList>,presenter:TaskListPresenter,supportFragmentManager:FragmentManager,boardName: String): BoardFragment {
+            return BoardFragment(taskLists,presenter,supportFragmentManager,boardName)
         }
     }
 

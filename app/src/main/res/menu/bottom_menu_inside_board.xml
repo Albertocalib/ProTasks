@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/board_home"
+        android:icon="@drawable/ic_dashboard"
+        android:title="Tablero"/>
+
+    <item
+        android:id="@+id/board_notifications"
+        android:icon="@drawable/ic_notifications"
+        android:title="Notificaciones"/>
+    <item
+        android:id="@+id/nav_home_main_screen"
+        android:icon="@drawable/ic_home"
+        android:title="Búsqueda"/>
+    <item
+        android:id="@+id/board_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Ajustes del tablero"/>
+
+
+</menu>

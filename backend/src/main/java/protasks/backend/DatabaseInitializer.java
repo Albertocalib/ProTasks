@@ -43,10 +43,13 @@ public class DatabaseInitializer {
         Board b1 = new Board("Prueba1", s);
         List<TaskList> tl = new ArrayList<>();
         TaskList t=new TaskList("To Do",b1);
+        t.setPosition(1);
         tl.add(t);
         TaskList t2=new TaskList("Doing",b1);
+        t2.setPosition(2);
         tl.add(t2);
         TaskList t3=new TaskList("Done",b1);
+        t3.setPosition(3);
         tl.add(t3);
         b1.setTaskLists(tl);
         boardRepository.save(b1);

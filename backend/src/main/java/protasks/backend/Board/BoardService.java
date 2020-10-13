@@ -12,12 +12,16 @@ public class BoardService {
     @Autowired
     BoardRepository boardRepository;
 
+    public List<Board> filterBoardsByNameUnique(String name,String username){return this.boardRepository.filterBoardsByNameUnique(name,username);}
     public List<Board> filterByName(String name,String username){return this.boardRepository.filterBoardsByName(name,username);}
     public List<Board> findByUsername(String username){
         return this.boardRepository.findByUsername(username);
     }
     public void save(Board board){
         this.boardRepository.save(board);
+    }
+    public Board findBoardByTaskListId(Long id){
+        return this.boardRepository.findBoardByTaskListId(id);
     }
 }
 
