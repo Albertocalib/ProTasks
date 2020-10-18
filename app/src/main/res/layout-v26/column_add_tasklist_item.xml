@@ -20,7 +20,7 @@
         android:paddingLeft="14dp"
         android:paddingRight="14dp"
         android:gravity="center_vertical">
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btAddTaskList"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

@@ -71,7 +71,7 @@
                 android:textColor="@color/colorAccent" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/loginButton"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"

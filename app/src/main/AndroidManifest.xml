@@ -23,6 +23,7 @@
         <activity android:name=".activities.MainActivity" android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".activities.BoardInsideActivity" android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".activities.RegisterActivity"
+            android:theme="@style/login_register"
             android:windowSoftInputMode="adjustResize"/>
     </application>
 

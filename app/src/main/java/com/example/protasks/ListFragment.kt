@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
@@ -36,7 +37,8 @@ import java.util.*
 class ListFragment(
     private val taskLists: List<TaskList>,
     private val presenter: TaskListPresenter,
-    private val boardName: String
+    private val boardName: String,
+    private val supportFragmentManager: FragmentManager
 ) : Fragment() {
     private var mItemArray: ArrayList<Triple<Long, Task, Boolean>>? =
         null
@@ -180,14 +182,14 @@ class ListFragment(
     private fun setupListRecyclerView() {
         mDragListView!!.setLayoutManager(LinearLayoutManager(context))
         val listAdapter =
-            TaskAdapterInsideBoard(mItemArray!!, true, R.layout.column_item, R.id.item_layout, true)
+            TaskAdapterInsideBoard(mItemArray!!, true, R.layout.column_item, R.id.item_layout, true,supportFragmentManager)
         mDragListView!!.setAdapter(listAdapter, true)
         mDragListView!!.setCanDragHorizontally(false)
     }
 
     companion object {
-        fun newInstance(taskLists: List<TaskList>, presenter: TaskListPresenter,boardName:String): ListFragment {
-            return ListFragment(taskLists, presenter,boardName)
+        fun newInstance(taskLists: List<TaskList>, presenter: TaskListPresenter,boardName:String,supportFragmentManager:FragmentManager): ListFragment {
+            return ListFragment(taskLists, presenter,boardName,supportFragmentManager)
         }
     }
 }

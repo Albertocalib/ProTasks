@@ -100,10 +100,9 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
             val adapter = FragmentManagerDialog(cont as FragmentActivity, boardAdapter!!.getBoards(), toolbar)
 
             viewPager.adapter = adapter
-
-
             val mediator =
                 TabLayoutMediator(tabLayout, viewPager) { tab: TabLayout.Tab, position: Int ->
+
                     when (position) {
                         0 -> {
                             tab.text = "Tablero"

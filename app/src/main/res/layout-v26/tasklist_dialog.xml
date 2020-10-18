@@ -30,7 +30,7 @@
             android:textColorHint="@color/design_default_color_on_secondary"
             android:textColor="@color/design_default_color_on_secondary" />
     </com.google.android.material.textfield.TextInputLayout>
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/createTaskListBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
