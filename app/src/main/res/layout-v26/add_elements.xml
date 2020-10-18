@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:layout_gravity="center_horizontal"
+        app:tabTextColor="@color/colorAccent"
         app:tabMode="fixed"
         >
         <com.google.android.material.tabs.TabItem

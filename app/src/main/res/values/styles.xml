@@ -1,15 +1,23 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlNormal">@color/colorAccent</item>
         <item name="colorControlActivated">@color/colorAccent</item>
         <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="textInputStyle">@style/MyTextInputLayout</item>
 
+    </style>
+    <style name="MyTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColorHint">@color/colorPrimary</item>
+        <item name="boxStrokeColor">@color/edit_text_box_border</item>
+    </style>
+    <style name="login_register" parent="AppTheme">
+        <item name="textInputStyle">@style/Widget.Design.TextInputLayout</item>
     </style>
 
     <style name="TextLabel" parent="TextAppearance.Design.Hint">
@@ -18,6 +26,7 @@
 
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splash</item>
+        <item name="textInputStyle">@style/Widget.Design.TextInputLayout</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
