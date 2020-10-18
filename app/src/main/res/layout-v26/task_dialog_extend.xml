@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="90dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:paddingEnd="16dp"
+            android:paddingStart="6dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:navigationIcon="@drawable/ic_close"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorAccent"
+        android:textColor="@color/design_default_color_on_secondary"
+        android:textColorHint="@color/design_default_color_on_secondary"
+        app:hintTextAppearance="@style/TextLabel"
+        android:padding="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/taskname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre de la tarea"
+            android:importantForAutofill="no"
+            android:labelFor="@id/passwordText"
+            android:textColorHint="@color/design_default_color_on_secondary"
+            android:textColor="@color/design_default_color_on_secondary" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorAccent"
+        android:textColor="@color/design_default_color_on_secondary"
+        android:textColorHint="@color/design_default_color_on_secondary"
+        app:hintTextAppearance="@style/TextLabel"
+        android:padding="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/taskDescription"
+            android:layout_width="match_parent"
+            android:lines="5"
+            android:maxLines="200"
+            android:layout_height="wrap_content"
+            android:hint="Descripción de la tarea"
+            android:textColorHint="@color/design_default_color_on_secondary"
+            android:textColor="@color/design_default_color_on_secondary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+</LinearLayout>

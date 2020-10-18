@@ -157,7 +157,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     override fun setTaskLists(taskList: List<TaskList>) {
         lists = taskList
         fragment = if (preference.getModeView(this)==true){
-            ListFragment(lists,presenter!!,boardName!!)
+            ListFragment(lists,presenter!!,boardName!!,supportFragmentManager)
         }else{
             BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!)
 
@@ -208,7 +208,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         if (item!!.itemId==R.id.listViewMode){
-            fragment = ListFragment(lists,presenter!!,boardName!!)
+            fragment = ListFragment(lists,presenter!!,boardName!!,supportFragmentManager)
             preference.setModeView(true,this)
         }else{
             fragment = BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!)
@@ -220,7 +220,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     override fun updateTasks(listsUpdated:List<TaskList>){
         lists=listsUpdated
         fragment = if (preference.getModeView(this)==true){
-            ListFragment(lists,presenter!!,boardName!!)
+            ListFragment(lists,presenter!!,boardName!!,supportFragmentManager)
         }else{
             BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!)
 
