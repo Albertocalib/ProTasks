@@ -88,6 +88,10 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,Bo
         recyclerViewTask!!.adapter = TaskAdapter(tasks, R.layout.task)
     }
 
+    override fun setAssignments(users: List<User>) {
+        TODO("Not yet implemented")
+    }
+
     override fun onItemClicked(text: TextView) {
         val intent = Intent(context, BoardInsideActivity::class.java)
         intent.putExtra("BOARD_NAME", text.text)

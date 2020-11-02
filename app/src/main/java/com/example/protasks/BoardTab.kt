@@ -111,24 +111,5 @@ class BoardTab(private val t: Toolbar) : Fragment() {
         fun newInstance(t: Toolbar): BoardTab = BoardTab(t)
     }
 
-    fun setTextToImage(color:Int,boardName:String){
-        val image1 =
-            Bitmap.createBitmap(250, 250, Bitmap.Config.ARGB_8888)
-        image1.eraseColor(color)
-
-        val canvas = Canvas(image1)
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint.color = Color.rgb(61, 61, 61)
-        paint.textSize = 60F
-        paint.textAlign = Paint.Align.CENTER
-        val names=boardName.split(" ")
-        var text=""
-        for (el in names){
-            text+=el[0].toUpperCase()
-        }
-        canvas.drawText(text, 250F / 2, 250F / 2, paint)
-        image = image1
-    }
-
 
 }

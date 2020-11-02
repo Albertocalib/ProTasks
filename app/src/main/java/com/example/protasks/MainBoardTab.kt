@@ -21,6 +21,7 @@ import com.example.protasks.activities.BoardInsideActivity
 import com.example.protasks.models.Board
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
+import com.example.protasks.utils.ImageHandler
 import com.example.protasks.views.IBoardsView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
@@ -38,6 +39,7 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
     var searchView: SearchView? = null
     private var imageBoard: Bitmap? = null
     var changeViewModeButton:ImageButton?=null
+    private val imageHandler: ImageHandler = ImageHandler()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -123,7 +125,7 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
                             0 -> {
                                 var b: Bitmap? = null
                                 if (adapter.boardTab.colorNew != null) {
-                                    adapter.boardTab.setTextToImage(
+                                    adapter.boardTab.image = imageHandler.setTextToImage(
                                         adapter.boardTab.colorNew!!,
                                         adapter.boardTab.textView!!.text.toString()
                                     )

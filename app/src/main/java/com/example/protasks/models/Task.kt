@@ -22,6 +22,10 @@ class Task(
     @SerializedName("position")
     private var position: Int? = null
 
+    @Expose
+    @SerializedName("photos")
+    private var photos: ArrayList<String>? = ArrayList()
+
 
     override fun getTitle(): String? {
         return title
@@ -56,6 +60,11 @@ class Task(
     override fun setTaskList(tasklist:TaskList){
         this.tasklist=tasklist
     }
+
+    override fun getPhotos(): ArrayList<String>? {
+        return photos
+    }
+
     fun setId(id:Long){
         this.id=id
     }

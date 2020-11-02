@@ -182,7 +182,7 @@ class ListFragment(
     private fun setupListRecyclerView() {
         mDragListView!!.setLayoutManager(LinearLayoutManager(context))
         val listAdapter =
-            TaskAdapterInsideBoard(mItemArray!!, true, R.layout.column_item, R.id.item_layout, true,supportFragmentManager)
+            TaskAdapterInsideBoard(mItemArray!!, true, R.layout.column_item, R.id.item_layout, true,supportFragmentManager,boardName)
         mDragListView!!.setAdapter(listAdapter, true)
         mDragListView!!.setCanDragHorizontally(false)
     }

@@ -2,6 +2,9 @@ package com.example.protasks.utils
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
 import android.os.Environment
 import android.widget.ImageView
@@ -37,5 +40,24 @@ class ImageHandler {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    fun setTextToImage(color:Int,name:String):Bitmap{
+        val image1 =
+            Bitmap.createBitmap(250, 250, Bitmap.Config.ARGB_8888)
+        image1.eraseColor(color)
+
+        val canvas = Canvas(image1)
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        paint.color = Color.rgb(61, 61, 61)
+        paint.textSize = 60F
+        paint.textAlign = Paint.Align.CENTER
+        val names=name.split(" ")
+        var text=""
+        for (el in names){
+            text+=el[0].toUpperCase()
+        }
+        canvas.drawText(text, 250F / 2, 250F / 2, paint)
+        return image1
     }
 }

@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/task_dialog_extend"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#ffffff"
-    android:orientation="vertical"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -22,41 +18,129 @@
             android:paddingEnd="16dp"
             app:contentInsetStartWithNavigation="0dp"
             app:navigationIcon="@drawable/ic_close" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/taskname"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nombre de la tarea"
-            android:importantForAutofill="no"
-            android:textAlignment="center"
-            android:textColor="@color/colorAccent"
-            android:textColorHint="@color/colorAccent" />
-
-
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/colorAccent"
-        android:padding="16dp"
-        android:textColor="@color/design_default_color_on_secondary"
-        android:textColorHint="@color/design_default_color_on_secondary"
-        app:hintTextAppearance="@style/TextLabel">
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/taskDescription"
+        <LinearLayout
+            android:id="@+id/task_dialog_extend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Descripción de la tarea"
-            android:lines="5"
-            android:maxLines="200"
-            android:textColor="@color/design_default_color_on_secondary"
-            android:textColorHint="@color/design_default_color_on_secondary" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:background="#ffffff"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:elevation="0dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/taskname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombre de la tarea"
+                    android:importantForAutofill="no"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorAccent"
+                    android:textColorHint="@color/colorAccent" />
+
+                <ImageView
+                    android:id="@+id/image_task"
+                    android:layout_width="match_parent"
+                    android:layout_height="340dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@color/colorPrimary"
+                    android:contentDescription="TODO" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/list_board_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre del tablero en la lista Nombre de la lista"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorAccent" />
 
 
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/colorAccent"
+                android:padding="16dp"
+                android:textColor="@color/design_default_color_on_secondary"
+                android:textColorHint="@color/design_default_color_on_secondary"
+                app:hintTextAppearance="@style/TextLabel">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/taskDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Editar descripción de la tarea..."
+                    android:lines="5"
+                    android:maxLines="200"
+                    android:textColor="@color/design_default_color_on_secondary"
+                    android:textColorHint="@color/design_default_color_on_secondary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Assignments icon"
+                    android:padding="16dp"
+                    app:srcCompat="@drawable/ic_assignments" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_assignment_tags"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="false"
+                    android:orientation="horizontal" />
+                <androidx.cardview.widget.CardView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:cardCornerRadius="25dp"
+                    android:backgroundTint="@android:color/darker_gray"
+                    android:layout_margin="3dp"
+                    app:cardPreventCornerOverlap="false"
+                    android:id="@+id/more_than_three_assignments">
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:textAllCaps="true"
+                        android:textSize="30dp"
+                        android:textColor="@color/colorAccent"
+                        android:gravity="center"
+                        android:text="+3"
+                        android:id="@+id/more_than_text"/>
+                </androidx.cardview.widget.CardView>
+                <ImageButton
+                    android:id="@+id/add_assignment"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:contentDescription="Assignments icon"
+                    android:padding="16dp"
+                    android:layout_margin="3dp"
+                    android:background="@null"
+                    app:srcCompat="@drawable/ic_baseline_add_circle_24" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

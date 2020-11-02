@@ -17,6 +17,7 @@ interface ITask {
 
     fun getTaskList():TaskList
     fun setTaskList(tasklist:TaskList)
+    fun getPhotos():ArrayList<String>?
 
 
 }

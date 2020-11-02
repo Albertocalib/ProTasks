@@ -5,10 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import protasks.backend.Board.Board;
+import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.Task.Task;
 import protasks.backend.Task.TaskService;
 import protasks.backend.TaskList.TaskList;
 import protasks.backend.TaskList.TaskListService;
+import protasks.backend.user.User;
 
 import java.util.List;
 
@@ -17,6 +20,7 @@ import java.util.List;
 public class TaskRestController {
     interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo {
     }
+    interface UserRequest extends User.UserBasicInfo, User.UserDetailsInfo, Board.BoardBasicInfo, BoardUsersPermRel.UserBasicInfo{}
 
     @Autowired
     TaskListService listService;
@@ -127,6 +131,17 @@ public class TaskRestController {
                 t.setTaskList(taskListNew);
             }
             this.taskService.save(t);
+        }
+    }
+
+    @JsonView(UserRequest.class)
+    @GetMapping("users/task_id={id}")
+    public ResponseEntity<List<User>> getUsersByTaskId(@PathVariable Long id) {
+        Task task = taskService.findById(id);
+        if (task!= null) {
+            return new ResponseEntity<>(task.getUsers(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

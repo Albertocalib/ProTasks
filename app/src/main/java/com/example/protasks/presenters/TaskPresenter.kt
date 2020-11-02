@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.example.protasks.RetrofitInstance
 import com.example.protasks.models.Task
+import com.example.protasks.models.User
 import com.example.protasks.restServices.BoardRestService
 import com.example.protasks.restServices.TaskListRestService
 import com.example.protasks.restServices.TaskRestService
@@ -63,6 +64,20 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
 
             })
         }
+    }
+    override fun getUsers(taskId:Long) {
+        val task = retrofitInsTask.service.getUsersByTask(taskId)
+        task.enqueue(object : Callback<List<User>> {
+            override fun onFailure(call: Call<List<User>>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<List<User>>?, response: Response<List<User>>?) {
+                view.setAssignments(response!!.body()!!)
+
+            }
+
+        })
     }
 
 
