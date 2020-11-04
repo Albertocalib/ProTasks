@@ -65,8 +65,8 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
             })
         }
     }
-    override fun getUsers(taskId:Long) {
-        val task = retrofitInsTask.service.getUsersByTask(taskId)
+    override fun getUsers(id:Long) {
+        val task = retrofitInsTask.service.getUsersByTask(id)
         task.enqueue(object : Callback<List<User>> {
             override fun onFailure(call: Call<List<User>>?, t: Throwable?) {
                 Log.v("retrofit", t.toString())
@@ -75,6 +75,46 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
             override fun onResponse(call: Call<List<User>>?, response: Response<List<User>>?) {
                 view.setAssignments(response!!.body()!!)
 
+            }
+
+        })
+    }
+    override fun getUsersInBoard(boardId:Long){
+        val board = retrofitInsUser.service.getUsersInBoard(boardId)
+        board.enqueue(object : Callback<List<User>> {
+            override fun onFailure(call: Call<List<User>>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<List<User>>?, response: Response<List<User>>?) {
+                view.setUsers(response!!.body()!!)
+
+            }
+
+        })
+    }
+    fun addAssignment(taskId:Long,userId:Long){
+        val task = retrofitInsTask.service.addUserToTask(taskId,userId)
+        task.enqueue(object : Callback<Boolean> {
+            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                Log.v("retrofit", response.toString())
+            }
+
+        })
+    }
+    fun removeAssignment(taskId:Long,userId:Long){
+        val task = retrofitInsTask.service.removeUserToTask(taskId,userId)
+        task.enqueue(object : Callback<Boolean> {
+            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                Log.v("retrofit", response.toString())
             }
 
         })

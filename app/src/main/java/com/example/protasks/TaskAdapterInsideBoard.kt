@@ -22,7 +22,8 @@ internal class TaskAdapterInsideBoard(
     private val mGrabHandleId: Int,
     private val mDragOnLongPress: Boolean,
     private val supportFragmentManager:FragmentManager,
-    private val boardName:String
+    private val boardName:String,
+    private val boardId:Long
 ) :
     DragItemAdapter<Triple<Long, Task, Boolean>, TaskAdapterInsideBoard.ViewHolder>() {
     override fun onCreateViewHolder(
@@ -69,7 +70,7 @@ internal class TaskAdapterInsideBoard(
         override fun onItemClicked(view: View) {
             if (task!=null){
                 Toast.makeText(view.context, "Item clicked", Toast.LENGTH_SHORT).show()
-                val dialog = TaskDialogExtend(task!!,boardName)
+                val dialog = TaskDialogExtend(task!!,boardName,boardId)
                 val ft: FragmentTransaction =  supportFragmentManager.beginTransaction()
                 dialog.show(ft,"TaskExtendDialog")
             }

@@ -1,15 +1,17 @@
 package com.example.protasks
 
+import android.app.AlertDialog
 import android.app.Dialog
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
@@ -22,7 +24,7 @@ import com.example.protasks.views.ITasksView
 import com.google.android.material.textfield.TextInputEditText
 
 
-class TaskDialogExtend(private val task: Task, private val boardName: String) : DialogFragment(),
+class TaskDialogExtend(private val task: Task, private val boardName: String,private val boardId: Long) : DialogFragment(),
     ITasksView {
     var name: TextInputEditText? = null
     var description: TextInputEditText? = null
@@ -35,6 +37,8 @@ class TaskDialogExtend(private val task: Task, private val boardName: String) : 
     var moreThanThreeButton: CardView? = null
     var moreThanThreeText: TextView? = null
     var usersList: List<User>? = null
+    var addUsersButton: ImageButton? =null
+    var boardUserList:List<User>? = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +87,50 @@ class TaskDialogExtend(private val task: Task, private val boardName: String) : 
         moreThanThreeText!!.setOnClickListener {
 
         }
+        taskPresenter!!.getUsersInBoard(boardId)
+        addUsersButton = v.findViewById(R.id.add_assignment)
+        addUsersButton!!.setOnClickListener {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+            val items = arrayOfNulls<CharSequence>(boardUserList!!.size)
+            val itemsChecked = BooleanArray(items.size)
+            val usersListIds = HashSet<Long>()
+            usersList!!.forEach {
+                usersListIds.add(it.getId()!!)
+            }
+            boardUserList!!.forEachIndexed { i, user ->
+                val name=user.getName()+' '+user.getSurname()
+                items[i]=name
+                itemsChecked[i]=usersListIds!!.contains(user.getId()!!)
+            }
+            val builderObj= builder.setTitle("Asignar Personas")
+                .setMultiChoiceItems(items, itemsChecked
+                ) { _, which, isChecked ->
+                    if (isChecked) {
+                        // Guardar indice seleccionado
+                        val userId= boardUserList!![which]
+                        taskPresenter!!.addAssignment(task.getId()!!,userId.getId()!!)
+                    } else {
+                        // Remover indice sin selección
+                        val userId= boardUserList!![which]
+                        taskPresenter!!.removeAssignment(task.getId()!!,userId.getId()!!)
+                    }
+                }.setPositiveButton("OK"
+                ) { _, _ ->
+                    taskPresenter!!.getUsers(task.getId()!!)
+                }
+                .setNegativeButton(
+                    "CANCELAR"
+                ) { _, _ ->
+                    taskPresenter!!.getUsers(task.getId()!!)
+                }
+                .create()
+                builderObj.show()
+                if (boardUserList!!.size>8){
+                    builderObj.window!!.setLayout(1000, 1200)
+                }
+
+        }
+
         return v
     }
 
@@ -102,5 +150,9 @@ class TaskDialogExtend(private val task: Task, private val boardName: String) : 
             moreThanThreeButton!!.visibility = View.GONE
 
         }
+    }
+
+    override fun setUsers(users: List<User>) {
+        boardUserList = users
     }
 }

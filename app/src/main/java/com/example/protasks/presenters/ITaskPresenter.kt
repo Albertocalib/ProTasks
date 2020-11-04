@@ -5,4 +5,5 @@ interface ITaskPresenter {
     fun getTasks()
     fun filterTasks(name:String)
     fun getUsers(id:Long)
+    fun getUsersInBoard(boardId:Long)
 }

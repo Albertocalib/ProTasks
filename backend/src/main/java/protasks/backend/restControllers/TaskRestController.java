@@ -12,8 +12,10 @@ import protasks.backend.Task.TaskService;
 import protasks.backend.TaskList.TaskList;
 import protasks.backend.TaskList.TaskListService;
 import protasks.backend.user.User;
+import protasks.backend.user.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/task")
@@ -27,6 +29,9 @@ public class TaskRestController {
 
     @Autowired
     TaskService taskService;
+
+    @Autowired
+    UserService userService;
 
     @JsonView(TaskRequest.class)
     @PostMapping(value = "/newTask/board={boardName}&list={listName}&username={username}")
@@ -144,6 +149,39 @@ public class TaskRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
+    @PostMapping("id={id}/user={user_id}")
+    public ResponseEntity<Boolean> addUserToTask(@PathVariable Long id,@PathVariable Long user_id) {
+        Optional<User> u = userService.findById(user_id);
+        if (u.isPresent()){
+            Task task = taskService.findById(id);
+            if (task!= null) {
+                User user=u.get();
+                user.addTask(task);
+                userService.save(user);
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @DeleteMapping("id={id}/user={user_id}")
+    public ResponseEntity<Boolean> deleteUserToTask(@PathVariable Long id,@PathVariable Long user_id) {
+        Optional<User> u = userService.findById(user_id);
+        if (u.isPresent()){
+            Task task = taskService.findById(id);
+            if (task!= null) {
+                User user=u.get();
+                user.removeTask(task);
+                userService.save(user);
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
 }

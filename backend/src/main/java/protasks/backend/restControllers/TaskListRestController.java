@@ -22,7 +22,7 @@ import static protasks.backend.Rol.Rol.OWNER;
 @RequestMapping("/api/list")
 public class TaskListRestController {
     interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo,BoardUsersPermRel.BoardBasicInfo{}
-    interface TaskListRequest extends TaskList.TaskListExtendedInfo,TaskList.TaskListBasicInfo, Task.TaskListBasicInfo{}
+    interface TaskListRequest extends TaskList.TaskListExtendedInfo,TaskList.TaskListBasicInfo, Task.TaskListBasicInfo,Board.BoardBasicInfo{}
     @Autowired
     TaskListService listService;
 

@@ -6,4 +6,5 @@ import com.example.protasks.models.User
 interface ITasksView {
     fun setTasks(tasks:List<Task>)
     fun setAssignments(users:List<User>)
+    fun setUsers(users:List<User>)
 }

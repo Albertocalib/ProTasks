@@ -172,4 +172,19 @@ public class User {
         return create_date;
     }
 
+    public void addTask(Task t) {
+        if (this.tasks.isEmpty()){
+            this.tasks = new ArrayList<>();
+        }
+        if (!this.tasks.contains(t)){
+            this.tasks.add(t);
+        }
+    }
+
+    public void removeTask(Task t) {
+        if (!this.tasks.isEmpty()){
+            this.tasks.remove(t);
+        }
+    }
+
 }

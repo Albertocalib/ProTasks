@@ -22,4 +22,10 @@ interface TaskRestService {
 
     @GET("users/task_id={id}")
     fun getUsersByTask(@Path("id") id:Long):Call<List<User>>
+
+    @POST("id={id}/user={user_id}")
+    fun addUserToTask(@Path("id") id:Long,@Path("user_id") userId:Long):Call<Boolean>
+
+    @DELETE("id={id}/user={user_id}")
+    fun removeUserToTask(@Path("id") id:Long,@Path("user_id") userId:Long):Call<Boolean>
 }
