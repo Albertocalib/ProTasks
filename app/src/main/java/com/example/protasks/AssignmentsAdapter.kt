@@ -6,15 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.Board
+import com.example.protasks.models.Task
 import com.example.protasks.models.User
+import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.utils.ImageHandler
 
 
-class AssignmentsAdapter(private val assignments : List<User>?) :RecyclerView.Adapter<AssignmentsAdapter.ViewHolderAssignment>(){
+class AssignmentsAdapter(private val assignments : List<User>?,private val taskPresenter:TaskPresenter,private val task: Task) :RecyclerView.Adapter<AssignmentsAdapter.ViewHolderAssignment>(){
 
     private val imageHandler: ImageHandler = ImageHandler()
 
@@ -42,6 +45,9 @@ class AssignmentsAdapter(private val assignments : List<User>?) :RecyclerView.Ad
         }else{
             holder.userImage.setImageBitmap(imageHandler.setTextToImage(Color.LTGRAY,name))
         }
+        holder.removeAssigment!!.setOnClickListener {
+            taskPresenter.removeAssignment(task.getId()!!,assignments[position].getId()!!,true)
+        }
 
     }
 
@@ -49,10 +55,12 @@ class AssignmentsAdapter(private val assignments : List<User>?) :RecyclerView.Ad
         var userName: TextView
         var userImage: ImageView
         var view:View=v
+        var removeAssigment: ImageButton? = null
 
         init {
             userName = view.findViewById(R.id.userName)
             userImage = view.findViewById(R.id.userImage)
+            removeAssigment = view.findViewById(R.id.remove_assigment)
         }
     }
     fun getUsers():List<User>{

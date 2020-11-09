@@ -106,7 +106,7 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
 
         })
     }
-    fun removeAssignment(taskId:Long,userId:Long){
+    fun removeAssignment(taskId:Long,userId:Long,update:Boolean){
         val task = retrofitInsTask.service.removeUserToTask(taskId,userId)
         task.enqueue(object : Callback<Boolean> {
             override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
@@ -115,6 +115,9 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
 
             override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
                 Log.v("retrofit", response.toString())
+                if(update){
+                    getUsers(taskId)
+                }
             }
 
         })

@@ -24,7 +24,11 @@ import com.example.protasks.views.ITasksView
 import com.google.android.material.textfield.TextInputEditText
 
 
-class TaskDialogExtend(private val task: Task, private val boardName: String,private val boardId: Long) : DialogFragment(),
+class TaskDialogExtend(
+    private val task: Task,
+    private val boardName: String,
+    private val boardId: Long
+) : DialogFragment(),
     ITasksView {
     var name: TextInputEditText? = null
     var description: TextInputEditText? = null
@@ -37,8 +41,8 @@ class TaskDialogExtend(private val task: Task, private val boardName: String,pri
     var moreThanThreeButton: CardView? = null
     var moreThanThreeText: TextView? = null
     var usersList: List<User>? = null
-    var addUsersButton: ImageButton? =null
-    var boardUserList:List<User>? = ArrayList()
+    var addUsersButton: ImageButton? = null
+    var boardUserList: List<User>? = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,23 +102,25 @@ class TaskDialogExtend(private val task: Task, private val boardName: String,pri
                 usersListIds.add(it.getId()!!)
             }
             boardUserList!!.forEachIndexed { i, user ->
-                val name=user.getName()+' '+user.getSurname()
-                items[i]=name
-                itemsChecked[i]=usersListIds!!.contains(user.getId()!!)
+                val name = user.getName() + ' ' + user.getSurname()
+                items[i] = name
+                itemsChecked[i] = usersListIds.contains(user.getId()!!)
             }
-            val builderObj= builder.setTitle("Asignar Personas")
-                .setMultiChoiceItems(items, itemsChecked
+            val builderObj = builder.setTitle("Asignar Personas")
+                .setMultiChoiceItems(
+                    items, itemsChecked
                 ) { _, which, isChecked ->
                     if (isChecked) {
                         // Guardar indice seleccionado
-                        val userId= boardUserList!![which]
-                        taskPresenter!!.addAssignment(task.getId()!!,userId.getId()!!)
+                        val userId = boardUserList!![which]
+                        taskPresenter!!.addAssignment(task.getId()!!, userId.getId()!!)
                     } else {
                         // Remover indice sin selección
-                        val userId= boardUserList!![which]
-                        taskPresenter!!.removeAssignment(task.getId()!!,userId.getId()!!)
+                        val userId = boardUserList!![which]
+                        taskPresenter!!.removeAssignment(task.getId()!!, userId.getId()!!,false)
                     }
-                }.setPositiveButton("OK"
+                }.setPositiveButton(
+                    "OK"
                 ) { _, _ ->
                     taskPresenter!!.getUsers(task.getId()!!)
                 }
@@ -124,10 +130,10 @@ class TaskDialogExtend(private val task: Task, private val boardName: String,pri
                     taskPresenter!!.getUsers(task.getId()!!)
                 }
                 .create()
-                builderObj.show()
-                if (boardUserList!!.size>8){
-                    builderObj.window!!.setLayout(1000, 1200)
-                }
+            builderObj.show()
+            if (boardUserList!!.size > 8) {
+                builderObj.window!!.setLayout(1000, 1200)
+            }
 
         }
 
@@ -142,11 +148,11 @@ class TaskDialogExtend(private val task: Task, private val boardName: String,pri
         usersList = users
         if (users.size > 3) {
             val usersReduced = users.subList(0, 3)
-            recyclerViewAssignments!!.adapter = AssignmentsAdapter(usersReduced)
+            recyclerViewAssignments!!.adapter = AssignmentsAdapter(usersReduced,taskPresenter!!,task)
             val more = "+" + (users.size - usersReduced.size)
             moreThanThreeText!!.text = more
         } else {
-            recyclerViewAssignments!!.adapter = AssignmentsAdapter(users)
+            recyclerViewAssignments!!.adapter = AssignmentsAdapter(users,taskPresenter!!,task)
             moreThanThreeButton!!.visibility = View.GONE
 
         }
