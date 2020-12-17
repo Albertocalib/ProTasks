@@ -70,7 +70,7 @@ internal class TaskAdapterInsideBoard(
         override fun onItemClicked(view: View) {
             if (task!=null){
                 Toast.makeText(view.context, "Item clicked", Toast.LENGTH_SHORT).show()
-                val dialog = TaskDialogExtend(task!!,boardName,boardId)
+                val dialog = TaskDialogExtend(task!!,boardName,boardId,supportFragmentManager)
                 val ft: FragmentTransaction =  supportFragmentManager.beginTransaction()
                 dialog.show(ft,"TaskExtendDialog")
             }

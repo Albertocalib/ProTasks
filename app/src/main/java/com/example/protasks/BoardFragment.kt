@@ -35,6 +35,7 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
     private var mBoardView: BoardView? = null
     private var mColumns = 0
     private var listMap :HashMap<String,Long>? = HashMap()
+    var boardId:Long=0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -172,7 +173,6 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
                 )
             )
         }
-        var boardId:Long=0
         if (taskLists.isNotEmpty()){
             boardId= taskLists[0].getBoard()!!.getId()
         }
@@ -186,7 +186,7 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
         val buttonAddTask= (header.findViewById<View>(R.id.btnAddTask) as Button)
         buttonAddTask.setOnClickListener { v ->
             val columnName = (header.findViewById<TextView>(R.id.text)).text
-            val bottomSheet = BottomSheet(boardName,columnName.toString(),presenter,true)
+            val bottomSheet = BottomSheet(boardName,columnName.toString(),presenter,"task")
             bottomSheet.show(supportFragmentManager, "bottomSheet")
             (header.findViewById<View>(R.id.item_count) as TextView).text =
                 mItemArray.size.toString()
@@ -216,7 +216,7 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
             View.inflate(activity, R.layout.column_add_tasklist_item, null)
         val buttonAddTaskList= (header.findViewById<View>(R.id.btAddTaskList) as Button)
         buttonAddTaskList.setOnClickListener {
-            val bottomSheet = BottomSheet(boardName,"",presenter,false)
+            val bottomSheet = BottomSheet(boardName,"",presenter,"taskList")
             bottomSheet.show(supportFragmentManager, "bottomSheet")
         }
         val layoutManager = LinearLayoutManager(context)

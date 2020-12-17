@@ -23,5 +23,6 @@ public class BoardService {
     public Board findBoardByTaskListId(Long id){
         return this.boardRepository.findBoardByTaskListId(id);
     }
+
 }
 

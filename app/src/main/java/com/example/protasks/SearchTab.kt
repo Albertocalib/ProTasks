@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.activities.BoardInsideActivity
 import com.example.protasks.models.Board
+import com.example.protasks.models.Tag
 import com.example.protasks.models.Task
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
@@ -93,6 +94,18 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,Bo
     }
 
     override fun setUsers(users: List<User>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setTags(tags: List<Tag>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setTagsBoard(tags: List<Tag>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateTags(tag: Tag) {
         TODO("Not yet implemented")
     }
 

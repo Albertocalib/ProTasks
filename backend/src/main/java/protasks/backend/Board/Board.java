@@ -1,6 +1,7 @@
 package protasks.backend.Board;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import protasks.backend.Tag.Tag;
 import protasks.backend.TaskList.TaskList;
 
 import javax.persistence.*;
@@ -45,6 +46,10 @@ public class Board {
     @Column(name="create_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date create_date;
+
+    @JsonView(BoardDetailsInfo.class)
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "board")
+    private List<Tag> tags;
 
     public long getId() {
         return id;
@@ -96,6 +101,7 @@ public class Board {
         this.create_date=new Date();
         this.write_date =new Date();
         this.taskLists = new ArrayList<>();
+        this.tags= new ArrayList<>();
     }
     public Board(){}
 
@@ -109,6 +115,14 @@ public class Board {
 
     public Date getCreate_date() {
         return create_date;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 
 }

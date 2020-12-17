@@ -8,18 +8,19 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.protasks.models.Tag
 import com.example.protasks.models.Task
 import com.example.protasks.models.User
 import com.example.protasks.presenters.TaskPresenter
+import com.example.protasks.utils.BottomSheet
 import com.example.protasks.views.ITasksView
 import com.google.android.material.textfield.TextInputEditText
 
@@ -27,7 +28,8 @@ import com.google.android.material.textfield.TextInputEditText
 class TaskDialogExtend(
     private val task: Task,
     private val boardName: String,
-    private val boardId: Long
+    private val boardId: Long,
+    private val fragmentMgr:FragmentManager
 ) : DialogFragment(),
     ITasksView {
     var name: TextInputEditText? = null
@@ -43,6 +45,11 @@ class TaskDialogExtend(
     var usersList: List<User>? = null
     var addUsersButton: ImageButton? = null
     var boardUserList: List<User>? = ArrayList()
+    var recyclerViewTags: RecyclerView? = null
+    var layoutManagerTags: GridLayoutManager? = GridLayoutManager(context, 5)
+    var tagList: List<Tag>? = null
+    var addTagsButton: ImageButton? = null
+    var boardTagList: List<Tag>? = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +99,7 @@ class TaskDialogExtend(
 
         }
         taskPresenter!!.getUsersInBoard(boardId)
+        taskPresenter!!.getTagsInBoard(boardId)
         addUsersButton = v.findViewById(R.id.add_assignment)
         addUsersButton!!.setOnClickListener {
             val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
@@ -136,6 +144,56 @@ class TaskDialogExtend(
             }
 
         }
+        recyclerViewTags = v.findViewById(R.id.recycler_tags)
+        recyclerViewTags!!.layoutManager = layoutManagerTags
+        taskPresenter!!.getTags(task.getId()!!)
+        addTagsButton = v.findViewById(R.id.add_tags)
+        addTagsButton!!.setOnClickListener {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+            val items = arrayOfNulls<CharSequence>(boardTagList!!.size)
+            val itemsChecked = BooleanArray(items.size)
+            val tagsListIds = HashSet<Long>()
+            tagList!!.forEach {
+                tagsListIds.add(it.getId())
+            }
+            boardTagList!!.forEachIndexed { i, tag ->
+                items[i] = tag.getName()
+                itemsChecked[i] = tagsListIds.contains(tag.getId())
+            }
+            val builderObj = builder.setTitle("Añadir Tag")
+                .setMultiChoiceItems(
+                    items, itemsChecked
+                ) { _, which, isChecked ->
+                    if (isChecked) {
+                        // Guardar indice seleccionado
+                        val tagId = boardTagList!![which]
+                        taskPresenter!!.addTag(task.getId()!!, tagId.getId())
+                    } else {
+                        // Remover indice sin selección
+                        val tagId = boardTagList!![which]
+                        taskPresenter!!.removeTag(task.getId()!!, tagId.getId(),false)
+                    }
+                }.setPositiveButton(
+                    "OK"
+                ) { _, _ ->
+                    taskPresenter!!.getTags(task.getId()!!)
+                }
+                .setNegativeButton(
+                    "CANCELAR"
+                ) { _, _ ->
+                    taskPresenter!!.getTags(task.getId()!!)
+                }
+                .setNeutralButton("CREAR TAG"){_,_->
+                    val bottomSheet = BottomSheet(boardName,"",taskPresenter!!,"tag")
+                    bottomSheet.show(fragmentMgr, "bottomSheet")
+                }
+                .create()
+            builderObj.show()
+            if (tagsListIds.size > 8) {
+                builderObj.window!!.setLayout(1000, 1200)
+            }
+
+        }
 
         return v
     }
@@ -154,11 +212,30 @@ class TaskDialogExtend(
         } else {
             recyclerViewAssignments!!.adapter = AssignmentsAdapter(users,taskPresenter!!,task)
             moreThanThreeButton!!.visibility = View.GONE
+            val spanCount1=if (usersList!!.isNotEmpty()){usersList!!.size}else{1}
+            layoutManager!!.spanCount=spanCount1
 
         }
     }
 
     override fun setUsers(users: List<User>) {
         boardUserList = users
+    }
+
+   override fun setTags(tags: List<Tag>) {
+        tagList = tags
+        recyclerViewTags!!.adapter = TagsAdapter(tagList,taskPresenter!!,task)
+        if (tagList!!.size<5) {
+            val spanCount=if (tagList!!.isNotEmpty()){tagList!!.size}else{1}
+            layoutManagerTags!!.spanCount=spanCount
+        }
+
+    }
+    override fun setTagsBoard(tags:List<Tag>){
+        boardTagList=tags
+    }
+    override fun updateTags(tag:Tag){
+        (boardTagList as ArrayList).add(tag)
+        addTagsButton!!.performClick()
     }
 }

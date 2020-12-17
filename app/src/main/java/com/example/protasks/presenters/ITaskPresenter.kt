@@ -1,7 +1,7 @@
 package com.example.protasks.presenters
 
 
-interface ITaskPresenter {
+interface ITaskPresenter:IPresenter {
     fun getTasks()
     fun filterTasks(name:String)
     fun getUsers(id:Long)

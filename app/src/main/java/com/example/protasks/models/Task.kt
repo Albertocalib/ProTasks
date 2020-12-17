@@ -26,6 +26,10 @@ class Task(
     @SerializedName("photos")
     private var photos: ArrayList<String>? = ArrayList()
 
+    @Expose
+    @SerializedName("tag_ids")
+    private var tag_ids: List<Tag>? = null
+
 
     override fun getTitle(): String? {
         return title

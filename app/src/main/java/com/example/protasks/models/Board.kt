@@ -24,6 +24,10 @@ class Board {
     @SerializedName("users")
     private val users: ArrayList<BoardUsersPermRel>? = ArrayList()
 
+    @Expose
+    @SerializedName("tags")
+    private var tags: List<Tag>? = null
+
     fun getPhoto(): String? {
         return photo
     }
