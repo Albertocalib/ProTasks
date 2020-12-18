@@ -1,8 +1,10 @@
 package com.example.protasks.restServices
 
 import com.example.protasks.models.Task
+import com.example.protasks.models.User
 import retrofit2.Call
 import retrofit2.http.*
+import java.util.*
 
 
 interface TaskRestService {
@@ -18,4 +20,16 @@ interface TaskRestService {
 
     @PUT("id={id}&newPosition={newPosition}&newTaskList={newTaskList}")
     fun updateTaskPosition(@Path("id") id:Long,@Path("newPosition") newPosition:Long,@Path("newTaskList")newTaskList:Long):Call<Task>
+
+    @GET("users/task_id={id}")
+    fun getUsersByTask(@Path("id") id:Long):Call<List<User>>
+
+    @POST("id={id}/user={user_id}")
+    fun addUserToTask(@Path("id") id:Long,@Path("user_id") userId:Long):Call<Boolean>
+
+    @DELETE("id={id}/user={user_id}")
+    fun removeUserToTask(@Path("id") id:Long,@Path("user_id") userId:Long):Call<Boolean>
+
+    @PUT("id={id}&newDateEnd={newDate}")
+    fun updateDateEnd(@Path("id") id:Long,@Path("newDate") newDate: Date):Call<Task>
 }

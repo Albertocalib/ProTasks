@@ -1,10 +1,12 @@
 package protasks.backend.Task;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import protasks.backend.Tag.Tag;
 import protasks.backend.TaskList.TaskList;
 import protasks.backend.user.User;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +50,22 @@ public class Task implements Comparable<Task> {
     @Column(name="create_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date create_date;
+
+    @JsonView(Task.TaskListBasicInfo.class)
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Tag> tag_ids;
+
+    @JsonView(Task.TaskListBasicInfo.class)
+    @Column(name="date_end")
+    private Date date_end;
+
+    public Date getDate_end() {
+        return date_end;
+    }
+
+    public void setDate_end(Date date_end) {
+        this.date_end = date_end;
+    }
 
     public Task() {
         this.create_date=new Date();
@@ -129,5 +147,26 @@ public class Task implements Comparable<Task> {
         return create_date;
     }
 
+    public List<Tag> getTag_ids() {
+        return tag_ids;
+    }
+
+    public void setTag_ids(List<Tag> tag_ids) {
+        this.tag_ids = tag_ids;
+    }
+
+    public void removeTag(Tag t) {
+        if (!this.tag_ids.isEmpty()){
+            this.tag_ids.remove(t);
+        }
+    }
+    public void addTag(Tag t) {
+        if (this.tag_ids==null || this.tag_ids.isEmpty()){
+            this.tag_ids = new ArrayList<>();
+        }
+        if (!this.tag_ids.contains(t)){
+            this.tag_ids.add(t);
+        }
+    }
 }
 

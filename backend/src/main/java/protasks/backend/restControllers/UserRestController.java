@@ -11,6 +11,8 @@ import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.user.User;
 import protasks.backend.user.UserService;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/user")
@@ -67,6 +69,16 @@ public class UserRestController {
         user.setPhoto(photo);
         userService.save(user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @JsonView(UserRequest.class)
+    @GetMapping("/board_id={id}")
+    public ResponseEntity<List<User>> getUsersInBoard(@PathVariable long id){
+        List<User> users = userService.findByBoardId(id);
+        if(users == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
 }

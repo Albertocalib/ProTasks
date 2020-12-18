@@ -17,4 +17,7 @@ interface UserRestService {
 
     @PUT("updatePhoto/{username}")
     fun updatePhoto(@Body photo: String?,@Path("username")username: String?): Call<User>?
+
+    @GET("board_id={id}")
+    fun getUsersInBoard(@Path("id") id:Long):Call<List<User>>
 }

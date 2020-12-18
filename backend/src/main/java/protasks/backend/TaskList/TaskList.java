@@ -32,6 +32,7 @@ public class TaskList implements Comparable<TaskList> {
     @OneToMany(mappedBy = "taskList")
     private List<Task> tasks;
 
+    @JsonView(TaskList.TaskListExtendedInfo.class)
     @ManyToOne
     private Board board;
 

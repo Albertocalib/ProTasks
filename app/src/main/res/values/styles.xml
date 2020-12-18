@@ -1,8 +1,9 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -12,10 +13,12 @@
         <item name="textInputStyle">@style/MyTextInputLayout</item>
 
     </style>
+
     <style name="MyTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="android:textColorHint">@color/colorPrimary</item>
         <item name="boxStrokeColor">@color/edit_text_box_border</item>
     </style>
+
     <style name="login_register" parent="AppTheme">
         <item name="textInputStyle">@style/Widget.Design.TextInputLayout</item>
     </style>

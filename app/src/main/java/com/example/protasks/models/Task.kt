@@ -2,6 +2,8 @@ package com.example.protasks.models
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class Task(
@@ -22,6 +24,17 @@ class Task(
     @SerializedName("position")
     private var position: Int? = null
 
+    @Expose
+    @SerializedName("photos")
+    private var photos: ArrayList<String>? = ArrayList()
+
+    @Expose
+    @SerializedName("tag_ids")
+    private var tag_ids: List<Tag>? = null
+
+    @Expose
+    @SerializedName("date_end")
+    private var date_end: Date? = null
 
     override fun getTitle(): String? {
         return title
@@ -56,8 +69,17 @@ class Task(
     override fun setTaskList(tasklist:TaskList){
         this.tasklist=tasklist
     }
+
+    override fun getPhotos(): ArrayList<String>? {
+        return photos
+    }
+
     fun setId(id:Long){
         this.id=id
+    }
+
+    fun getDateEnd():Date?{
+        return this.date_end
     }
 
 

@@ -1,6 +1,5 @@
 package com.example.protasks
 
-import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,18 +9,20 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.example.protasks.activities.BoardInsideActivity
 import com.example.protasks.models.Task
 import com.woxthebox.draglistview.DragItemAdapter
 import java.util.*
 
-internal class TaskAdapterInsideBoard(
+
+class TaskAdapterInsideBoard(
     list: ArrayList<Triple<Long, Task,Boolean>>,
     private val listMode: Boolean,
     private val mLayoutId: Int,
     private val mGrabHandleId: Int,
     private val mDragOnLongPress: Boolean,
-    private val supportFragmentManager:FragmentManager
+    private val supportFragmentManager:FragmentManager,
+    private val boardName:String,
+    private val boardId:Long
 ) :
     DragItemAdapter<Triple<Long, Task, Boolean>, TaskAdapterInsideBoard.ViewHolder>() {
     override fun onCreateViewHolder(
@@ -57,7 +58,7 @@ internal class TaskAdapterInsideBoard(
         return mItemList[position]!!.first
     }
 
-    internal inner class ViewHolder(itemView: View) :
+    inner class ViewHolder(itemView: View) :
         DragItemAdapter.ViewHolder(itemView, mGrabHandleId, mDragOnLongPress) {
         var mText: TextView = itemView.findViewById<View>(R.id.text) as TextView
         var listText: TextView = itemView.findViewById<View>(R.id.text2) as TextView
@@ -68,7 +69,7 @@ internal class TaskAdapterInsideBoard(
         override fun onItemClicked(view: View) {
             if (task!=null){
                 Toast.makeText(view.context, "Item clicked", Toast.LENGTH_SHORT).show()
-                val dialog = TaskDialogExtend(task!!)
+                val dialog = TaskDialogExtend(task!!,boardName,boardId,supportFragmentManager,this)
                 val ft: FragmentTransaction =  supportFragmentManager.beginTransaction()
                 dialog.show(ft,"TaskExtendDialog")
             }
@@ -78,6 +79,9 @@ internal class TaskAdapterInsideBoard(
         override fun onItemLongClicked(view: View): Boolean {
             Toast.makeText(view.context, "Item long clicked", Toast.LENGTH_SHORT).show()
             return true
+        }
+        fun updateTask(t:Task){
+            task=t
         }
 
     }
