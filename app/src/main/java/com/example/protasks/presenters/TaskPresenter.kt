@@ -13,6 +13,7 @@ import com.example.protasks.views.ITasksView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 
 class TaskPresenter(private var view: ITasksView, private var context: Context) :
@@ -93,6 +94,20 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
             override fun onResponse(call: Call<List<User>>?, response: Response<List<User>>?) {
                 view.setUsers(response!!.body()!!)
 
+            }
+
+        })
+    }
+
+    override fun updateDate(id: Long, date: Date) {
+        val task = retrofitInsTask.service.updateDateEnd(id, date)
+        task.enqueue(object : Callback<Task> {
+            override fun onFailure(call: Call<Task>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
+                view.updateTask(response!!.body()!!)
             }
 
         })

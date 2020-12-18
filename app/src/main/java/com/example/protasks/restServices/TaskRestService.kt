@@ -4,6 +4,7 @@ import com.example.protasks.models.Task
 import com.example.protasks.models.User
 import retrofit2.Call
 import retrofit2.http.*
+import java.util.*
 
 
 interface TaskRestService {
@@ -28,4 +29,7 @@ interface TaskRestService {
 
     @DELETE("id={id}/user={user_id}")
     fun removeUserToTask(@Path("id") id:Long,@Path("user_id") userId:Long):Call<Boolean>
+
+    @PUT("id={id}&newDateEnd={newDate}")
+    fun updateDateEnd(@Path("id") id:Long,@Path("newDate") newDate: Date):Call<Task>
 }

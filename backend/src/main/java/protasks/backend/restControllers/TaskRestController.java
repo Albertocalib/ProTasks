@@ -14,7 +14,12 @@ import protasks.backend.TaskList.TaskListService;
 import protasks.backend.user.User;
 import protasks.backend.user.UserService;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @RestController
@@ -22,7 +27,9 @@ import java.util.Optional;
 public class TaskRestController {
     interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo {
     }
-    interface UserRequest extends User.UserBasicInfo, User.UserDetailsInfo, Board.BoardBasicInfo, BoardUsersPermRel.UserBasicInfo{}
+
+    interface UserRequest extends User.UserBasicInfo, User.UserDetailsInfo, Board.BoardBasicInfo, BoardUsersPermRel.UserBasicInfo {
+    }
 
     @Autowired
     TaskListService listService;
@@ -69,6 +76,7 @@ public class TaskRestController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
     @JsonView(TaskRequest.class)
     @PutMapping("id={id}&newPosition={newPosition}&newTaskList={newTaskList}")
     public ResponseEntity<Task> updateTaskPosition(@PathVariable("id") Long id, @PathVariable("newPosition") Long newPosition, @PathVariable("newTaskList") Long newTaskList) {
@@ -79,15 +87,15 @@ public class TaskRestController {
         if (t != null) {
             if (newTaskList != t.getTaskList().getId()) {
                 //Update old list (eraseMode=True)
-                updatePositions(t, null,0,true);
+                updatePositions(t, null, 0, true);
                 TaskList tl = listService.findById(newTaskList);
                 if (tl != null) {
                     //Update new List
-                    updatePositions(t, tl,newPosition,false);
+                    updatePositions(t, tl, newPosition, false);
                 }
             } else {
                 //update list
-                updatePositions(t,null, newPosition,false);
+                updatePositions(t, null, newPosition, false);
             }
 
             return new ResponseEntity<>(t, HttpStatus.CREATED);
@@ -95,11 +103,11 @@ public class TaskRestController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    private void updatePositions(Task t, TaskList taskListNew,long newPosition,boolean eraseMode) {
+    private void updatePositions(Task t, TaskList taskListNew, long newPosition, boolean eraseMode) {
         List<Task> lists;
-        if (taskListNew!=null){
+        if (taskListNew != null) {
             lists = taskListNew.getTasks();
-        }else {
+        } else {
             lists = t.getTaskList().getTasks();
         }
         lists.sort(Task::compareTo);
@@ -113,14 +121,14 @@ public class TaskRestController {
             int initialPosition;
             int finalPosition;
             int incr;
-            if (t.getPosition() < newPosition && taskListNew==null) {
+            if (t.getPosition() < newPosition && taskListNew == null) {
                 initialPosition = (int) t.getPosition() - 1;
                 finalPosition = (int) newPosition;
                 incr = -1;
             } else {
-                if (taskListNew!=null){
+                if (taskListNew != null) {
                     finalPosition = lists.size();
-                }else{
+                } else {
                     finalPosition = (int) t.getPosition();
                 }
                 initialPosition = (int) newPosition - 1;
@@ -132,7 +140,7 @@ public class TaskRestController {
                 this.taskService.save(tln);
             }
             t.setPosition(newPosition);
-            if (taskListNew!=null){
+            if (taskListNew != null) {
                 t.setTaskList(taskListNew);
             }
             this.taskService.save(t);
@@ -143,19 +151,20 @@ public class TaskRestController {
     @GetMapping("users/task_id={id}")
     public ResponseEntity<List<User>> getUsersByTaskId(@PathVariable Long id) {
         Task task = taskService.findById(id);
-        if (task!= null) {
+        if (task != null) {
             return new ResponseEntity<>(task.getUsers(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @PostMapping("id={id}/user={user_id}")
-    public ResponseEntity<Boolean> addUserToTask(@PathVariable Long id,@PathVariable Long user_id) {
+    public ResponseEntity<Boolean> addUserToTask(@PathVariable Long id, @PathVariable Long user_id) {
         Optional<User> u = userService.findById(user_id);
-        if (u.isPresent()){
+        if (u.isPresent()) {
             Task task = taskService.findById(id);
-            if (task!= null) {
-                User user=u.get();
+            if (task != null) {
+                User user = u.get();
                 user.addTask(task);
                 userService.save(user);
                 return new ResponseEntity<>(true, HttpStatus.OK);
@@ -166,13 +175,14 @@ public class TaskRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @DeleteMapping("id={id}/user={user_id}")
-    public ResponseEntity<Boolean> deleteUserToTask(@PathVariable Long id,@PathVariable Long user_id) {
+    public ResponseEntity<Boolean> deleteUserToTask(@PathVariable Long id, @PathVariable Long user_id) {
         Optional<User> u = userService.findById(user_id);
-        if (u.isPresent()){
+        if (u.isPresent()) {
             Task task = taskService.findById(id);
-            if (task!= null) {
-                User user=u.get();
+            if (task != null) {
+                User user = u.get();
                 user.removeTask(task);
                 userService.save(user);
                 return new ResponseEntity<>(true, HttpStatus.OK);
@@ -182,6 +192,18 @@ public class TaskRestController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @JsonView(TaskRequest.class)
+    @PutMapping("id={id}&newDateEnd={newDate}")
+    public ResponseEntity<Task> updateDateEnd(@PathVariable Long id, @PathVariable Date newDate) {
+        Task task = taskService.findById(id);
+        if (task != null && newDate != null) {
+            task.setDate_end(newDate);
+            taskService.save(task);
+            return new ResponseEntity<>(task, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }

@@ -55,6 +55,18 @@ public class Task implements Comparable<Task> {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Tag> tag_ids;
 
+    @JsonView(Task.TaskListBasicInfo.class)
+    @Column(name="date_end")
+    private Date date_end;
+
+    public Date getDate_end() {
+        return date_end;
+    }
+
+    public void setDate_end(Date date_end) {
+        this.date_end = date_end;
+    }
+
     public Task() {
         this.create_date=new Date();
         this.write_date =new Date();

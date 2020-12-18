@@ -3,33 +3,43 @@ package com.example.protasks
 import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.Tag
 import com.example.protasks.models.Task
 import com.example.protasks.models.User
 import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.utils.BottomSheet
+import com.example.protasks.utils.DatePicker
 import com.example.protasks.views.ITasksView
 import com.google.android.material.textfield.TextInputEditText
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 
-class TaskDialogExtend(
-    private val task: Task,
+class TaskDialogExtend (
+    private var task: Task,
     private val boardName: String,
     private val boardId: Long,
-    private val fragmentMgr:FragmentManager
+    private val fragmentMgr: FragmentManager,
+    private val viewHolder: TaskAdapterInsideBoard.ViewHolder
 ) : DialogFragment(),
     ITasksView {
     var name: TextInputEditText? = null
@@ -50,6 +60,7 @@ class TaskDialogExtend(
     var tagList: List<Tag>? = null
     var addTagsButton: ImageButton? = null
     var boardTagList: List<Tag>? = ArrayList()
+    var dateEnd: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,13 +75,17 @@ class TaskDialogExtend(
         dialog.window!!.setLayout(width, height)
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, state: Bundle?): View? {
         super.onCreateView(inflater, parent, state)
         val v: View = inflater.inflate(R.layout.task_dialog_extend, parent, false)
         name = v.findViewById(R.id.taskname)
         description = v.findViewById(R.id.taskDescription)
         toolbar = v.findViewById(R.id.toolbar)
-        toolbar!!.setNavigationOnClickListener { dismiss() }
+        toolbar!!.setNavigationOnClickListener {
+            viewHolder.updateTask(task)
+            dismiss()
+        }
         taskPresenter = TaskPresenter(this, requireContext())
 
         name!!.setText(task.getTitle())
@@ -194,10 +209,36 @@ class TaskDialogExtend(
             }
 
         }
+        dateEnd = v.findViewById(R.id.date_picker)
+        if (task.getDateEnd()!=null){
+            val style: Int = DateFormat.MEDIUM
+            val df = DateFormat.getDateInstance(style, Locale.forLanguageTag("es-ES"))
+            val strDate: String = df.format(task.getDateEnd()!!)
+            dateEnd!!.text=strDate
+        }
+        dateEnd!!.setOnClickListener {
+            var d: Date = Date()
+            if (task.getDateEnd()!=null) {
+                d = task.getDateEnd()!!
+            }
+            val datePicker = DatePicker (d) { day, month, year -> onDateSelected(day, month, year)}
+                datePicker.show(fragmentMgr, "datePicker")
+        }
 
         return v
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun onDateSelected(day: Int, month: Int, year: Int) {
+        val cal = Calendar.getInstance()
+        cal[year, month] = day
+        val date = cal.time
+        val style: Int = DateFormat.MEDIUM
+        val df = DateFormat.getDateInstance(style, Locale.forLanguageTag("es-ES"))
+        val strDate: String = df.format(date)
+        dateEnd!!.text = strDate
+        taskPresenter!!.updateDate(task.getId()!!,date)
+    }
     override fun setTasks(tasks: List<Task>) {
         TODO("Not yet implemented")
     }
@@ -238,4 +279,8 @@ class TaskDialogExtend(
         (boardTagList as ArrayList).add(tag)
         addTagsButton!!.performClick()
     }
+    override fun updateTask(t:Task){
+        task=t
+    }
+
 }

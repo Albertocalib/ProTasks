@@ -11,4 +11,5 @@ interface ITasksView {
     fun setTags(tags:List<Tag>)
     fun setTagsBoard(tags:List<Tag>)
     fun updateTags(tag:Tag)
+    fun updateTask(t: Task)
 }

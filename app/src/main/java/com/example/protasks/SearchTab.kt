@@ -109,6 +109,10 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,Bo
         TODO("Not yet implemented")
     }
 
+    override fun updateTask(t: Task) {
+        TODO("Not yet implemented")
+    }
+
     override fun onItemClicked(text: TextView) {
         val intent = Intent(context, BoardInsideActivity::class.java)
         intent.putExtra("BOARD_NAME", text.text)
