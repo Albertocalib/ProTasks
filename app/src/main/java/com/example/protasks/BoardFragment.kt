@@ -191,6 +191,12 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
             (header.findViewById<View>(R.id.item_count) as TextView).text =
                 mItemArray.size.toString()
         }
+        val buttonOptions = (header.findViewById<View>(R.id.options) as ImageButton)
+        buttonOptions.setOnClickListener { v ->
+            val columnName = (header.findViewById<TextView>(R.id.text)).text
+            val bottomSheet = BottomSheet(boardName,columnName.toString(),presenter,"menu")
+            bottomSheet.show(supportFragmentManager, "bottomSheet")
+        }
         val layoutManager = LinearLayoutManager(context)
         val columnProperties = ColumnProperties.Builder.newBuilder(listAdapter)
             .setLayoutManager(layoutManager)

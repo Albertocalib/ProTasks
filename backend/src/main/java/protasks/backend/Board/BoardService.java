@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -23,6 +24,7 @@ public class BoardService {
     public Board findBoardByTaskListId(Long id){
         return this.boardRepository.findBoardByTaskListId(id);
     }
+    public Optional<Board> findById(Long id){ return this.boardRepository.findById(id);}
 
 }
 

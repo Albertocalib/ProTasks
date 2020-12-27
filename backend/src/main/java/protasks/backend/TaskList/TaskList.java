@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-public class TaskList implements Comparable<TaskList> {
+public class TaskList implements Comparable<TaskList>,Cloneable {
     @Override
     public int compareTo(TaskList o) {
         return Long.compare(this.position, o.getPosition());
@@ -29,7 +29,7 @@ public class TaskList implements Comparable<TaskList> {
     private String title;
 
     @JsonView(TaskList.TaskListExtendedInfo.class)
-    @OneToMany(mappedBy = "taskList")
+    @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL)
     private List<Task> tasks;
 
     @JsonView(TaskList.TaskListExtendedInfo.class)
@@ -124,6 +124,19 @@ public class TaskList implements Comparable<TaskList> {
     }
 
     public void addTask(Task t){this.tasks.add(t);}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        super.clone();
+        TaskList newTaskList= new TaskList (this.title,this.board);
+        newTaskList.setPosition(this.position);
+        for (Task t:this.tasks) {
+            Task nt= (Task) t.clone();
+            nt.setTaskList(newTaskList);
+            newTaskList.addTask(nt);
+        }
+        return newTaskList;
+    }
 
 
 
