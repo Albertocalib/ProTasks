@@ -52,7 +52,7 @@ public class Task implements Comparable<Task>,Cloneable {
     private Date create_date;
 
     @JsonView(Task.TaskListBasicInfo.class)
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade ={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Tag> tag_ids;
 
     @JsonView(Task.TaskListBasicInfo.class)
