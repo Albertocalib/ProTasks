@@ -181,7 +181,7 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
         val header =
             View.inflate(activity, R.layout.column_header, null)
         (header.findViewById<View>(R.id.text) as TextView).text = list.getTitle()
-        (header.findViewById<View>(R.id.item_count) as TextView).text = "" + list.getTasks()!!.size
+        (header.findViewById<View>(R.id.item_count) as TextView).text ="""${list.getTasks()!!.size}"""
         listMap!![list.getTitle()!!] = list.getId()
         val buttonAddTask= (header.findViewById<View>(R.id.btnAddTask) as Button)
         buttonAddTask.setOnClickListener { v ->

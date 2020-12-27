@@ -60,6 +60,7 @@ class ListFragment(
         mDragListView = view.findViewById<View>(R.id.drag_list_view) as DragListView
         mDragListView!!.recyclerView.isVerticalScrollBarEnabled = true
         mDragListView!!.isDragEnabled = true
+        mDragListView!!.setCanNotDragAboveTopItem(true)
         mDragListView!!.setDragListListener(object : DragListListenerAdapter() {
             override fun onItemDragStarted(position: Int) {
                 mRefreshLayout!!.isEnabled = false
@@ -168,10 +169,7 @@ class ListFragment(
             }
 
             override fun canDropItemAtPosition(dropPosition: Int): Boolean {
-                val tripleEl =
-                    mDragListView!!.adapter.itemList[dropPosition] as Triple<*, *, *>
-                val firstElement = tripleEl.third as Boolean
-                return !firstElement
+                return true
             }
         })
         setupListRecyclerView()
