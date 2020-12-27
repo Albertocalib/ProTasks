@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-public class Task implements Comparable<Task> {
+public class Task implements Comparable<Task>,Cloneable {
     @Override
     public int compareTo(Task o) {
         return Long.compare(this.position, o.getPosition());
@@ -168,5 +168,15 @@ public class Task implements Comparable<Task> {
             this.tag_ids.add(t);
         }
     }
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        super.clone();
+        Task newTask= new Task (this.title,this.description,this.taskList,this.position);
+        for (Tag t : this.tag_ids){
+            newTask.addTag(t);
+        }
+        return newTask;
+    }
+
 }
 

@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import com.example.protasks.RetrofitInstance
@@ -17,6 +18,7 @@ import com.example.protasks.restServices.BoardRestService
 import com.example.protasks.restServices.TaskListRestService
 import com.example.protasks.restServices.TaskRestService
 import com.example.protasks.restServices.UserRestService
+import com.example.protasks.utils.BottomSheet
 import com.example.protasks.utils.ImageHandler
 import com.example.protasks.utils.Preference
 import com.example.protasks.views.IBoardsView
@@ -34,6 +36,9 @@ class TaskListPresenter(private var view: IInsideBoardsView, private var context
         RetrofitInstance("api/list/", TaskListRestService::class.java)
     private val retrofitInsTask: RetrofitInstance<TaskRestService> =
         RetrofitInstance("api/task/", TaskRestService::class.java)
+
+    private val retrofitInsBoard: RetrofitInstance<BoardRestService> =
+        RetrofitInstance("api/board/", BoardRestService::class.java)
     private val preference: Preference = Preference()
     private val image_handler: ImageHandler = ImageHandler()
 
@@ -162,6 +167,71 @@ class TaskListPresenter(private var view: IInsideBoardsView, private var context
 
         })
 
+    }
+    override fun deleteTaskList(boardName: String,listName: String){
+        val username = preference.getEmail(context)
+        val taskList = retrofitInsTaskList.service.deleteTaskList(boardName, listName,username!!)
+        taskList.enqueue(object : Callback<Boolean> {
+            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                Toast.makeText(context, "Tasklist deleted", Toast.LENGTH_SHORT).show()
+                getLists(boardName)
+            }
+
+        })
+    }
+    fun getBoards(view: BottomSheet) {
+        val username = preference.getEmail(context)
+        val boards = retrofitInsBoard.service.getBoardsByUser(username!!)
+        boards.enqueue(object : Callback<List<Board>> {
+            override fun onFailure(call: Call<List<Board>>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<List<Board>>?, response: Response<List<Board>>?) {
+                view.setBoard(response!!.body()!!)
+
+            }
+
+        })
+    }
+
+    fun moveTaskList(board: Board, listName: String, boardDestId: Long) {
+        val username = preference.getEmail(context)
+        val taskList = retrofitInsTaskList.service.moveTaskList(board.getName()!!, listName, boardDestId,username!!)
+        taskList.enqueue(object : Callback<Boolean> {
+            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                Toast.makeText(context, "Tasklist moved", Toast.LENGTH_SHORT).show()
+                getLists(board.getName()!!)
+            }
+
+        })
+
+    }
+
+    fun copyTaskList(board: Board, listName: String, boardDestId: Long) {
+        val username = preference.getEmail(context)
+        val taskList = retrofitInsTaskList.service.copyTaskList(board.getName()!!, listName, boardDestId,username!!)
+        taskList.enqueue(object : Callback<Boolean> {
+            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                Toast.makeText(context, "Tasklist copied", Toast.LENGTH_SHORT).show()
+                if (board.getId()==boardDestId){
+                    getLists(board.getName()!!)
+                }
+            }
+
+        })
     }
 
 }
