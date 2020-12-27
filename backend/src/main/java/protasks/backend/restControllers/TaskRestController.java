@@ -205,5 +205,27 @@ public class TaskRestController {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+    @JsonView(TaskRequest.class)
+    @PutMapping("id={id}&newTitle={title}")
+    public ResponseEntity<Task> updateTitleTask(@PathVariable Long id, @PathVariable String title) {
+        Task task = taskService.findById(id);
+        if (task != null && title != null) {
+            task.setTitle(title);
+            taskService.save(task);
+            return new ResponseEntity<>(task, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    @JsonView(TaskRequest.class)
+    @PutMapping("id={id}&newDescription={description}")
+    public ResponseEntity<Task> updateDescriptionTask(@PathVariable Long id, @PathVariable String description) {
+        Task task = taskService.findById(id);
+        if (task != null && description != null) {
+            task.setDescription(description);
+            taskService.save(task);
+            return new ResponseEntity<>(task, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
 }

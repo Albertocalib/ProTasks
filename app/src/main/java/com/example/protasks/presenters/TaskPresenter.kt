@@ -1,5 +1,6 @@
 package com.example.protasks.presenters
 
+import android.content.ClipDescription
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -217,6 +218,34 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
             override fun onResponse(call: Call<Tag>?, response: Response<Tag>?) {
                 Toast.makeText(context, "Tag Created", Toast.LENGTH_SHORT).show()
                 view.updateTags(response!!.body()!!)
+            }
+
+        })
+    }
+
+    fun updateTitle(id: Long, title: String) {
+        val task = retrofitInsTask.service.updateTitleTask(id, title)
+        task.enqueue(object : Callback<Task> {
+            override fun onFailure(call: Call<Task>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
+                view.updateTask(response!!.body()!!)
+            }
+
+        })
+    }
+
+    fun updateDescription(id: Long, description: String) {
+        val task = retrofitInsTask.service.updateDescriptionTask(id, description)
+        task.enqueue(object : Callback<Task> {
+            override fun onFailure(call: Call<Task>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
+                view.updateTask(response!!.body()!!)
             }
 
         })

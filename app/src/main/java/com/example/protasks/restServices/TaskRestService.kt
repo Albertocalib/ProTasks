@@ -32,4 +32,10 @@ interface TaskRestService {
 
     @PUT("id={id}&newDateEnd={newDate}")
     fun updateDateEnd(@Path("id") id:Long,@Path("newDate") newDate: Date):Call<Task>
+
+    @PUT("id={id}&newTitle={title}")
+    fun updateTitleTask(@Path("id") id: Long, @Path("title")title: String): Call<Task>
+
+    @PUT("id={id}&newDescription={description}")
+    fun updateDescriptionTask(@Path("id") id: Long, @Path("description")description: String): Call<Task>
 }

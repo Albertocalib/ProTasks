@@ -82,6 +82,7 @@ class TaskAdapterInsideBoard(
         }
         fun updateTask(t:Task){
             task=t
+            mText.text=task!!.getTitle()
         }
 
     }

@@ -29,6 +29,7 @@ public class Task implements Comparable<Task>,Cloneable {
     @Column(name="Title")
     private String title;
 
+    @JsonView(Task.TaskListBasicInfo.class)
     @Column(name="Description")
     private String description;
 
@@ -36,6 +37,7 @@ public class Task implements Comparable<Task>,Cloneable {
     @Column(name="Position")
     private long position;
 
+    @JsonView(Task.TaskListExtendedInfo.class)
     @ManyToMany(mappedBy = "tasks")
     private List<User> users ;
 
@@ -172,6 +174,7 @@ public class Task implements Comparable<Task>,Cloneable {
     public Object clone() throws CloneNotSupportedException {
         super.clone();
         Task newTask= new Task (this.title,this.description,this.taskList,this.position);
+        newTask.date_end=this.date_end;
         for (Tag t : this.tag_ids){
             newTask.addTag(t);
         }
