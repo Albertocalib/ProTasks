@@ -32,5 +32,8 @@ public class TaskListService {
         return this.taskListRepository.findById(id);
     }
     public void delete(TaskList tl){ this.taskListRepository.delete(tl);}
+    public List<TaskList> findTaskList(Long boardId, String list) {
+        return this.taskListRepository.findTaskList(boardId, list);
+    }
 }
 

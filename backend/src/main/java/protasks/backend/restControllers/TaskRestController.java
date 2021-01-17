@@ -112,6 +112,7 @@ public class TaskRestController {
         }
         lists.sort(Task::compareTo);
         if (eraseMode) {
+            lists.remove(t);
             for (int i = 0; i < lists.size(); i++) {
                 Task task = lists.get(i);
                 task.setPosition(i + 1);
@@ -205,6 +206,7 @@ public class TaskRestController {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
     @JsonView(TaskRequest.class)
     @PutMapping("id={id}&newTitle={title}")
     public ResponseEntity<Task> updateTitleTask(@PathVariable Long id, @PathVariable String title) {
@@ -216,6 +218,7 @@ public class TaskRestController {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
     @JsonView(TaskRequest.class)
     @PutMapping("id={id}&newDescription={description}")
     public ResponseEntity<Task> updateDescriptionTask(@PathVariable Long id, @PathVariable String description) {
@@ -226,6 +229,65 @@ public class TaskRestController {
             return new ResponseEntity<>(task, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @JsonView(TaskRequest.class)
+    @PutMapping(value = "id={taskId}&listDestName={listDestName}&boardDestId={boardDestId}&username={username}")
+    public ResponseEntity<Boolean> moveTask(@PathVariable("taskId") Long taskId,
+                                            @PathVariable("listDestName") String listDestName,
+                                            @PathVariable("boardDestId") Long boardDestId,
+                                            @PathVariable("username") String username) throws CloneNotSupportedException {
+        if (taskId == null || listDestName == null || boardDestId == null || username == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Task t = taskService.findById(taskId);
+        if (t != null) {
+            if (!listDestName.equals(t.getTaskList().getTitle())) {
+                //Update old list (eraseMode=True)
+                updatePositions(t, null, 0, true);
+                List<TaskList> tl = listService.findTaskList(boardDestId, listDestName);
+                if (tl != null && tl.size() == 1) {
+                    t.setPosition(tl.get(0).getTasks().size()+1);
+                    t.setTaskList(tl.get(0));
+                    taskService.save(t);
+                    tl.get(0).addTask(t);
+                    listService.save(tl.get(0));
+                    return new ResponseEntity<>(true, HttpStatus.OK);
+                }
+            }
+        }
+
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    }
+
+    @JsonView(TaskRequest.class)
+    @PostMapping(value = "id={taskId}&listDestName={listDestName}&boardDestId={boardDestId}&username={username}")
+    public ResponseEntity<Boolean> copyTask(@PathVariable("taskId") Long taskId,
+                                            @PathVariable("listDestName") String listDestName,
+                                            @PathVariable("boardDestId") Long boardDestId,
+                                            @PathVariable("username") String username) throws CloneNotSupportedException {
+        Task t = taskService.findById(taskId);
+        if (t != null) {
+            Task t2 = (Task)t.clone();
+            if (t2!=null) {
+                List<TaskList> tl = listService.findTaskList(boardDestId, listDestName);
+                if (tl != null && tl.size() == 1) {
+                    t2.setPosition(tl.get(0).getTasks().size()+1);
+                    t2.setTaskList(tl.get(0));
+                    taskService.save(t2);
+                    tl.get(0).addTask(t2);
+                    listService.save(tl.get(0));
+                    return new ResponseEntity<>(true, HttpStatus.OK);
+                }
+
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+
     }
 
 }

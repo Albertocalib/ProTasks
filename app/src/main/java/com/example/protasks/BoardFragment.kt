@@ -177,7 +177,7 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
             boardId= taskLists[0].getBoard()!!.getId()
         }
         val listAdapter =
-            TaskAdapterInsideBoard(mItemArray, false,R.layout.column_item, R.id.item_layout, true,supportFragmentManager,boardName,boardId)
+            TaskAdapterInsideBoard(mItemArray, false,R.layout.column_item, R.id.item_layout, true,supportFragmentManager,boardName,boardId,presenter)
         val header =
             View.inflate(activity, R.layout.column_header, null)
         (header.findViewById<View>(R.id.text) as TextView).text = list.getTitle()
@@ -217,7 +217,7 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
             boardId= taskLists[0].getBoard()!!.getId()
         }
         val listAdapter =
-            TaskAdapterInsideBoard(mItemArray, false,R.layout.column_item, R.id.item_layout_add_tasklist, false,supportFragmentManager,boardName,boardId)
+            TaskAdapterInsideBoard(mItemArray, false,R.layout.column_item, R.id.item_layout_add_tasklist, false,supportFragmentManager,boardName,boardId,presenter)
         val header =
             View.inflate(activity, R.layout.column_add_tasklist_item, null)
         val buttonAddTaskList= (header.findViewById<View>(R.id.btAddTaskList) as Button)

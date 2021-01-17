@@ -233,5 +233,54 @@ class TaskListPresenter(private var view: IInsideBoardsView, private var context
 
         })
     }
+    fun deleteTask(taskId:Long,boardName: String){
+        val task = retrofitInsTask.service.deleteTask(taskId)
+        task.enqueue(object : Callback<Boolean> {
+            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                Toast.makeText(context, "Task deleted", Toast.LENGTH_SHORT).show()
+                getLists(boardName)
+            }
+
+        })
+    }
+
+    fun copyTask(board: Board, listName: String, taskId: Long?, boardDestId: Long) {
+        val username = preference.getEmail(context)
+        val task = retrofitInsTask.service.copyTask(taskId!!,listName,boardDestId,username!!)
+        task.enqueue(object : Callback<Boolean> {
+            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                Toast.makeText(context, "Task copied", Toast.LENGTH_SHORT).show()
+                if (board.getId()==boardDestId){
+                    getLists(board.getName()!!)
+                }
+            }
+
+        })
+    }
+    fun moveTask(board: Board, listName: String, taskId: Long?, boardDestId: Long) {
+        val username = preference.getEmail(context)
+        val task = retrofitInsTask.service.moveTask(taskId!!,listName,boardDestId,username!!)
+        task.enqueue(object : Callback<Boolean> {
+            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                Toast.makeText(context, "Task moved", Toast.LENGTH_SHORT).show()
+                if (board.getId()==boardDestId){
+                    getLists(board.getName()!!)
+                }
+            }
+
+        })
+    }
 
 }
