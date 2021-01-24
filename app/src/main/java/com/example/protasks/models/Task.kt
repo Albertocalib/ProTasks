@@ -36,6 +36,14 @@ class Task(
     @SerializedName("date_end")
     private var date_end: Date? = null
 
+    @Expose
+    @SerializedName("users")
+    private var users: List<User>? = null
+
+    fun getUsers(): List<User>? {
+        return users
+    }
+
     override fun getTitle(): String? {
         return title
     }

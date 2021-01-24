@@ -37,7 +37,7 @@ public class Task implements Comparable<Task>,Cloneable {
     @Column(name="Position")
     private long position;
 
-    @JsonView(Task.TaskListExtendedInfo.class)
+    @JsonView(Task.TaskListBasicInfo.class)
     @ManyToMany(mappedBy = "tasks")
     private List<User> users ;
 

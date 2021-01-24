@@ -17,10 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.protasks.BoardAdapterMenu
-import com.example.protasks.BoardFragment
-import com.example.protasks.ListFragment
-import com.example.protasks.R
+import com.example.protasks.*
 import com.example.protasks.models.Board
 import com.example.protasks.models.TaskList
 import com.example.protasks.models.User
@@ -68,7 +65,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
         changeViewModeButton!!.setOnClickListener {
             val menu = PopupMenu(baseContext, it)
             menu.setOnMenuItemClickListener(this)
-            menu.inflate(R.menu.view_mode_button)
+            menu.inflate(R.menu.view_mode_button_in)
             menu.show()
         }
         mDrawer = findViewById(R.id.drawer)
@@ -207,12 +204,18 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
-        if (item!!.itemId==R.id.listViewMode){
-            fragment = ListFragment(lists,presenter!!,boardName!!,supportFragmentManager)
-            preference.setModeView(true,this)
-        }else{
-            fragment = BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!)
-            preference.setModeView(false,this)
+        when {
+            item!!.itemId==R.id.listViewMode -> {
+                fragment = ListFragment(lists,presenter!!,boardName!!,supportFragmentManager)
+                preference.setModeView(true,this)
+            }
+            item.itemId==R.id.BoardViewMode -> {
+                fragment = BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!)
+                preference.setModeView(false,this)
+            }
+            else -> {
+                fragment = StatsFragment(lists,presenter!!,supportFragmentManager,boardName!!)
+            }
         }
         showFragment(fragment!!)
         return true

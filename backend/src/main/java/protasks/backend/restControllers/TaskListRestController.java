@@ -27,7 +27,7 @@ public class TaskListRestController {
     interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo, BoardUsersPermRel.BoardBasicInfo {
     }
 
-    interface TaskListRequest extends TaskList.TaskListExtendedInfo, TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Board.BoardBasicInfo {
+    interface TaskListRequest extends TaskList.TaskListExtendedInfo, TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Board.BoardBasicInfo, User.UserBasicInfo {
     }
 
     @Autowired

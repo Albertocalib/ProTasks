@@ -35,6 +35,9 @@ android {
         jvmTarget = "1.8"
     }
 }
+repositories {
+    maven { url 'https://jitpack.io' }
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -62,5 +65,5 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.github.woxthebox:draglistview:1.7.1'
     implementation 'com.android.support:multidex:1.0.3'
-
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
