@@ -65,6 +65,7 @@ class PieAdapter(
         l.orientation=Legend.LegendOrientation.VERTICAL
         l.setCustom(legendEntries)
         l.textSize = 13F
+        l.isWordWrapEnabled = true
         holder.pieChart.invalidate()
 
 
@@ -72,7 +73,7 @@ class PieAdapter(
 
     class ViewHolderPie(v: View) : RecyclerView.ViewHolder(v) {
         var pieChart: PieChart = v.findViewById(R.id.pie_chart)
-        var userName: TextView = v.findViewById(R.id.userName)
+        val userName: TextView = v.findViewById(R.id.userName)
 
         init {
             pieChart.setUsePercentValues(true)

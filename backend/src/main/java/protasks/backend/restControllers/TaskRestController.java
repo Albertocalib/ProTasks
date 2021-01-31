@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardUsersPermRel;
+import protasks.backend.File.File;
+import protasks.backend.File.FileService;
 import protasks.backend.Task.Task;
 import protasks.backend.Task.TaskService;
 import protasks.backend.TaskList.TaskList;
@@ -14,18 +16,12 @@ import protasks.backend.TaskList.TaskListService;
 import protasks.backend.user.User;
 import protasks.backend.user.UserService;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/task")
 public class TaskRestController {
-    interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo {
+    interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo,File.FileBasicInfo {
     }
 
     interface UserRequest extends User.UserBasicInfo, User.UserDetailsInfo, Board.BoardBasicInfo, BoardUsersPermRel.UserBasicInfo {
@@ -39,6 +35,9 @@ public class TaskRestController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    FileService fileService;
 
     @JsonView(TaskRequest.class)
     @PostMapping(value = "/newTask/board={boardName}&list={listName}&username={username}")
@@ -288,6 +287,21 @@ public class TaskRestController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
 
+    }
+    @JsonView(TaskRequest.class)
+    @PostMapping(value = "newAttachments/task={taskId}")
+    public ResponseEntity<Task> addAttachments(@PathVariable("taskId")Long taskId, @RequestBody HashSet<File> files){
+        Task t = taskService.findById(taskId);
+        if (t!=null){
+            for (File f:files) {
+                File newFile = new File(f.getName(),f.getContent(),f.getType(),t);
+                fileService.save(newFile);
+            }
+            t = taskService.findById(taskId);
+            return new ResponseEntity<>(t,HttpStatus.CREATED);
+
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }

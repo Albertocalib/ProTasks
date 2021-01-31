@@ -1,8 +1,11 @@
 package com.example.protasks
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -14,6 +17,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
@@ -30,7 +35,6 @@ import com.example.protasks.utils.DatePicker
 import com.example.protasks.views.ITasksView
 import com.google.android.material.textfield.TextInputEditText
 import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
@@ -63,10 +67,28 @@ class TaskDialogExtend(
     var addTagsButton: ImageButton? = null
     var boardTagList: List<Tag>? = ArrayList()
     var dateEnd: TextView? = null
+    var attachFiles: TextView? = null
+    var resultLauncher:ActivityResultLauncher<Intent>?=null
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uris = HashSet<Uri>()
+                val data= result.data!!.clipData
+                if (data!=null) {
+                    for (d: Int in 0 until data.itemCount) {
+                        uris.add(data.getItemAt(d).uri)
+                    }
+                }else{
+                    val data2 = result.data!!.data
+                    uris.add(data2!!)
+                }
+                taskPresenter!!.addAttachedFile(uris,task.getId())
+            }
+        }
     }
 
     override fun onStart() {
@@ -262,12 +284,19 @@ class TaskDialogExtend(
             dateEnd!!.text = strDate
         }
         dateEnd!!.setOnClickListener {
-            var d: Date = Date()
+            var d = Date()
             if (task.getDateEnd() != null) {
                 d = task.getDateEnd()!!
             }
             val datePicker = DatePicker(d) { day, month, year -> onDateSelected(day, month, year) }
             datePicker.show(fragmentMgr, "datePicker")
+        }
+        attachFiles = v.findViewById(R.id.attached)
+        attachFiles!!.setOnClickListener {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "*/*";
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            resultLauncher!!.launch(Intent.createChooser(intent, "Select Picture"))
         }
 
         return v

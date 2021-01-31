@@ -40,6 +40,10 @@ class Task(
     @SerializedName("users")
     private var users: List<User>? = null
 
+    @Expose
+    @SerializedName("attachments")
+    private var attachments: List<File?>? = null
+
     fun getUsers(): List<User>? {
         return users
     }
@@ -88,6 +92,9 @@ class Task(
 
     fun getDateEnd():Date?{
         return this.date_end
+    }
+    fun getAttachments(): List<File?>? {
+        return this.attachments
     }
 
 

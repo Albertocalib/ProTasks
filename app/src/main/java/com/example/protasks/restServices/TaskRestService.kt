@@ -1,6 +1,8 @@
 package com.example.protasks.restServices
 
+import com.example.protasks.models.File
 import com.example.protasks.models.Task
+import com.example.protasks.models.TaskList
 import com.example.protasks.models.User
 import retrofit2.Call
 import retrofit2.http.*
@@ -58,4 +60,6 @@ interface TaskRestService {
         @Path("username") username: String
     ): Call<Boolean>
 
+    @POST("newAttachments/task={taskId}")
+    fun addAttachments(@Path("taskId")taskId: Long?, @Body files: HashSet<File>): Call<Task>
 }

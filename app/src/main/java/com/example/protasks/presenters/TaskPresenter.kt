@@ -1,10 +1,14 @@
 package com.example.protasks.presenters
 
-import android.content.ClipDescription
 import android.content.Context
+import android.net.Uri
+import android.provider.OpenableColumns
+import android.util.Base64
 import android.util.Log
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import com.example.protasks.RetrofitInstance
+import com.example.protasks.models.File
 import com.example.protasks.models.Tag
 import com.example.protasks.models.Task
 import com.example.protasks.models.User
@@ -15,6 +19,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import kotlin.collections.HashSet
 
 
 class TaskPresenter(private var view: ITasksView, private var context: Context) :
@@ -248,6 +253,44 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
                 view.updateTask(response!!.body()!!)
             }
 
+        })
+    }
+    private fun fileToBase64(uri:Uri):String{
+        val imageStream = context.contentResolver.openInputStream(uri)!!.readBytes()
+        return Base64.encodeToString(imageStream, Base64.NO_WRAP)
+    }
+
+    private fun getFileName(uri: Uri): String? {
+        val cursor= context.contentResolver.query(uri, null, null, null, null)
+        if (cursor!!.count > 0) {
+            cursor.moveToFirst()
+            val fileName: String =
+                cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+            cursor.close()
+            return fileName
+        }
+        return ""
+    }
+
+    fun addAttachedFile(data: HashSet<Uri>, id: Long?) {
+        val files = HashSet<File>()
+        for( file in data) {
+            val cR = context.contentResolver
+            val mime = MimeTypeMap.getSingleton()
+            val type = mime.getExtensionFromMimeType(cR.getType(file))
+            val fileName = getFileName(file)
+            val fileBase64 = fileToBase64(file)
+            files.add(File(fileName,type,fileBase64))
+        }
+       val task = retrofitInsTask.service.addAttachments(id, files)
+       task.enqueue(object : Callback<Task> {
+           override fun onFailure(call: Call<Task>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
+                view.updateTask(response!!.body()!!)
+            }
         })
     }
 

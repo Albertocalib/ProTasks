@@ -1,6 +1,7 @@
 package protasks.backend.Task;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import protasks.backend.File.File;
 import protasks.backend.Tag.Tag;
 import protasks.backend.TaskList.TaskList;
 import protasks.backend.user.User;
@@ -60,6 +61,18 @@ public class Task implements Comparable<Task>,Cloneable {
     @JsonView(Task.TaskListBasicInfo.class)
     @Column(name="date_end")
     private Date date_end;
+
+    @JsonView(Task.TaskListExtendedInfo.class)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    private List<File> attachments;
+
+    public List<File> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<File> attachments) {
+        this.attachments = attachments;
+    }
 
     public Date getDate_end() {
         return date_end;
