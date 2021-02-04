@@ -181,6 +181,24 @@
                     android:padding="10dp"
                     android:textAlignment="center"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Date end icon"
+                    android:padding="16dp"
+                    app:srcCompat="@drawable/ic_adjunto_archivo" />
+                <TextView
+                    android:id="@+id/attached"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Adjuntar archivo"
+                    android:padding="10dp"
+                    android:textAlignment="center"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

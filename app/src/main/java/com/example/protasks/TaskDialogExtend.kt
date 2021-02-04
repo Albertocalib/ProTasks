@@ -1,10 +1,15 @@
 package com.example.protasks
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +17,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
@@ -28,13 +35,12 @@ import com.example.protasks.utils.DatePicker
 import com.example.protasks.views.ITasksView
 import com.google.android.material.textfield.TextInputEditText
 import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 
-class TaskDialogExtend (
+class TaskDialogExtend(
     private var task: Task,
     private val boardName: String,
     private val boardId: Long,
@@ -61,10 +67,28 @@ class TaskDialogExtend (
     var addTagsButton: ImageButton? = null
     var boardTagList: List<Tag>? = ArrayList()
     var dateEnd: TextView? = null
+    var attachFiles: TextView? = null
+    var resultLauncher:ActivityResultLauncher<Intent>?=null
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uris = HashSet<Uri>()
+                val data= result.data!!.clipData
+                if (data!=null) {
+                    for (d: Int in 0 until data.itemCount) {
+                        uris.add(data.getItemAt(d).uri)
+                    }
+                }else{
+                    val data2 = result.data!!.data
+                    uris.add(data2!!)
+                }
+                taskPresenter!!.addAttachedFile(uris,task.getId())
+            }
+        }
     }
 
     override fun onStart() {
@@ -92,6 +116,49 @@ class TaskDialogExtend (
         if (task.getDescription() != null) {
             description!!.setText(task.getDescription())
         }
+        name!!.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (name!!.text.toString() != "") {
+                    taskPresenter!!.updateTitle(task.getId()!!, name!!.text.toString())
+                }
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int,
+                count: Int, after: Int
+            ) {
+                // I don't want to do anything beforeTextChanged
+            }
+
+            override fun onTextChanged(
+                s: CharSequence, start: Int,
+                before: Int, count: Int
+            ) {
+
+                // I don't want to do anything onTextChanged
+            }
+        })
+        description!!.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                taskPresenter!!.updateDescription(task.getId()!!, description!!.text.toString())
+
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int,
+                count: Int, after: Int
+            ) {
+                // I don't want to do anything beforeTextChanged
+            }
+
+            override fun onTextChanged(
+                s: CharSequence, start: Int,
+                before: Int, count: Int
+            ) {
+
+                // I don't want to do anything onTextChanged
+            }
+        })
         recyclerViewAssignments = v.findViewById(R.id.recycler_assignment_tags)
         recyclerViewAssignments!!.layoutManager = layoutManager
         taskPresenter!!.getUsers(task.getId()!!)
@@ -140,7 +207,7 @@ class TaskDialogExtend (
                     } else {
                         // Remover indice sin selección
                         val userId = boardUserList!![which]
-                        taskPresenter!!.removeAssignment(task.getId()!!, userId.getId()!!,false)
+                        taskPresenter!!.removeAssignment(task.getId()!!, userId.getId()!!, false)
                     }
                 }.setPositiveButton(
                     "OK"
@@ -186,7 +253,7 @@ class TaskDialogExtend (
                     } else {
                         // Remover indice sin selección
                         val tagId = boardTagList!![which]
-                        taskPresenter!!.removeTag(task.getId()!!, tagId.getId(),false)
+                        taskPresenter!!.removeTag(task.getId()!!, tagId.getId(), false)
                     }
                 }.setPositiveButton(
                     "OK"
@@ -198,8 +265,8 @@ class TaskDialogExtend (
                 ) { _, _ ->
                     taskPresenter!!.getTags(task.getId()!!)
                 }
-                .setNeutralButton("CREAR TAG"){_,_->
-                    val bottomSheet = BottomSheet(boardName,"",taskPresenter!!,"tag")
+                .setNeutralButton("CREAR TAG") { _, _ ->
+                    val bottomSheet = BottomSheet(boardName, "", taskPresenter!!, "tag")
                     bottomSheet.show(fragmentMgr, "bottomSheet")
                 }
                 .create()
@@ -210,19 +277,26 @@ class TaskDialogExtend (
 
         }
         dateEnd = v.findViewById(R.id.date_picker)
-        if (task.getDateEnd()!=null){
+        if (task.getDateEnd() != null) {
             val style: Int = DateFormat.MEDIUM
             val df = DateFormat.getDateInstance(style, Locale.forLanguageTag("es-ES"))
             val strDate: String = df.format(task.getDateEnd()!!)
-            dateEnd!!.text=strDate
+            dateEnd!!.text = strDate
         }
         dateEnd!!.setOnClickListener {
-            var d: Date = Date()
-            if (task.getDateEnd()!=null) {
+            var d = Date()
+            if (task.getDateEnd() != null) {
                 d = task.getDateEnd()!!
             }
-            val datePicker = DatePicker (d) { day, month, year -> onDateSelected(day, month, year)}
-                datePicker.show(fragmentMgr, "datePicker")
+            val datePicker = DatePicker(d) { day, month, year -> onDateSelected(day, month, year) }
+            datePicker.show(fragmentMgr, "datePicker")
+        }
+        attachFiles = v.findViewById(R.id.attached)
+        attachFiles!!.setOnClickListener {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "*/*";
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            resultLauncher!!.launch(Intent.createChooser(intent, "Select Picture"))
         }
 
         return v
@@ -237,8 +311,9 @@ class TaskDialogExtend (
         val df = DateFormat.getDateInstance(style, Locale.forLanguageTag("es-ES"))
         val strDate: String = df.format(date)
         dateEnd!!.text = strDate
-        taskPresenter!!.updateDate(task.getId()!!,date)
+        taskPresenter!!.updateDate(task.getId()!!, date)
     }
+
     override fun setTasks(tasks: List<Task>) {
         TODO("Not yet implemented")
     }
@@ -247,14 +322,19 @@ class TaskDialogExtend (
         usersList = users
         if (users.size > 3) {
             val usersReduced = users.subList(0, 3)
-            recyclerViewAssignments!!.adapter = AssignmentsAdapter(usersReduced,taskPresenter!!,task)
+            recyclerViewAssignments!!.adapter =
+                AssignmentsAdapter(usersReduced, taskPresenter!!, task)
             val more = "+" + (users.size - usersReduced.size)
             moreThanThreeText!!.text = more
         } else {
-            recyclerViewAssignments!!.adapter = AssignmentsAdapter(users,taskPresenter!!,task)
+            recyclerViewAssignments!!.adapter = AssignmentsAdapter(users, taskPresenter!!, task)
             moreThanThreeButton!!.visibility = View.GONE
-            val spanCount1=if (usersList!!.isNotEmpty()){usersList!!.size}else{1}
-            layoutManager!!.spanCount=spanCount1
+            val spanCount1 = if (usersList!!.isNotEmpty()) {
+                usersList!!.size
+            } else {
+                1
+            }
+            layoutManager!!.spanCount = spanCount1
 
         }
     }
@@ -263,24 +343,31 @@ class TaskDialogExtend (
         boardUserList = users
     }
 
-   override fun setTags(tags: List<Tag>) {
+    override fun setTags(tags: List<Tag>) {
         tagList = tags
-        recyclerViewTags!!.adapter = TagsAdapter(tagList,taskPresenter!!,task)
-        if (tagList!!.size<5) {
-            val spanCount=if (tagList!!.isNotEmpty()){tagList!!.size}else{1}
-            layoutManagerTags!!.spanCount=spanCount
+        recyclerViewTags!!.adapter = TagsAdapter(tagList, taskPresenter!!, task)
+        if (tagList!!.size < 5) {
+            val spanCount = if (tagList!!.isNotEmpty()) {
+                tagList!!.size
+            } else {
+                1
+            }
+            layoutManagerTags!!.spanCount = spanCount
         }
 
     }
-    override fun setTagsBoard(tags:List<Tag>){
-        boardTagList=tags
+
+    override fun setTagsBoard(tags: List<Tag>) {
+        boardTagList = tags
     }
-    override fun updateTags(tag:Tag){
+
+    override fun updateTags(tag: Tag) {
         (boardTagList as ArrayList).add(tag)
         addTagsButton!!.performClick()
     }
-    override fun updateTask(t:Task){
-        task=t
+
+    override fun updateTask(t: Task) {
+        task = t
     }
 
 }

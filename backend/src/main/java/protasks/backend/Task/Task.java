@@ -1,6 +1,7 @@
 package protasks.backend.Task;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import protasks.backend.File.File;
 import protasks.backend.Tag.Tag;
 import protasks.backend.TaskList.TaskList;
 import protasks.backend.user.User;
@@ -29,6 +30,7 @@ public class Task implements Comparable<Task>,Cloneable {
     @Column(name="Title")
     private String title;
 
+    @JsonView(Task.TaskListBasicInfo.class)
     @Column(name="Description")
     private String description;
 
@@ -36,6 +38,7 @@ public class Task implements Comparable<Task>,Cloneable {
     @Column(name="Position")
     private long position;
 
+    @JsonView(Task.TaskListBasicInfo.class)
     @ManyToMany(mappedBy = "tasks")
     private List<User> users ;
 
@@ -58,6 +61,18 @@ public class Task implements Comparable<Task>,Cloneable {
     @JsonView(Task.TaskListBasicInfo.class)
     @Column(name="date_end")
     private Date date_end;
+
+    @JsonView(Task.TaskListExtendedInfo.class)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    private List<File> attachments;
+
+    public List<File> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<File> attachments) {
+        this.attachments = attachments;
+    }
 
     public Date getDate_end() {
         return date_end;
@@ -172,6 +187,7 @@ public class Task implements Comparable<Task>,Cloneable {
     public Object clone() throws CloneNotSupportedException {
         super.clone();
         Task newTask= new Task (this.title,this.description,this.taskList,this.position);
+        newTask.date_end=this.date_end;
         for (Tag t : this.tag_ids){
             newTask.addTag(t);
         }

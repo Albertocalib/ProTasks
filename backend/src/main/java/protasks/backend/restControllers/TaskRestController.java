@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardUsersPermRel;
+import protasks.backend.File.File;
+import protasks.backend.File.FileService;
 import protasks.backend.Task.Task;
 import protasks.backend.Task.TaskService;
 import protasks.backend.TaskList.TaskList;
@@ -14,18 +16,12 @@ import protasks.backend.TaskList.TaskListService;
 import protasks.backend.user.User;
 import protasks.backend.user.UserService;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/task")
 public class TaskRestController {
-    interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo {
+    interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo,File.FileBasicInfo {
     }
 
     interface UserRequest extends User.UserBasicInfo, User.UserDetailsInfo, Board.BoardBasicInfo, BoardUsersPermRel.UserBasicInfo {
@@ -39,6 +35,9 @@ public class TaskRestController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    FileService fileService;
 
     @JsonView(TaskRequest.class)
     @PostMapping(value = "/newTask/board={boardName}&list={listName}&username={username}")
@@ -112,6 +111,7 @@ public class TaskRestController {
         }
         lists.sort(Task::compareTo);
         if (eraseMode) {
+            lists.remove(t);
             for (int i = 0; i < lists.size(); i++) {
                 Task task = lists.get(i);
                 task.setPosition(i + 1);
@@ -204,6 +204,104 @@ public class TaskRestController {
             return new ResponseEntity<>(task, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @JsonView(TaskRequest.class)
+    @PutMapping("id={id}&newTitle={title}")
+    public ResponseEntity<Task> updateTitleTask(@PathVariable Long id, @PathVariable String title) {
+        Task task = taskService.findById(id);
+        if (task != null && title != null) {
+            task.setTitle(title);
+            taskService.save(task);
+            return new ResponseEntity<>(task, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @JsonView(TaskRequest.class)
+    @PutMapping("id={id}&newDescription={description}")
+    public ResponseEntity<Task> updateDescriptionTask(@PathVariable Long id, @PathVariable String description) {
+        Task task = taskService.findById(id);
+        if (task != null && description != null) {
+            task.setDescription(description);
+            taskService.save(task);
+            return new ResponseEntity<>(task, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @JsonView(TaskRequest.class)
+    @PutMapping(value = "id={taskId}&listDestName={listDestName}&boardDestId={boardDestId}&username={username}")
+    public ResponseEntity<Boolean> moveTask(@PathVariable("taskId") Long taskId,
+                                            @PathVariable("listDestName") String listDestName,
+                                            @PathVariable("boardDestId") Long boardDestId,
+                                            @PathVariable("username") String username) throws CloneNotSupportedException {
+        if (taskId == null || listDestName == null || boardDestId == null || username == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Task t = taskService.findById(taskId);
+        if (t != null) {
+            if (!listDestName.equals(t.getTaskList().getTitle())) {
+                //Update old list (eraseMode=True)
+                updatePositions(t, null, 0, true);
+                List<TaskList> tl = listService.findTaskList(boardDestId, listDestName);
+                if (tl != null && tl.size() == 1) {
+                    t.setPosition(tl.get(0).getTasks().size()+1);
+                    t.setTaskList(tl.get(0));
+                    taskService.save(t);
+                    tl.get(0).addTask(t);
+                    listService.save(tl.get(0));
+                    return new ResponseEntity<>(true, HttpStatus.OK);
+                }
+            }
+        }
+
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    }
+
+    @JsonView(TaskRequest.class)
+    @PostMapping(value = "id={taskId}&listDestName={listDestName}&boardDestId={boardDestId}&username={username}")
+    public ResponseEntity<Boolean> copyTask(@PathVariable("taskId") Long taskId,
+                                            @PathVariable("listDestName") String listDestName,
+                                            @PathVariable("boardDestId") Long boardDestId,
+                                            @PathVariable("username") String username) throws CloneNotSupportedException {
+        Task t = taskService.findById(taskId);
+        if (t != null) {
+            Task t2 = (Task)t.clone();
+            if (t2!=null) {
+                List<TaskList> tl = listService.findTaskList(boardDestId, listDestName);
+                if (tl != null && tl.size() == 1) {
+                    t2.setPosition(tl.get(0).getTasks().size()+1);
+                    t2.setTaskList(tl.get(0));
+                    taskService.save(t2);
+                    tl.get(0).addTask(t2);
+                    listService.save(tl.get(0));
+                    return new ResponseEntity<>(true, HttpStatus.OK);
+                }
+
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+
+    }
+    @JsonView(TaskRequest.class)
+    @PostMapping(value = "newAttachments/task={taskId}")
+    public ResponseEntity<Task> addAttachments(@PathVariable("taskId")Long taskId, @RequestBody HashSet<File> files){
+        Task t = taskService.findById(taskId);
+        if (t!=null){
+            for (File f:files) {
+                File newFile = new File(f.getName(),f.getContent(),f.getType(),t);
+                fileService.save(newFile);
+            }
+            t = taskService.findById(taskId);
+            return new ResponseEntity<>(t,HttpStatus.CREATED);
+
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }

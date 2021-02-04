@@ -91,7 +91,7 @@ class BoardTab(private val t: Toolbar) : Fragment() {
                             Intent.ACTION_PICK,
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                         )
-                        startActivityForResult(intent, 2222)
+                        activity!!.startActivityForResult(intent, 2222)
                     }
                     else -> {
                         spinner[0].isEnabled=false
