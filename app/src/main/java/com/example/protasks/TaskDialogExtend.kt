@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,6 +26,7 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.Tag
 import com.example.protasks.models.Task
@@ -69,6 +71,9 @@ class TaskDialogExtend(
     var dateEnd: TextView? = null
     var attachFiles: TextView? = null
     var resultLauncher:ActivityResultLauncher<Intent>?=null
+    var recyclerViewAttachments: RecyclerView? = null
+    var layoutManagerAttachments = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    var viewAttachments:LinearLayout? = null
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -298,6 +303,17 @@ class TaskDialogExtend(
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             resultLauncher!!.launch(Intent.createChooser(intent, "Select Picture"))
         }
+        viewAttachments = v.findViewById(R.id.linear_layout_attachments)
+        recyclerViewAttachments = v.findViewById(R.id.recycler_attachments)
+        recyclerViewAttachments!!.layoutManager = layoutManagerAttachments
+        if (!task.getAttachments().isNullOrEmpty()){
+            recyclerViewAttachments!!.adapter =
+                AttachmentsAdapter(task.getAttachments()!!,taskPresenter,task,context!!)
+            viewAttachments!!.visibility=View.VISIBLE
+        }else{
+            viewAttachments!!.visibility=View.GONE
+        }
+
 
         return v
     }
@@ -368,6 +384,13 @@ class TaskDialogExtend(
 
     override fun updateTask(t: Task) {
         task = t
+        if (!task.getAttachments().isNullOrEmpty()){
+            recyclerViewAttachments!!.adapter =
+                AttachmentsAdapter(task.getAttachments()!!,taskPresenter,task,context!!)
+            viewAttachments!!.visibility=View.VISIBLE
+        }else{
+            viewAttachments!!.visibility=View.GONE
+        }
     }
 
 }

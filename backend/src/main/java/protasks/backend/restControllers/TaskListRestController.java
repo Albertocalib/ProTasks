@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardService;
 import protasks.backend.Board.BoardUsersPermRel;
+import protasks.backend.File.File;
 import protasks.backend.Task.Task;
 import protasks.backend.Task.TaskService;
 import protasks.backend.TaskList.TaskList;
@@ -27,7 +28,7 @@ public class TaskListRestController {
     interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo, BoardUsersPermRel.BoardBasicInfo {
     }
 
-    interface TaskListRequest extends TaskList.TaskListExtendedInfo, TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Board.BoardBasicInfo, User.UserBasicInfo {
+    interface TaskListRequest extends TaskList.TaskListExtendedInfo, TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Board.BoardBasicInfo, User.UserBasicInfo, File.FileBasicInfo {
     }
 
     @Autowired

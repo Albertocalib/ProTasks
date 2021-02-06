@@ -304,4 +304,17 @@ public class TaskRestController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @JsonView(TaskRequest.class)
+    @DeleteMapping("id={taskId}/fileId={fileId}")
+    public ResponseEntity<Task> removeAttachment(@PathVariable("taskId") Long taskId, @PathVariable("fileId")Long fileId){
+        File f = fileService.findById(fileId);
+        if (f!=null){
+            fileService.delete(f);
+            Task t = taskService.findById(taskId);
+            return new ResponseEntity<>(t,HttpStatus.CREATED);
+
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 }

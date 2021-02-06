@@ -62,4 +62,7 @@ interface TaskRestService {
 
     @POST("newAttachments/task={taskId}")
     fun addAttachments(@Path("taskId")taskId: Long?, @Body files: HashSet<File>): Call<Task>
+
+    @DELETE("id={taskId}/fileId={fileId}")
+    fun removeAttachment(@Path("taskId")taskId: Long?, @Path("fileId")fileId: Long?): Call<Task>
 }
