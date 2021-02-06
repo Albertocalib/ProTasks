@@ -6,7 +6,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -309,7 +308,7 @@ class TaskDialogExtend(
         recyclerViewAttachments!!.layoutManager = layoutManagerAttachments
         if (!task.getAttachments().isNullOrEmpty()){
             recyclerViewAttachments!!.adapter =
-                AttachmentsAdapter(task.getAttachments()!!)
+                AttachmentsAdapter(task.getAttachments()!!,taskPresenter,task,context!!)
             viewAttachments!!.visibility=View.VISIBLE
         }else{
             viewAttachments!!.visibility=View.GONE
@@ -387,7 +386,7 @@ class TaskDialogExtend(
         task = t
         if (!task.getAttachments().isNullOrEmpty()){
             recyclerViewAttachments!!.adapter =
-                AttachmentsAdapter(task.getAttachments()!!)
+                AttachmentsAdapter(task.getAttachments()!!,taskPresenter,task,context!!)
             viewAttachments!!.visibility=View.VISIBLE
         }else{
             viewAttachments!!.visibility=View.GONE

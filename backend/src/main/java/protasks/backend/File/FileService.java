@@ -14,6 +14,9 @@ public class FileService {
     public void save(File t) {
         this.fileRepository.save(t);
     }
+    public void delete(File t) {
+        this.fileRepository.delete(t);
+    }
     public File findById(long id){return this.fileRepository.findById(id);}
 }
 

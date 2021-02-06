@@ -293,6 +293,18 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
             }
         })
     }
+    fun removeAttachedFile(file:File,task:Task) {
+        val t = retrofitInsTask.service.removeAttachment(task.getId(),file.getId())
+        t.enqueue(object : Callback<Task> {
+            override fun onFailure(call: Call<Task>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
+                view.updateTask(response!!.body()!!)
+            }
+        })
+    }
 
 
 }
