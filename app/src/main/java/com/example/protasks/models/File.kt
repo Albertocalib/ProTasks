@@ -58,6 +58,9 @@ class File(
     fun setTask(task: Task) {
         this.task = task
     }
+    fun getContent(): String? {
+        return this.content
+    }
 
 
 }

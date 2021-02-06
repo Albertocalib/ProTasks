@@ -62,7 +62,7 @@ public class Task implements Comparable<Task>,Cloneable {
     @Column(name="date_end")
     private Date date_end;
 
-    @JsonView(Task.TaskListExtendedInfo.class)
+    @JsonView(Task.TaskListBasicInfo.class)
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     private List<File> attachments;
 
