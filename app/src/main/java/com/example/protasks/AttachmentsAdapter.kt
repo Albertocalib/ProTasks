@@ -15,6 +15,7 @@ import com.example.protasks.models.File
 import com.example.protasks.models.Task
 import com.example.protasks.presenters.TaskListPresenter
 import com.example.protasks.presenters.TaskPresenter
+import com.example.protasks.utils.ImageHandler
 import java.util.*
 import kotlin.collections.HashSet
 
@@ -73,6 +74,10 @@ class AttachmentsAdapter(
                 }
             val alert = builder.create()
             alert.show()
+        }
+        holder.image.setOnClickListener {
+            val imageHandler = ImageHandler()
+            imageHandler.downloadFile(attachment,context)
         }
 
 

@@ -7,11 +7,11 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
 import android.os.Environment
+import android.util.Base64
 import android.widget.ImageView
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
+import android.widget.Toast
+import java.io.*
+import com.example.protasks.models.File as File2
 
 class ImageHandler {
 
@@ -59,5 +59,31 @@ class ImageHandler {
         }
         canvas.drawText(text, 250F / 2, 250F / 2, paint)
         return image1
+    }
+    fun downloadFile(file:File2,context: Context) {
+        var outStream: FileOutputStream? = null
+        val sdCard = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+        val dir = File(sdCard!!.absolutePath)
+        dir.mkdir()
+        val fileName = file.getName()!!
+        val outFile = File(dir, fileName)
+        val decodedBytes: ByteArray = Base64.decode(file.getContent(), Base64.DEFAULT)
+        try {
+            outStream = FileOutputStream(outFile)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
+        outStream!!.write(decodedBytes)
+        try {
+            outStream.flush()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        try {
+            outStream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        Toast.makeText(context, "Download complete", Toast.LENGTH_SHORT).show()
     }
 }
