@@ -317,4 +317,38 @@ public class TaskRestController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @JsonView(TaskRequest.class)
+    @PostMapping(value = "newSubTask/task={taskId}")
+    public ResponseEntity<Task> addAttachments(@PathVariable("taskId")Long taskId, @RequestBody Task subTask){
+
+        Task t = taskService.findById(taskId);
+        if (t!=null){
+            subTask.setParent_task(t);
+            taskService.save(subTask);
+            t.addSubTask(subTask);
+            return new ResponseEntity<>(t,HttpStatus.CREATED);
+
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @JsonView(TaskRequest.class)
+    @DeleteMapping("ids={taskIds}")
+    public ResponseEntity<Task> removeSubtasks(@PathVariable("taskIds") String taskIdsStr){
+        String[] taskIds = taskIdsStr.split("&");
+        Task t = null;
+        for (String id:taskIds) {
+            Task subtask = taskService.findById(Long.parseLong(id));
+            if (t==null){
+                t=subtask.getParent_task();
+            }
+            taskService.delete(subtask);
+        }
+        if (t!=null){
+            return new ResponseEntity<>(t,HttpStatus.CREATED);
+        }else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

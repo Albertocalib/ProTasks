@@ -306,5 +306,37 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
         })
     }
 
+    fun createSubTask(taskP: Task, subTaskTitle: String,subTaskDescription: String) {
+        val t = Task(subTaskTitle,subTaskDescription)
+        val task = retrofitInsTask.service.createSubTask(t, taskP.getId())
+        task.enqueue(object : Callback<Task> {
+            override fun onFailure(call: Call<Task>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
+                view.updateTask(response!!.body()!!)
+            }
+
+        })
+    }
+
+    fun deleteSubtasks(subtasksSelected: ArrayList<Task>) {
+        var stringSubtasks =""
+        for (subtask in subtasksSelected){
+            stringSubtasks+=subtask.getId().toString()+"&"
+        }
+        val t = retrofitInsTask.service.deleteSubTasks(stringSubtasks)
+        t.enqueue(object : Callback<Task> {
+            override fun onFailure(call: Call<Task>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
+                view.updateTask(response!!.body()!!)
+            }
+        })
+    }
+
 
 }

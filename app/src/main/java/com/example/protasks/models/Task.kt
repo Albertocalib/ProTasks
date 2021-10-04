@@ -44,6 +44,30 @@ class Task(
     @SerializedName("attachments")
     private var attachments: List<File?>? = null
 
+    @Expose
+    @SerializedName("subTasks")
+    private var subTasks: List<Task?>? = null
+
+    @Expose
+    @SerializedName("parent_task")
+    private var parent_task: Task? = null
+
+    private var selected:Boolean = false
+
+    fun setSelected(selected:Boolean){
+        this.selected=selected
+    }
+    fun isSelected():Boolean{
+        return selected
+    }
+
+    fun getSubtasks(): List<Task?>?{
+        return subTasks
+    }
+    fun getParentTask():Task?{
+        return parent_task
+    }
+
     fun getUsers(): List<User>? {
         return users
     }
@@ -95,6 +119,9 @@ class Task(
     }
     fun getAttachments(): List<File?>? {
         return this.attachments
+    }
+    fun setParentTask(parentTask:Task){
+        this.parent_task=parentTask
     }
 
 

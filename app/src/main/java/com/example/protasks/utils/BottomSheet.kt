@@ -47,7 +47,7 @@ class BottomSheet(
         var nameFieldId = 0
         var buttonNameId = 0
         when (sheetMode) {
-            "task" -> {
+            "task","subtask" -> {
                 viewId = R.layout.task_dialog
                 nameFieldId = R.id.taskname
                 buttonNameId = R.id.createTaskBtn
@@ -113,7 +113,7 @@ class BottomSheet(
             }
         } else {
             name = v.findViewById(nameFieldId)
-            if (sheetMode == "task") {
+            if (sheetMode == "task" || sheetMode == "subtask")  {
                 description = v.findViewById(R.id.taskDescription)
             } else if (sheetMode == "tag") {
                 selectColor = v.findViewById(R.id.imageColorTag)
@@ -182,6 +182,12 @@ class BottomSheet(
                         (presenter as TaskListPresenter).createTaskList(
                             boardName,
                             name!!.text.toString()
+                        )
+                    }
+                    "subtask"->{
+                        (presenter as TaskPresenter).createSubTask(task!!,
+                                name!!.text.toString(),
+                                description!!.text.toString()
                         )
                     }
                     else -> {

@@ -108,34 +108,38 @@
                     android:layout_height="wrap_content"
                     android:focusableInTouchMode="false"
                     android:orientation="horizontal" />
+
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/more_than_three_assignments"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    app:cardCornerRadius="25dp"
-                    android:backgroundTint="@android:color/darker_gray"
                     android:layout_margin="3dp"
-                    app:cardPreventCornerOverlap="false"
-                    android:id="@+id/more_than_three_assignments">
+                    android:backgroundTint="@android:color/darker_gray"
+                    app:cardCornerRadius="25dp"
+                    app:cardPreventCornerOverlap="false">
+
                     <TextView
+                        android:id="@+id/more_than_text"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:textAllCaps="true"
-                        android:textSize="30dp"
-                        android:textColor="@color/colorAccent"
                         android:gravity="center"
                         android:text="+3"
-                        android:id="@+id/more_than_text"/>
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="30dp" />
                 </androidx.cardview.widget.CardView>
+
                 <ImageButton
                     android:id="@+id/add_assignment"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:contentDescription="Assignments icon"
-                    android:padding="16dp"
                     android:layout_margin="3dp"
                     android:background="@null"
+                    android:contentDescription="Assignments icon"
+                    android:padding="16dp"
                     app:srcCompat="@drawable/ic_baseline_add_circle_24" />
             </androidx.appcompat.widget.LinearLayoutCompat>
+
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -153,16 +157,18 @@
                     android:layout_height="wrap_content"
                     android:focusableInTouchMode="false"
                     android:orientation="horizontal" />
+
                 <ImageButton
                     android:id="@+id/add_tags"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:contentDescription="Assignments icon"
-                    android:padding="16dp"
                     android:layout_margin="3dp"
                     android:background="@null"
+                    android:contentDescription="Assignments icon"
+                    android:padding="16dp"
                     app:srcCompat="@drawable/ic_baseline_add_circle_24" />
             </androidx.appcompat.widget.LinearLayoutCompat>
+
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -173,14 +179,16 @@
                     android:contentDescription="Date end icon"
                     android:padding="16dp"
                     app:srcCompat="@drawable/ic_baseline_calendar_today_24" />
+
                 <TextView
                     android:id="@+id/date_picker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Fecha de vencimiento"
                     android:padding="10dp"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center" />
             </androidx.appcompat.widget.LinearLayoutCompat>
+
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -191,37 +199,43 @@
                     android:contentDescription="Date end icon"
                     android:padding="16dp"
                     app:srcCompat="@drawable/ic_adjunto_archivo" />
+
                 <TextView
                     android:id="@+id/attached"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Adjuntar archivo"
                     android:padding="10dp"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center" />
             </androidx.appcompat.widget.LinearLayoutCompat>
+
             <LinearLayout
+                android:id="@+id/linear_layout_attachments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/linear_layout_attachments">
+                android:orientation="vertical">
+
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
+
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="Date end icon"
                         android:padding="16dp"
                         app:srcCompat="@drawable/ic_adjunto_archivo" />
+
                     <TextView
                         android:id="@+id/attached_files"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Archivos Adjuntos"
                         android:padding="10dp"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
@@ -232,8 +246,80 @@
                     android:id="@+id/recycler_attachments"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:focusableInTouchMode="false"/>
+                    android:focusableInTouchMode="false"
+                    android:orientation="horizontal" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_sub"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="16dp"
+                    android:padding="16dp"
+                    android:text="Subtareas"
+                    android:textSize="16dp"
+                    app:drawableStartCompat="@drawable/ic_subtasks" />
+
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/delete_subtasks"
+                    android:layout_alignEnd="@+id/text_sub"
+                    android:gravity="end"
+                    android:padding="16dp"
+                    app:srcCompat="@android:drawable/ic_menu_delete"
+                    app:tint="@color/colorPrimary" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_subtasks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="false"
+                    android:orientation="vertical" />
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
+
+                <LinearLayout
+                    android:id="@+id/button_add_subtask"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        app:srcCompat="@drawable/ic_add_box" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Añadir subtarea"
+                        android:textAlignment="center"
+                        android:textSize="12dp" />
+
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 

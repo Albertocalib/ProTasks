@@ -17,6 +17,19 @@ public class Task implements Comparable<Task>,Cloneable {
     public int compareTo(Task o) {
         return Long.compare(this.position, o.getPosition());
     }
+
+    public void setParent_task(Task parent_task) {
+        this.parent_task = parent_task;
+    }
+
+    public List<Task> getSubTasks() {
+        return subTasks;
+    }
+
+    public void setSubTasks(List<Task> subTasks) {
+        this.subTasks = subTasks;
+    }
+
     public interface TaskListBasicInfo{}
     public interface TaskListExtendedInfo{}
 
@@ -65,6 +78,13 @@ public class Task implements Comparable<Task>,Cloneable {
     @JsonView(Task.TaskListBasicInfo.class)
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     private List<File> attachments;
+
+    @JsonView(Task.TaskListBasicInfo.class)
+    @OneToMany(mappedBy = "parent_task", cascade = CascadeType.ALL)
+    private List<Task> subTasks;
+
+    @ManyToOne
+    private Task parent_task;
 
     public List<File> getAttachments() {
         return attachments;
@@ -183,6 +203,19 @@ public class Task implements Comparable<Task>,Cloneable {
             this.tag_ids.add(t);
         }
     }
+    public void addSubTask(Task st) {
+        if (this.subTasks==null || this.subTasks.isEmpty()){
+            this.subTasks = new ArrayList<>();
+        }
+        if (!this.subTasks.contains(st)){
+            this.subTasks.add(st);
+        }
+    }
+
+    public Task getParent_task() {
+        return parent_task;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         super.clone();

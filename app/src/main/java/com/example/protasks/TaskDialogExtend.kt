@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -14,10 +15,7 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -47,7 +45,7 @@ class TaskDialogExtend(
     private val boardName: String,
     private val boardId: Long,
     private val fragmentMgr: FragmentManager,
-    private val viewHolder: TaskAdapterInsideBoard.ViewHolder
+    private val viewHolder: TaskAdapterInsideBoard.ViewHolder?
 ) : DialogFragment(),
     ITasksView {
     var name: TextInputEditText? = null
@@ -74,6 +72,11 @@ class TaskDialogExtend(
     var recyclerViewAttachments: RecyclerView? = null
     var layoutManagerAttachments = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     var viewAttachments:LinearLayout? = null
+    var recyclerViewSubtasks: RecyclerView? = null
+    var layoutManagerSubtasks = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    var buttonAddSubtasks:LinearLayout? = null
+    var deleteSubtasks:ImageView? = null
+    var subtasksSelected:ArrayList<Task> = ArrayList()
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,7 +115,7 @@ class TaskDialogExtend(
         description = v.findViewById(R.id.taskDescription)
         toolbar = v.findViewById(R.id.toolbar)
         toolbar!!.setNavigationOnClickListener {
-            viewHolder.updateTask(task)
+            viewHolder?.updateTask(task)
             dismiss()
         }
         taskPresenter = TaskPresenter(this, requireContext())
@@ -178,7 +181,11 @@ class TaskDialogExtend(
         }
 
         nameBoardList = v.findViewById(R.id.list_board_name)
-        val comp = boardName + " en la lista " + task.getTaskList().getTitle()
+        val comp = if (task.getParentTask()!=null){
+            boardName + " en la lista " + task.getParentTask()!!.getTaskList().getTitle()
+        }else{
+            boardName + " en la lista " + task.getTaskList().getTitle()
+        }
         nameBoardList!!.text = comp
         moreThanThreeButton = v.findViewById(R.id.more_than_three_assignments)
         moreThanThreeText = v.findViewById(R.id.more_than_text)
@@ -299,7 +306,7 @@ class TaskDialogExtend(
         attachFiles = v.findViewById(R.id.attached)
         attachFiles!!.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "*/*";
+            intent.type = "*/*"
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             resultLauncher!!.launch(Intent.createChooser(intent, "Select Picture"))
         }
@@ -308,12 +315,38 @@ class TaskDialogExtend(
         recyclerViewAttachments!!.layoutManager = layoutManagerAttachments
         if (!task.getAttachments().isNullOrEmpty()){
             recyclerViewAttachments!!.adapter =
-                AttachmentsAdapter(task.getAttachments()!!,taskPresenter,task,context!!)
+                AttachmentsAdapter(task.getAttachments()!!,taskPresenter,task,requireContext())
             viewAttachments!!.visibility=View.VISIBLE
         }else{
             viewAttachments!!.visibility=View.GONE
         }
-
+        recyclerViewSubtasks= v.findViewById(R.id.recycler_subtasks)
+        recyclerViewSubtasks!!.layoutManager = layoutManagerSubtasks
+        if (!task.getSubtasks().isNullOrEmpty()){
+            recyclerViewSubtasks!!.adapter =
+                    SubtaskAdapter(task.getSubtasks()!!,taskPresenter,task,requireContext(),fragmentMgr,this,boardId,boardName)
+            recyclerViewSubtasks!!.visibility=View.VISIBLE
+        }else{
+            recyclerViewSubtasks!!.visibility=View.GONE
+        }
+        buttonAddSubtasks  = v.findViewById(R.id.button_add_subtask)
+        buttonAddSubtasks!!.setOnClickListener {
+            val bottomSheet = BottomSheet(boardName, "", taskPresenter!!, "subtask")
+            bottomSheet.task=task
+            bottomSheet.show(fragmentMgr, "bottomSheet")
+        }
+        deleteSubtasks = v.findViewById(R.id.delete_subtasks)
+        if (recyclerViewSubtasks!!.adapter!=null){
+            subtasksSelected = (recyclerViewSubtasks!!.adapter as SubtaskAdapter).getSubTasksSelected()
+        }
+        if (subtasksSelected.isEmpty()){
+            deleteSubtasks!!.visibility=View.GONE
+        }else{
+            deleteSubtasks!!.visibility=View.VISIBLE
+        }
+        deleteSubtasks!!.setOnClickListener {
+            taskPresenter!!.deleteSubtasks(subtasksSelected)
+        }
 
         return v
     }
@@ -386,10 +419,27 @@ class TaskDialogExtend(
         task = t
         if (!task.getAttachments().isNullOrEmpty()){
             recyclerViewAttachments!!.adapter =
-                AttachmentsAdapter(task.getAttachments()!!,taskPresenter,task,context!!)
+                AttachmentsAdapter(task.getAttachments()!!,taskPresenter,task,requireContext())
             viewAttachments!!.visibility=View.VISIBLE
         }else{
             viewAttachments!!.visibility=View.GONE
+        }
+        recyclerViewSubtasks!!.adapter =
+                SubtaskAdapter(task.getSubtasks()!!,taskPresenter,task,requireContext(),fragmentMgr,this,boardId,boardName)
+        if (task.getSubtasks()!!.isNotEmpty()){
+            recyclerViewSubtasks!!.visibility=View.VISIBLE
+        }else{
+            recyclerViewSubtasks!!.visibility=View.GONE
+        }
+        subtasksSelected= ArrayList()
+        updateVisibilityDeleteSubtasks()
+    }
+    fun updateVisibilityDeleteSubtasks(){
+        subtasksSelected = (recyclerViewSubtasks!!.adapter as SubtaskAdapter).getSubTasksSelected()
+        if (subtasksSelected.isEmpty()){
+            deleteSubtasks!!.visibility=View.GONE
+        }else{
+            deleteSubtasks!!.visibility=View.VISIBLE
         }
     }
 

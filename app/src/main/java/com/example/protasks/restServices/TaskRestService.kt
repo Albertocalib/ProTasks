@@ -65,4 +65,11 @@ interface TaskRestService {
 
     @DELETE("id={taskId}/fileId={fileId}")
     fun removeAttachment(@Path("taskId")taskId: Long?, @Path("fileId")fileId: Long?): Call<Task>
+
+    @POST("newSubTask/task={taskId}")
+    fun createSubTask(@Body subtask: Task?, @Path("taskId")taskId: Long?):Call<Task>
+
+    @DELETE("ids={taskIds}")
+    fun deleteSubTasks(@Path("taskIds") taskIds:String):Call<Task>
+
 }

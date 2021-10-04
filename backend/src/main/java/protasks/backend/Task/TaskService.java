@@ -27,5 +27,6 @@ public class TaskService {
 
     public List<Task> filterByName(String name,String username){return this.taskRepository.filterTasksByName(name,username);}
     public Task findById(long id){return this.taskRepository.findById(id);}
+    public void delete(Task t){ this.taskRepository.delete(t);}
 }
 
