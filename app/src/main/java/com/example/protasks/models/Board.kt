@@ -43,7 +43,8 @@ class Board {
     fun getWipList(): String? {
         return wipList
     }
-    fun setWipList(wipList:String) {
+
+    fun setWipList(wipList: String) {
         this.wipList = wipList
     }
 
@@ -51,21 +52,25 @@ class Board {
     fun getWipActivated(): Boolean {
         return wipActivated
     }
-    fun setWipActivated(wipActivated:Boolean) {
-        this.wipActivated=wipActivated
+
+    fun setWipActivated(wipActivated: Boolean) {
+        this.wipActivated = wipActivated
     }
+
     fun getWipLimit(): Int {
         return wipLimit
     }
-    fun setWipLimit(wipLimit:Int) {
-        this.wipLimit=wipLimit
+
+    fun setWipLimit(wipLimit: Int) {
+        this.wipLimit = wipLimit
     }
 
     fun getPhoto(): String? {
         return photo
     }
-    fun setPhoto(photo:String) {
-        this.photo=photo
+
+    fun setPhoto(photo: String) {
+        this.photo = photo
     }
 
     fun setId(photo: String) {
@@ -96,8 +101,9 @@ class Board {
     fun setTaskLists(taskLists: List<TaskList?>?) {
         this.taskLists = taskLists
     }
-    fun addUserOwner(u:User){
-        val b=BoardUsersPermRel()
+
+    fun addUserOwner(u: User) {
+        val b = BoardUsersPermRel()
         b.setRol(Rol.OWNER)
         b.setUser(u)
         b.setBoard(this)
