@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Gestionar Permisos Usuario"
+        android:icon="@drawable/ic_assignments"
+        android:id="@+id/op1"></item>
+    <item android:title="Añadir Usuarios"
+        android:icon="@drawable/ic_add_box"
+        android:id="@+id/op2"></item>
+    <item android:title="WIP"
+        android:icon="@drawable/ic_dashboard"
+        android:id="@+id/op3"
+        android:checkable="true"></item>
+
+</menu>

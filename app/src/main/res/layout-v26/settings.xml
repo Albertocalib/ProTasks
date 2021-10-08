@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="WIP"
+            android:paddingTop="20dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorPrimary"
+            />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary" />
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/wip_activated"
+            android:text="Activar WIP"
+            app:useMaterialThemeColors="false"
+            style="@style/SwitchCompatStyle"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/label_wip"
+            android:layout_marginBottom="8dp"
+            android:background="@color/colorAccent"
+            android:textColor="@color/design_default_color_on_secondary"
+            android:textColorHint="@color/design_default_color_on_secondary"
+            app:hintTextAppearance="@style/TextLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/wipLimit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Límite del WIP"
+                android:importantForAutofill="no"
+                android:labelFor="@id/label_wip"
+                android:textColor="@color/design_default_color_on_secondary"
+                android:textColorHint="@color/design_default_color_on_secondary" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Spinner
+            android:id="@+id/spinner_list_wip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dropDownWidth="match_parent"
+            android:spinnerMode="dialog"
+            android:theme="@style/ThemeOverlay.AppCompat.Light"/>
+    </LinearLayout>
+
+
+
+
+</FrameLayout>

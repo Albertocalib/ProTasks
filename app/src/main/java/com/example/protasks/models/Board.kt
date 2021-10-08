@@ -28,6 +28,39 @@ class Board {
     @SerializedName("tags")
     private var tags: List<Tag>? = null
 
+    @Expose
+    @SerializedName("wipActivated")
+    private var wipActivated: Boolean = false
+
+    @Expose
+    @SerializedName("wipLimit")
+    private var wipLimit: Int = 0
+
+    @Expose
+    @SerializedName("wipList")
+    private var wipList: String? = null
+
+    fun getWipList(): String? {
+        return wipList
+    }
+    fun setWipList(wipList:String) {
+        this.wipList = wipList
+    }
+
+
+    fun getWipActivated(): Boolean {
+        return wipActivated
+    }
+    fun setWipActivated(wipActivated:Boolean) {
+        this.wipActivated=wipActivated
+    }
+    fun getWipLimit(): Int {
+        return wipLimit
+    }
+    fun setWipLimit(wipLimit:Int) {
+        this.wipLimit=wipLimit
+    }
+
     fun getPhoto(): String? {
         return photo
     }

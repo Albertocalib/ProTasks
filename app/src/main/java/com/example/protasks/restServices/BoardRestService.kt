@@ -14,5 +14,11 @@ interface BoardRestService {
     @POST("newBoard/username={username}")
     fun createBoard(@Body board: Board?,@Path("username") username:String):Call<Board>
 
+    @PUT("id={id}/wipActivated={wipActivated}&wipLimit={wipLimit}&wipList={wipList}")
+    fun updateWIP( @Path("id") id: Long,
+                   @Path("wipActivated") wipActivated: Boolean,
+                   @Path("wipLimit") wipLimit: Int,
+                   @Path("wipList") wipList: String):Call<Board>
+
 
 }

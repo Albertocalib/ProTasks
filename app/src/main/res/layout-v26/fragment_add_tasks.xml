@@ -11,12 +11,16 @@
         android:id="@+id/spinnerBoardTask"
         android:background="@color/colorAccent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"/>
     <Spinner
         android:id="@+id/spinnerTaskList"
         android:layout_width="match_parent"
         android:background="@color/colorAccent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"

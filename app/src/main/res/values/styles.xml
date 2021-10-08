@@ -14,6 +14,11 @@
 
     </style>
 
+    <style name="SwitchCompatStyle" >
+        <item name="thumbTint">@color/color_switch</item>
+        <item name="trackTint">@color/color_switch_track</item>
+    </style>
+
     <style name="MyTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="android:textColorHint">@color/colorPrimary</item>
         <item name="boxStrokeColor">@color/edit_text_box_border</item>

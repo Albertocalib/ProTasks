@@ -51,6 +51,42 @@ public class Board {
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "board")
     private List<Tag> tags;
 
+    @JsonView(BoardBasicInfo.class)
+    @Column(name="wipActivated")
+    private Boolean wipActivated;
+
+    @JsonView(BoardBasicInfo.class)
+    @Column(name="wipLimit")
+    private int wipLimit;
+
+    @JsonView(BoardBasicInfo.class)
+    @Column(name="wipList")
+    private String wipList;
+
+    public String getWipList() {
+        return wipList;
+    }
+
+    public void setWipList(String wipList) {
+        this.wipList = wipList;
+    }
+
+    public Boolean getWipActivated() {
+        return wipActivated;
+    }
+
+    public void setWipActivated(Boolean wipActivated) {
+        this.wipActivated = wipActivated;
+    }
+
+    public int getWipLimit() {
+        return wipLimit;
+    }
+
+    public void setWipLimit(int wipLimit) {
+        this.wipLimit = wipLimit;
+    }
+
     public long getId() {
         return id;
     }

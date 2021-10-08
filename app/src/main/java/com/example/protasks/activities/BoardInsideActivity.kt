@@ -72,6 +72,9 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
         actionBar = ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open, R.string.close)
         mDrawer!!.addDrawerListener(actionBar!!)
         actionBar!!.syncState()
+        boardPresenter = BoardPresenter(this, baseContext)
+        boardPresenter!!.getUser()
+        boardPresenter!!.getBoards()
         bottomNavView =findViewById(R.id.bottom_bar_board)
         bottomNavView!!.setOnNavigationItemSelectedListener {
                 item ->
@@ -84,7 +87,8 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
 
                 }
                 R.id.board_settings -> {
-                    //
+                    fragment = SettingsFragment(lists,boardPresenter!!,boardName!!,supportFragmentManager)
+                    //startActivity(Intent(this, MainActivity::class.java))
 
                 }
                 R.id.nav_home_main_screen ->{
@@ -99,9 +103,6 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
         if (savedInstanceState == null) {
             showFragment(BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!))
         }
-        boardPresenter = BoardPresenter(this, baseContext)
-        boardPresenter!!.getUser()
-        boardPresenter!!.getBoards()
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
         recyclerView2 = navigationView.findViewById(R.id.recycler_board_navigation_view)
         setLayoutManager()

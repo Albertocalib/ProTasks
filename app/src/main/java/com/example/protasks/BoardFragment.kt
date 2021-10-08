@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.protasks.models.Board
 import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
 import com.example.protasks.presenters.TaskListPresenter
@@ -27,6 +29,8 @@ import com.woxthebox.draglistview.ColumnProperties
 import com.woxthebox.draglistview.DragItem
 import java.util.*
 import kotlin.collections.HashMap
+import android.widget.Toast
+import java.lang.Exception
 
 
 class BoardFragment(private val taskLists: List<TaskList>, private val presenter:TaskListPresenter,
@@ -35,7 +39,9 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
     private var mBoardView: BoardView? = null
     private var mColumns = 0
     private var listMap :HashMap<String,Long>? = HashMap()
+    var board: Board?=null
     var boardId:Long=0
+    private var toast:Toast?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -64,12 +70,22 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
                 toColumn: Int,
                 toRow: Int
             ) {
+                val toColumnName = mBoardView!!.getHeaderView(toColumn).findViewById<TextView>(R.id.text).text
                 if (fromColumn != toColumn || fromRow != toRow) {
                     val task =
                         mBoardView!!.getAdapter(toColumn).itemList[toRow] as Triple<*, *,*>
-                    val columnName = mBoardView!!.getHeaderView(toColumn).findViewById<TextView>(R.id.text).text
-                    val id= listMap!![columnName]
+                    val id= listMap!![toColumnName]
                     presenter.updateTaskPosition(task.first!! as Long,toRow.toLong()+1,id!!,false)
+                    if (taskLists.size>toColumn) {
+                        val itemCount1 =
+                            mBoardView!!.getHeaderView(fromColumn)
+                                .findViewById<TextView>(R.id.item_count)
+                        itemCount1.text = mBoardView!!.getAdapter(fromColumn).itemCount.toString()
+                        val itemCount2 =
+                            mBoardView!!.getHeaderView(toColumn)
+                                .findViewById<TextView>(R.id.item_count)
+                        itemCount2.text = mBoardView!!.getAdapter(toColumn).itemCount.toString()
+                    }
 
                 }
             }
@@ -84,12 +100,7 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
             }
 
             override fun onItemChangedColumn(oldColumn: Int, newColumn: Int) {
-                val itemCount1 =
-                    mBoardView!!.getHeaderView(oldColumn).findViewById<TextView>(R.id.item_count)
-                itemCount1.text = mBoardView!!.getAdapter(oldColumn).itemCount.toString()
-                val itemCount2 =
-                    mBoardView!!.getHeaderView(newColumn).findViewById<TextView>(R.id.item_count)
-                itemCount2.text = mBoardView!!.getAdapter(newColumn).itemCount.toString()
+
             }
 
             override fun onFocusedColumnChanged(
@@ -132,6 +143,24 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
                 newRow: Int
             ): Boolean {
                 // Add logic here to prevent an item to be dropped
+                if (taskLists.size==newColumn){
+                    return false
+                }
+                val columnName = mBoardView!!.getHeaderView(newColumn).findViewById<TextView>(R.id.text).text
+                if (oldColumn!=newColumn && board!=null && board!!.getWipActivated() &&
+                    columnName==board!!.getWipList() && mBoardView!!.getAdapter(newColumn).itemCount==board!!.getWipLimit()){
+                    mBoardView!!.getHeaderView(newColumn).setBackgroundColor(Color.RED)
+                    if (toast==null){
+                        toast = Toast.makeText(context, "WIP Superado, no puedes añadir más tareas a esta columna", Toast.LENGTH_SHORT)
+                    }
+                    if (!toast!!.view.isShown){
+                        toast!!.show()
+                    }
+                    Handler().postDelayed({
+                        mBoardView!!.getHeaderView(newColumn).setBackgroundColor(Color.TRANSPARENT)
+                    }, 1000)
+                    return false
+                }
                 return true
             }
         })
@@ -174,7 +203,8 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
             )
         }
         if (taskLists.isNotEmpty()){
-            boardId= taskLists[0].getBoard()!!.getId()
+            board= taskLists[0].getBoard()!!
+            boardId=board!!.getId()
         }
         val listAdapter =
             TaskAdapterInsideBoard(mItemArray, false,R.layout.column_item, R.id.item_layout, true,supportFragmentManager,boardName,boardId,presenter)
@@ -212,9 +242,11 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
     private fun addColumnCreateColumn() {
         val mItemArray =
             ArrayList<Triple<Long, Task,Boolean>>()
+        var board:Board?=null
         var boardId:Long=0
         if (taskLists.isNotEmpty()){
-            boardId= taskLists[0].getBoard()!!.getId()
+            board= taskLists[0].getBoard()!!
+            boardId=board.getId()
         }
         val listAdapter =
             TaskAdapterInsideBoard(mItemArray, false,R.layout.column_item, R.id.item_layout_add_tasklist, false,supportFragmentManager,boardName,boardId,presenter)

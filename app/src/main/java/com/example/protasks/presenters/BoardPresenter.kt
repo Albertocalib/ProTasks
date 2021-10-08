@@ -200,5 +200,21 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
 
     }
 
+    fun updateWIP(checked: Boolean, board: Board?, wipLimit:String,wipList:String) {
+        val wipLimitConv = wipLimit.toInt()
+        val boardRes = retrofitInsBoard.service.updateWIP(board!!.getId(),checked,wipLimitConv,wipList)
+        boardRes.enqueue(object : Callback<Board> {
+            override fun onFailure(call: Call<Board>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Board>?, response: Response<Board>?) {
+                //Nada
+            }
+
+        })
+
+    }
+
 
 }
