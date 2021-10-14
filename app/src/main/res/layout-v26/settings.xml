@@ -1,41 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="WIP"
-            android:paddingTop="20dp"
             android:paddingStart="14dp"
+            android:paddingTop="20dp"
             android:paddingEnd="14dp"
-            android:textSize="20dp"
+            android:text="WIP"
             android:textColor="@color/colorPrimary"
-            />
+            android:textSize="20dp" />
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="@color/colorPrimary" />
+
         <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/wip_activated"
+            style="@style/SwitchCompatStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/wip_activated"
-            android:text="Activar WIP"
-            app:useMaterialThemeColors="false"
-            style="@style/SwitchCompatStyle"
             android:paddingStart="14dp"
-            android:paddingEnd="14dp" />
+            android:paddingEnd="14dp"
+            android:text="Activar WIP"
+            app:useMaterialThemeColors="false" />
+
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/label_wip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/label_wip"
             android:layout_marginBottom="8dp"
             android:background="@color/colorAccent"
             android:textColor="@color/design_default_color_on_secondary"
@@ -60,10 +64,47 @@
             android:layout_height="wrap_content"
             android:dropDownWidth="match_parent"
             android:spinnerMode="dialog"
-            android:theme="@style/ThemeOverlay.AppCompat.Light"/>
+            android:theme="@style/ThemeOverlay.AppCompat.Light" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="14dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="14dp"
+            android:text="Usuarios"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20dp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_users"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false"
+            android:orientation="vertical" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/add_users"
+            android:padding="10dp"
+            android:gravity="center"
+            android:text="Añadir usuario"
+            android:textAlignment="center"
+            android:textSize="16dp"
+            app:drawableStartCompat="@drawable/ic_add_box" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary" />
+
     </LinearLayout>
-
-
 
 
 </FrameLayout>

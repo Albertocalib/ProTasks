@@ -9,10 +9,7 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import com.example.protasks.RetrofitInstance
-import com.example.protasks.models.Board
-import com.example.protasks.models.Task
-import com.example.protasks.models.TaskList
-import com.example.protasks.models.User
+import com.example.protasks.models.*
 import com.example.protasks.restServices.BoardRestService
 import com.example.protasks.restServices.TaskListRestService
 import com.example.protasks.restServices.TaskRestService
@@ -181,10 +178,11 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
         })
 
     }
-    fun createTask(boardName: String,taskName:String,listName: String,description:String){
+
+    fun createTask(boardName: String, taskName: String, listName: String, description: String) {
         val username = preference.getEmail(context)
-        val t = Task(taskName,description)
-        val task = retrofitInsTask.service.createTask(t, boardName, listName,username!!)
+        val t = Task(taskName, description)
+        val task = retrofitInsTask.service.createTask(t, boardName, listName, username!!)
         task.enqueue(object : Callback<Task> {
             override fun onFailure(call: Call<Task>?, t: Throwable?) {
                 Log.v("retrofit", t.toString())
@@ -200,16 +198,64 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
 
     }
 
-    fun updateWIP(checked: Boolean, board: Board?, wipLimit:String,wipList:String) {
+    fun updateWIP(checked: Boolean, board: Board?, wipLimit: String, wipList: String) {
         val wipLimitConv = wipLimit.toInt()
-        val boardRes = retrofitInsBoard.service.updateWIP(board!!.getId(),checked,wipLimitConv,wipList)
+        val boardRes =
+            retrofitInsBoard.service.updateWIP(board!!.getId(), checked, wipLimitConv, wipList)
         boardRes.enqueue(object : Callback<Board> {
             override fun onFailure(call: Call<Board>?, t: Throwable?) {
                 Log.v("retrofit", t.toString())
             }
 
             override fun onResponse(call: Call<Board>?, response: Response<Board>?) {
-                //Nada
+                iBoardsView.setBoard(response!!.body()!!)
+            }
+
+        })
+
+    }
+
+    fun addUserToBoard(boardId: Long, username: String, role: Rol) {
+        val boardRes = retrofitInsBoard.service.addUserToBoard(boardId, username, role)
+        boardRes.enqueue(object : Callback<Board> {
+            override fun onFailure(call: Call<Board>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Board>?, response: Response<Board>?) {
+                if (response!!.code() != 201 && response.code() != 200) {
+                    Toast.makeText(context, "El usuario indicado no existe", Toast.LENGTH_SHORT)
+                        .show()
+                }else{
+                    iBoardsView.setBoard(response.body()!!)
+                }
+            }
+
+        })
+
+
+    }
+    fun updateRole(role: String, userId:Long,boardId: Long ) {
+        val roleFormatted:Rol = when (role) {
+            "Administrador" -> {
+                Rol.ADMIN
+            }
+            "Invitado" -> {
+                Rol.USER
+            }
+            else -> {
+                Rol.WATCHER
+            }
+        }
+        val boardRes =
+            retrofitInsBoard.service.updateRole(boardId, userId, roleFormatted)
+        boardRes.enqueue(object : Callback<Board> {
+            override fun onFailure(call: Call<Board>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Board>?, response: Response<Board>?) {
+                iBoardsView.setBoard(response!!.body()!!)
             }
 
         })

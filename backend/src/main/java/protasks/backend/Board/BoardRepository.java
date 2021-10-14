@@ -21,4 +21,7 @@ public interface BoardRepository extends JpaRepository<Board,Long> {
             "WHERE tl.id=:id",nativeQuery = true)
     Board findBoardByTaskListId(@Param("id") Long id);
 
+    @Query(value = "SELECT b.* FROM boards_users_rel b where b.user_id=:userId and b.board_id=:boardId",nativeQuery = true)
+    List<BoardUsersPermRel> findBoardPermByUserIdAndBoardId(@Param("boardId") Long boardId,@Param("userId") Long userId) ;
+
 }

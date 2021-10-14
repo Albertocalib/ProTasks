@@ -13,7 +13,9 @@ import android.view.ViewGroup
 import android.widget.*
 import com.example.protasks.R
 import com.example.protasks.models.Board
+import com.example.protasks.models.Rol
 import com.example.protasks.models.Task
+import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.presenters.IPresenter
 import com.example.protasks.presenters.TaskListPresenter
 import com.example.protasks.presenters.TaskPresenter
@@ -38,11 +40,13 @@ class BottomSheet(
     var spinnerBoards: Spinner? = null
     var spinnerLists: Spinner? = null
     var task: Task? = null
+    var board:Board? = null
+    var radioGroup:RadioGroup?=null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val viewId: Int
         var nameFieldId = 0
         var buttonNameId = 0
@@ -59,6 +63,10 @@ class BottomSheet(
             }
             "menu", "menu_task" -> {
                 viewId = R.layout.options_task_tasklist_dialog
+            }"user"->{
+                viewId = R.layout.user_dialog
+                nameFieldId = R.id.usernameOrEmail
+                buttonNameId = R.id.AddUserButton
             }
             else -> {
                 viewId = R.layout.tag_dialog
@@ -137,6 +145,8 @@ class BottomSheet(
                         })
                 }
 
+            } else if (sheetMode == "user"){
+                radioGroup = v.findViewById(R.id.RadioGroup)
             }
             createBtn = v.findViewById(buttonNameId)
             createBtn!!.isEnabled = false
@@ -188,6 +198,27 @@ class BottomSheet(
                         (presenter as TaskPresenter).createSubTask(task!!,
                                 name!!.text.toString(),
                                 description!!.text.toString()
+                        )
+                    }
+                    "user"->{
+                        val idChecked = radioGroup!!.checkedRadioButtonId
+                        val radioChecked = v.findViewById<RadioButton>(idChecked)
+                        val role:Rol = when (radioChecked.text.toString()) {
+                            "Administrador" -> {
+                                Rol.ADMIN
+                            }
+                            "Invitado" -> {
+                                Rol.USER
+                            }
+                            else -> {
+                                Rol.WATCHER
+                            }
+                        }
+                        (presenter as BoardPresenter).addUserToBoard(
+                            board!!.getId(),
+                            name!!.text.toString(),
+                            role
+
                         )
                     }
                     else -> {
@@ -356,4 +387,5 @@ class BottomSheet(
         }
         return listName
     }
+
 }

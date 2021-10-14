@@ -85,6 +85,10 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,Bo
         TODO("Not yet implemented")
     }
 
+    override fun setBoard(board: Board) {
+        TODO("Not yet implemented")
+    }
+
     override fun setTasks(tasks: List<Task>) {
         recyclerViewTask!!.adapter = TaskAdapter(tasks, R.layout.task)
     }

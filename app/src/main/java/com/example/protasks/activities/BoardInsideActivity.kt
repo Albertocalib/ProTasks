@@ -87,7 +87,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
 
                 }
                 R.id.board_settings -> {
-                    fragment = SettingsFragment(lists,boardPresenter!!,boardName!!,supportFragmentManager)
+                    fragment = SettingsFragment(lists!!,boardName!!,supportFragmentManager)
                     //startActivity(Intent(this, MainActivity::class.java))
 
                 }
@@ -191,6 +191,10 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
 
     override fun getBoards() {
         boardPresenter!!.getBoards()
+    }
+
+    override fun setBoard(board: Board) {
+        TODO("Not yet implemented")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

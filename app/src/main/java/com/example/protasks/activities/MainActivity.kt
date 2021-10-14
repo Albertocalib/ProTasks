@@ -157,6 +157,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
         presenter!!.getBoards()
     }
 
+    override fun setBoard(board: Board) {
+        TODO("Not yet implemented")
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1111 && resultCode == Activity.RESULT_OK) {

@@ -27,7 +27,7 @@ public class BoardUsersPermRel {
     @MapsId("userId")
     private User user;
 
-    @JsonView(BoardUsersPermRel.class)
+    @JsonView(BoardBasicInfo.class)
     @Column(name = "rol")
     private Rol rol ;
 

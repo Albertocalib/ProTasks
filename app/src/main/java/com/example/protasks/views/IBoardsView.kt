@@ -8,4 +8,5 @@ interface IBoardsView {
     fun setUser(user:User)
     fun logOut()
     fun getBoards()
+    fun setBoard(board: Board)
 }

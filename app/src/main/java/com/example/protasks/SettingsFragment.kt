@@ -25,18 +25,22 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.protasks.models.Board
-import com.example.protasks.models.Task
-import com.example.protasks.models.TaskList
+import androidx.recyclerview.widget.RecyclerView
+import com.example.protasks.models.*
 import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.presenters.TaskListPresenter
+import com.example.protasks.utils.BottomSheet
+import com.example.protasks.views.IBoardsView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.woxthebox.draglistview.DragListView
 import com.woxthebox.draglistview.DragListView.DragListListenerAdapter
 import com.woxthebox.draglistview.swipe.ListSwipeHelper
@@ -48,15 +52,20 @@ import kotlin.collections.ArrayList
 
 class SettingsFragment(
     private val taskLists: List<TaskList>,
-    private val presenter: BoardPresenter,
     private val boardName: String,
     private val supportFragmentManager: FragmentManager
-) : Fragment() {
+) : Fragment(),IBoardsView {
     private var wipLimit: TextInputEditText? = null
+    private var wipLabelLimit: TextInputLayout?=null
     private var wipActivated: SwitchMaterial? = null
     private var board: Board? = null
     private var spinnerListWip: Spinner? = null
     private var listsIds: HashMap<String, Long> = HashMap()
+    private var addUsersButton: TextView? = null
+    private var recyclerViewUsers: RecyclerView? = null
+    private var layoutManager: LinearLayoutManager? = LinearLayoutManager(context)
+    private var presenter: BoardPresenter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -68,8 +77,10 @@ class SettingsFragment(
         savedInstanceState: Bundle?
     ): View {
         val view: View = inflater.inflate(R.layout.settings, container, false)
+        presenter= BoardPresenter(this,requireContext())
         wipActivated = view.findViewById(R.id.wip_activated)
         wipLimit = view.findViewById(R.id.wipLimit)
+        wipLabelLimit=view.findViewById(R.id.label_wip)
         spinnerListWip = view.findViewById(R.id.spinner_list_wip)
         val list = ArrayList<String>()
         list.add("Ningún elemento seleccionado")
@@ -98,10 +109,11 @@ class SettingsFragment(
         if (!wipActivated!!.isChecked) {
             wipLimit!!.visibility = View.GONE
             spinnerListWip!!.visibility = View.GONE
+            wipLabelLimit!!.visibility=View.GONE
 
         }
         wipActivated!!.setOnCheckedChangeListener { _, isChecked ->
-            presenter.updateWIP(
+            presenter!!.updateWIP(
                 isChecked,
                 board,
                 wipLimit!!.text.toString(),
@@ -110,16 +122,18 @@ class SettingsFragment(
             if (isChecked) {
                 wipLimit!!.visibility = View.VISIBLE
                 spinnerListWip!!.visibility = View.VISIBLE
+                wipLabelLimit!!.visibility=View.VISIBLE
             } else {
                 wipLimit!!.visibility = View.GONE
                 spinnerListWip!!.visibility = View.GONE
+                wipLabelLimit!!.visibility=View.GONE
             }
         }
         wipLimit!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val limit = wipLimit!!.text!!.toString()
                 if (limit != "") {
-                    presenter.updateWIP(
+                    presenter!!.updateWIP(
                         wipActivated!!.isChecked,
                         board,
                         limit,
@@ -153,7 +167,7 @@ class SettingsFragment(
                 position: Int,
                 id: Long
             ) {
-                presenter.updateWIP(
+                presenter!!.updateWIP(
                     wipActivated!!.isChecked,
                     board,
                     wipLimit!!.text.toString(),
@@ -163,7 +177,23 @@ class SettingsFragment(
             }
 
         }
+        addUsersButton = view.findViewById(R.id.add_users)
+        addUsersButton!!.setOnClickListener {
+            val bottomSheet = BottomSheet(boardName, "", presenter!!, "user")
+            bottomSheet.board = board
+            bottomSheet.show(supportFragmentManager, "bottomSheet")
+        }
+        recyclerViewUsers = view.findViewById(R.id.recycler_users)
+        recyclerViewUsers!!.layoutManager = layoutManager
+        if (board!=null){
+            setUsers(board!!.getUsers())
+        }
+
         return view
+    }
+
+    fun setUsers(users: List<BoardUsersPermRel>) {
+        recyclerViewUsers!!.adapter = UsersPermAdapter(users, presenter!!,requireContext(),board!!)
     }
 
     companion object {
@@ -173,7 +203,28 @@ class SettingsFragment(
             boardName: String,
             supportFragmentManager: FragmentManager
         ): SettingsFragment {
-            return SettingsFragment(taskLists, presenter, boardName, supportFragmentManager)
+            return SettingsFragment(taskLists, boardName, supportFragmentManager)
         }
+    }
+
+    override fun setBoards(boards: List<Board>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setUser(user: User) {
+        TODO("Not yet implemented")
+    }
+
+    override fun logOut() {
+        TODO("Not yet implemented")
+    }
+
+    override fun getBoards() {
+        TODO("Not yet implemented")
+    }
+
+    override fun setBoard(board:Board){
+        this.board=board
+        setUsers(board.getUsers())
     }
 }

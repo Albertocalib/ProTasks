@@ -31,7 +31,7 @@ public class Board {
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "board")
     private List<TaskList> taskLists;
 
-    @JsonView(BoardDetailsInfo.class)
+    @JsonView(Board.BoardBasicInfo.class)
     @OneToMany(
             mappedBy = "board",
             cascade = CascadeType.ALL,

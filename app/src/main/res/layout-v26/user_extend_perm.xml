@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp">
+
+        <TextView
+            android:id="@+id/userName_perm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Username"
+            android:textSize="26dp" />
+
+        <TextView
+            android:id="@+id/board_perm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="BOARD"
+            android:textSize="20dp" />
+
+    </RelativeLayout>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/RadioGroupPerm">
+        <RadioButton android:id="@+id/radio_guest_perm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="Invitado"
+            android:checked="true"/>
+        <RadioButton android:id="@+id/radio_admin_perm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="Administrador"/>
+        <RadioButton android:id="@+id/radio_watcher_perm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="Observador"/>
+    </RadioGroup>
+</LinearLayout>

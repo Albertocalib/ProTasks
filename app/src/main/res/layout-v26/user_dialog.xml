@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:padding="16dp"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="90dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorAccent"
+        android:textColor="@color/design_default_color_on_secondary"
+        android:textColorHint="@color/design_default_color_on_secondary"
+        app:hintTextAppearance="@style/TextLabel">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/usernameOrEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre del usuario o E-mail"
+            android:importantForAutofill="no"
+            android:labelFor="@id/passwordText"
+            android:textColorHint="@color/design_default_color_on_secondary"
+            android:textColor="@color/design_default_color_on_secondary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:text="Rol"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20dp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/RadioGroup">
+        <RadioButton android:id="@+id/radio_guest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="Invitado"
+            android:checked="true"/>
+        <RadioButton android:id="@+id/radio_admin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="Administrador"/>
+        <RadioButton android:id="@+id/radio_watcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="Observador"/>
+    </RadioGroup>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:layout_marginBottom="10dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/AddUserButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/colorAccent"
+        android:text="Añadir"/>
+
+
+</LinearLayout>

@@ -1,5 +1,5 @@
 package protasks.backend.Rol;
 
 public enum  Rol {
-    OWNER,ADMIN,USER
+    OWNER,ADMIN,USER,WATCHER
 }

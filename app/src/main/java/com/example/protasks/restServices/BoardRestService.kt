@@ -1,6 +1,7 @@
 package com.example.protasks.restServices
 
 import com.example.protasks.models.Board
+import com.example.protasks.models.Rol
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -20,5 +21,11 @@ interface BoardRestService {
                    @Path("wipLimit") wipLimit: Int,
                    @Path("wipList") wipList: String):Call<Board>
 
+    @PUT("id={id}/username={username}&rol{rol}")
+    fun addUserToBoard(@Path("id") id: Long,@Path("username") username:String,@Path("rol") rol:Rol):Call<Board>
 
+    @PUT("id={id}/userId={userId}&role={role}")
+    fun updateRole( @Path("id") id: Long,
+                   @Path("userId") userId: Long,
+                   @Path("role") role: Rol):Call<Board>
 }

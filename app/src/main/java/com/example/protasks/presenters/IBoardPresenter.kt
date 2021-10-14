@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import com.example.protasks.models.User
 
 
-interface IBoardPresenter {
+interface IBoardPresenter:IPresenter {
     fun getBoards()
     fun getUser()
     fun getViewPref():Boolean

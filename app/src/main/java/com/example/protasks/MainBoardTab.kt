@@ -189,6 +189,11 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
     override fun getBoards() {
         presenter!!.getBoards()
     }
+
+    override fun setBoard(board: Board) {
+        TODO("Not yet implemented")
+    }
+
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         val b = item!!.itemId == R.id.listViewMode
         presenter!!.setViewPref(b)

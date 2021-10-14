@@ -109,4 +109,7 @@ class Board {
         b.setBoard(this)
         this.users!!.add(b)
     }
+    fun getUsers():ArrayList<BoardUsersPermRel> {
+        return this.users!!
+    }
 }
