@@ -199,7 +199,10 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
     }
 
     fun updateWIP(checked: Boolean, board: Board?, wipLimit: String, wipList: String) {
-        val wipLimitConv = wipLimit.toInt()
+        var wipLimitConv= 0
+        if (wipLimit!="") {
+            wipLimitConv = wipLimit.toInt()
+        }
         val boardRes =
             retrofitInsBoard.service.updateWIP(board!!.getId(), checked, wipLimitConv, wipList)
         boardRes.enqueue(object : Callback<Board> {

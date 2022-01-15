@@ -44,6 +44,7 @@ class UsersPermAdapter(private val users : List<BoardUsersPermRel>?, private val
         val name= user!!.getName()+' '+user.getSurname()
         holder.userName.text=name
         holder.role.text=users[position].getRol().toString()
+        val loginUserRol =perm.getRol()
         val photo=user.getPhoto()
         if (photo!=null){
             val imageBytes = Base64.decode(photo, Base64.DEFAULT)
@@ -53,7 +54,7 @@ class UsersPermAdapter(private val users : List<BoardUsersPermRel>?, private val
             holder.userImage.setImageBitmap(imageHandler.setTextToImage(Color.LTGRAY,name))
         }
         val rol=users[position].getRol()
-        if (rol!=Rol.OWNER){
+        if (rol!=Rol.OWNER && (loginUserRol==Rol.OWNER || loginUserRol==Rol.ADMIN)){
             holder.view.setOnClickListener {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(context)
                 val dialogView: View =
@@ -91,11 +92,7 @@ class UsersPermAdapter(private val users : List<BoardUsersPermRel>?, private val
                 val alertDialog: AlertDialog = builder.create()
                 alertDialog.show()
             }
-            if (holder.role.text==Rol.OWNER.toString()){
-                holder.deleteButton.visibility=View.GONE
-            }
         }
-        val loginUserRol =perm.getRol()
         if (loginUserRol==Rol.ADMIN || loginUserRol==Rol.OWNER){
             holder.deleteButton.setOnClickListener {
                 val builder = AlertDialog.Builder(context)
@@ -112,7 +109,8 @@ class UsersPermAdapter(private val users : List<BoardUsersPermRel>?, private val
                 val alert = builder.create()
                 alert.show()
             }
-
+        }else{
+            holder.deleteButton.visibility=View.GONE
         }
 
 

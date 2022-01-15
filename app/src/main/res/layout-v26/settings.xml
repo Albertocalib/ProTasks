@@ -42,8 +42,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:background="@color/colorAccent"
-            android:textColor="@color/design_default_color_on_secondary"
-            android:textColorHint="@color/design_default_color_on_secondary"
             app:hintTextAppearance="@style/TextLabel">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -52,9 +50,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Límite del WIP"
                 android:importantForAutofill="no"
-                android:labelFor="@id/label_wip"
-                android:textColor="@color/design_default_color_on_secondary"
-                android:textColorHint="@color/design_default_color_on_secondary" />
+                android:labelFor="@id/label_wip" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

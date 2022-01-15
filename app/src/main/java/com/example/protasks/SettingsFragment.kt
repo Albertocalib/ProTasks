@@ -15,6 +15,8 @@
  */
 package com.example.protasks
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -113,78 +115,88 @@ class SettingsFragment(
             wipLabelLimit!!.visibility=View.GONE
 
         }
-        wipActivated!!.setOnCheckedChangeListener { _, isChecked ->
-            presenter!!.updateWIP(
-                isChecked,
-                board,
-                wipLimit!!.text.toString(),
-                spinnerListWip!!.selectedItem.toString()
-            )
-            if (isChecked) {
-                wipLimit!!.visibility = View.VISIBLE
-                spinnerListWip!!.visibility = View.VISIBLE
-                wipLabelLimit!!.visibility=View.VISIBLE
-            } else {
-                wipLimit!!.visibility = View.GONE
-                spinnerListWip!!.visibility = View.GONE
-                wipLabelLimit!!.visibility=View.GONE
-            }
-        }
-        wipLimit!!.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                val limit = wipLimit!!.text!!.toString()
-                if (limit != "") {
-                    presenter!!.updateWIP(
-                        wipActivated!!.isChecked,
-                        board,
-                        limit,
-                        spinnerListWip!!.selectedItem.toString()
-                    )
-                }
-            }
 
-            override fun beforeTextChanged(
-                s: CharSequence, start: Int,
-                count: Int, after: Int
-            ) {
-            }
-
-            override fun onTextChanged(
-                s: CharSequence, start: Int,
-                before: Int, count: Int
-            ) {
-            }
-        })
-
-
-        spinnerListWip!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                Log.i("WIPSPINNER", "Nothing Selected")
-            }
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
+        recyclerViewUsers = view.findViewById(R.id.recycler_users)
+        addUsersButton = view.findViewById(R.id.add_users)
+        val userloginRol=perm.getRol()
+        if (userloginRol==Rol.ADMIN || userloginRol==Rol.OWNER){
+            wipActivated!!.setOnCheckedChangeListener { _, isChecked ->
                 presenter!!.updateWIP(
-                    wipActivated!!.isChecked,
+                    isChecked,
                     board,
                     wipLimit!!.text.toString(),
                     spinnerListWip!!.selectedItem.toString()
                 )
+                if (isChecked) {
+                    wipLimit!!.visibility = View.VISIBLE
+                    spinnerListWip!!.visibility = View.VISIBLE
+                    wipLabelLimit!!.visibility=View.VISIBLE
+                } else {
+                    wipLimit!!.visibility = View.GONE
+                    spinnerListWip!!.visibility = View.GONE
+                    wipLabelLimit!!.visibility=View.GONE
+                }
+            }
+            wipLimit!!.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    val limit = wipLimit!!.text!!.toString()
+                    if (limit != "") {
+                        presenter!!.updateWIP(
+                            wipActivated!!.isChecked,
+                            board,
+                            limit,
+                            spinnerListWip!!.selectedItem.toString()
+                        )
+                    }
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence, start: Int,
+                    count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence, start: Int,
+                    before: Int, count: Int
+                ) {
+                }
+            })
+
+
+            spinnerListWip!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    Log.i("WIPSPINNER", "Nothing Selected")
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    presenter!!.updateWIP(
+                        wipActivated!!.isChecked,
+                        board,
+                        wipLimit!!.text.toString(),
+                        spinnerListWip!!.selectedItem.toString()
+                    )
+
+                }
 
             }
+            addUsersButton!!.setOnClickListener {
+                val bottomSheet = BottomSheet(boardName, "", presenter!!, "user")
+                bottomSheet.board = board
+                bottomSheet.show(supportFragmentManager, "bottomSheet")
+            }
+        }else{
+            wipLimit!!.isEnabled=false
+            wipActivated!!.isEnabled=false
+            spinnerListWip!!.isEnabled=false
+            addUsersButton!!.visibility=View.GONE
+        }
 
-        }
-        addUsersButton = view.findViewById(R.id.add_users)
-        addUsersButton!!.setOnClickListener {
-            val bottomSheet = BottomSheet(boardName, "", presenter!!, "user")
-            bottomSheet.board = board
-            bottomSheet.show(supportFragmentManager, "bottomSheet")
-        }
-        recyclerViewUsers = view.findViewById(R.id.recycler_users)
         recyclerViewUsers!!.layoutManager = layoutManager
         if (board!=null){
             setUsers(board!!.getUsers())

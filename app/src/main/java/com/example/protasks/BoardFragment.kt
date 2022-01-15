@@ -148,7 +148,7 @@ class BoardFragment(private val taskLists: List<TaskList>, private val presenter
                 }
                 val columnName = mBoardView!!.getHeaderView(newColumn).findViewById<TextView>(R.id.text).text
                 if (oldColumn!=newColumn && board!=null && board!!.getWipActivated() &&
-                    columnName==board!!.getWipList() && mBoardView!!.getAdapter(newColumn).itemCount==board!!.getWipLimit()){
+                    columnName==board!!.getWipList() && mBoardView!!.getAdapter(newColumn).itemCount>=board!!.getWipLimit()){
                     mBoardView!!.getHeaderView(newColumn).setBackgroundColor(Color.RED)
                     if (toast==null){
                         toast = Toast.makeText(context, "WIP Superado, no puedes añadir más tareas a esta columna", Toast.LENGTH_SHORT)
