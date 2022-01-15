@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.*
 import com.example.protasks.models.Board
+import com.example.protasks.models.BoardUsersPermRel
 import com.example.protasks.models.TaskList
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
@@ -50,13 +51,17 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     var logoutButton: ImageButton? = null
     var viewMode: ImageButton? = null
     private val preference = Preference()
+    private var perms: BoardUsersPermRel? = null
+    private var boardId: Long? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         presenter = TaskListPresenter(this, baseContext)
-        boardName = intent.getStringExtra("BOARD_NAME")
+        val bundle = intent.getBundleExtra("BOARD_INFO")
+        boardName = bundle!!.getString("BOARD_NAME")
+        boardId = bundle.getLong("BOARD_ID",-1)
         findViewById<TextView>(R.id.boardName).text=boardName
         presenter!!.getLists(boardName!!)
         toolbar = findViewById(R.id.toolbar)
@@ -87,8 +92,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
 
                 }
                 R.id.board_settings -> {
-                    fragment = SettingsFragment(lists!!,boardName!!,supportFragmentManager)
-                    //startActivity(Intent(this, MainActivity::class.java))
+                    fragment = SettingsFragment(lists!!,boardName!!,supportFragmentManager,perms!!)
 
                 }
                 R.id.nav_home_main_screen ->{
@@ -175,6 +179,10 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
         userEmail!!.text = user.getEmail()
         val completeName = user.getName()!! + " " + user.getSurname()!!
         userCompleteName!!.text = completeName
+        boardPresenter!!.getRole(user.getId()!!,boardId!!)
+    }
+    override fun setRole(perm:BoardUsersPermRel){
+        perms=perm
     }
     
 

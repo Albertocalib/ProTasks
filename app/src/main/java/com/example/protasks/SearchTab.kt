@@ -11,10 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.activities.BoardInsideActivity
-import com.example.protasks.models.Board
-import com.example.protasks.models.Tag
-import com.example.protasks.models.Task
-import com.example.protasks.models.User
+import com.example.protasks.models.*
 import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.views.IBoardsView
@@ -89,6 +86,10 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,Bo
         TODO("Not yet implemented")
     }
 
+    override fun setRole(perm: BoardUsersPermRel) {
+        TODO("Not yet implemented")
+    }
+
     override fun setTasks(tasks: List<Task>) {
         recyclerViewTask!!.adapter = TaskAdapter(tasks, R.layout.task)
     }
@@ -117,9 +118,10 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,Bo
         TODO("Not yet implemented")
     }
 
-    override fun onItemClicked(text: TextView) {
+    override fun onItemClicked(boardId: Long?, boardName: String) {
         val intent = Intent(context, BoardInsideActivity::class.java)
-        intent.putExtra("BOARD_NAME", text.text)
+        intent.putExtra("BOARD_NAME", boardName)
+        intent.putExtra("BOARD_ID",boardId)
         startActivity(intent)
     }
 

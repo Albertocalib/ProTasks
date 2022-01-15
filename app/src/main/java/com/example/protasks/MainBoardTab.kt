@@ -19,6 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.example.protasks.activities.BoardInsideActivity
 import com.example.protasks.models.Board
+import com.example.protasks.models.BoardUsersPermRel
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.utils.ImageHandler
@@ -194,6 +195,10 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
         TODO("Not yet implemented")
     }
 
+    override fun setRole(perm: BoardUsersPermRel) {
+        TODO("Not yet implemented")
+    }
+
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         val b = item!!.itemId == R.id.listViewMode
         presenter!!.setViewPref(b)
@@ -221,9 +226,12 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
         }
     }
 
-    override fun onItemClicked(text: TextView) {
+    override fun onItemClicked(boardId: Long?, boardName: String) {
         val intent = Intent(context, BoardInsideActivity::class.java)
-        intent.putExtra("BOARD_NAME", text.text)
+        val bundle = Bundle()
+        bundle.putString("BOARD_NAME", boardName)
+        bundle.putLong("BOARD_ID", boardId!!)
+        intent.putExtra("BOARD_INFO",bundle)
         startActivity(intent)
     }
 

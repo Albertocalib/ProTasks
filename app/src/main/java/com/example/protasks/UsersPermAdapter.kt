@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.*
 import android.util.Base64
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -16,9 +17,11 @@ import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.utils.ImageHandler
 import com.example.protasks.activities.MainActivity
 import com.example.protasks.models.*
+import org.w3c.dom.Text
 
 
-class UsersPermAdapter(private val users : List<BoardUsersPermRel>?, private val presenter:BoardPresenter, private val context: Context,private val board:Board) :RecyclerView.Adapter<UsersPermAdapter.ViewHolderUsersPerm>(){
+class UsersPermAdapter(private val users : List<BoardUsersPermRel>?, private val presenter:BoardPresenter, private val context: Context,private val board:Board,private val perm:BoardUsersPermRel) :RecyclerView.Adapter<UsersPermAdapter.ViewHolderUsersPerm>()
+{
 
     private val imageHandler: ImageHandler = ImageHandler()
     private var parentGroup:ViewGroup?=null
@@ -88,8 +91,29 @@ class UsersPermAdapter(private val users : List<BoardUsersPermRel>?, private val
                 val alertDialog: AlertDialog = builder.create()
                 alertDialog.show()
             }
+            if (holder.role.text==Rol.OWNER.toString()){
+                holder.deleteButton.visibility=View.GONE
+            }
         }
+        val loginUserRol =perm.getRol()
+        if (loginUserRol==Rol.ADMIN || loginUserRol==Rol.OWNER){
+            holder.deleteButton.setOnClickListener {
+                val builder = AlertDialog.Builder(context)
+                builder.setMessage("¿Estás seguro que desea eliminar al Usuario "+holder.userName.text+" del tablero?")
+                    .setCancelable(false)
+                    .setPositiveButton("Aceptar") { dialog, _ ->
+                        dialog.dismiss()
+                        presenter.deleteUserFromBoard(user.getId()!!,board.getId())
+                    }
+                    .setNegativeButton("Cancelar") { dialog, _ ->
+                        // Dismiss the dialog
+                        dialog.dismiss()
+                    }
+                val alert = builder.create()
+                alert.show()
+            }
 
+        }
 
 
     }
@@ -99,11 +123,13 @@ class UsersPermAdapter(private val users : List<BoardUsersPermRel>?, private val
         var userImage: ImageView
         var role:TextView
         var view:View=v
+        var deleteButton:ImageButton
 
         init {
             userName = view.findViewById(R.id.userName)
             userImage = view.findViewById(R.id.userImage)
             role = view.findViewById(R.id.role)
+            deleteButton = view.findViewById(R.id.remove_user)
 
         }
     }

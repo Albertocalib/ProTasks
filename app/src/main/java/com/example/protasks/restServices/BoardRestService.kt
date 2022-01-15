@@ -1,6 +1,7 @@
 package com.example.protasks.restServices
 
 import com.example.protasks.models.Board
+import com.example.protasks.models.BoardUsersPermRel
 import com.example.protasks.models.Rol
 import retrofit2.Call
 import retrofit2.http.*
@@ -28,4 +29,11 @@ interface BoardRestService {
     fun updateRole( @Path("id") id: Long,
                    @Path("userId") userId: Long,
                    @Path("role") role: Rol):Call<Board>
+
+    @DELETE("id={id}/userId={user_id}")
+    fun deleteUserFromBoard(@Path("id") id:Long,@Path("user_id") userId:Long):Call<Board>
+
+    @GET("id={id}/userId={user_id}")
+    fun getRol(@Path("id") id:Long,@Path("user_id") userId:Long):Call<BoardUsersPermRel>
+
 }

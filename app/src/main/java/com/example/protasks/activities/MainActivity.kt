@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.*
 import com.example.protasks.models.Board
+import com.example.protasks.models.BoardUsersPermRel
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.views.IBoardsView
@@ -158,6 +159,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
     }
 
     override fun setBoard(board: Board) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setRole(perm: BoardUsersPermRel) {
         TODO("Not yet implemented")
     }
 

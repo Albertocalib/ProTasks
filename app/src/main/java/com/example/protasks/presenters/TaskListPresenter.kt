@@ -10,10 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import com.example.protasks.RetrofitInstance
-import com.example.protasks.models.Board
-import com.example.protasks.models.Task
-import com.example.protasks.models.TaskList
-import com.example.protasks.models.User
+import com.example.protasks.models.*
 import com.example.protasks.restServices.BoardRestService
 import com.example.protasks.restServices.TaskListRestService
 import com.example.protasks.restServices.TaskRestService

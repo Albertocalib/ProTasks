@@ -14,6 +14,7 @@ import java.util.List;
 public class User {
     public interface UserBasicInfo{}
     public interface UserDetailsInfo{}
+    public interface UserBoardInfo extends UserBasicInfo{}
 
     @JsonView(UserBasicInfo.class)
     @Id
@@ -49,7 +50,7 @@ public class User {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Task> tasks;
 
-    @JsonView(UserDetailsInfo.class)
+    @JsonView(UserBoardInfo.class)
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,

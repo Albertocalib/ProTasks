@@ -78,9 +78,9 @@ public class BoardRestController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @JsonView(Board.BoardBasicInfo.class)
+    @JsonView(BoardsUserRequest.class)
     @PutMapping("/id={id}/wipActivated={wipActivated}&wipLimit={wipLimit}&wipList={wipList}")
-    public ResponseEntity<Board> updateTaskPosition(@PathVariable("id") Long id, @PathVariable("wipActivated") Boolean wipActivated, @PathVariable("wipLimit") int wipLimit, @PathVariable("wipList") String wipList) {
+    public ResponseEntity<Board> updateWip(@PathVariable("id") Long id, @PathVariable("wipActivated") Boolean wipActivated, @PathVariable("wipLimit") int wipLimit, @PathVariable("wipList") String wipList) {
         Optional<Board> b = boardService.findById(id);
         if (b.isPresent()) {
             Board board = b.get();
@@ -115,6 +115,30 @@ public class BoardRestController {
             b.setRol(role);
             boardUsersPermService.save(b);
             return new ResponseEntity<>(b.getBoard(), HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @JsonView(BoardsUserRequest.class)
+    @DeleteMapping("/id={id}/userId={userId}")
+    public ResponseEntity<Board> deleteUserFromBoard(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
+        BoardUsersPermRel b = boardUsersPermService.findBoardPermByUserIdAndBoardId(id,userId);
+        if (b!=null) {
+            boardUsersPermService.delete(b);
+            Optional<Board> board =boardService.findById(id);
+            if (board.isPresent()) {
+                return new ResponseEntity<>(b.getBoard(), HttpStatus.CREATED);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+    @JsonView(BoardsUserRequest.class)
+    @GetMapping("/id={id}/userId={userId}")
+    public ResponseEntity<BoardUsersPermRel> getRol(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
+        BoardUsersPermRel b = boardUsersPermService.findBoardPermByUserIdAndBoardId(id,userId);
+        if (b!=null) {
+            return new ResponseEntity<>(b, HttpStatus.CREATED);
+
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

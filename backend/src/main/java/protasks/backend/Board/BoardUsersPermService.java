@@ -17,6 +17,6 @@ public class BoardUsersPermService {
         this.boardRepository.save(board);
     }
     public BoardUsersPermRel findBoardPermByUserIdAndBoardId(Long boardId,Long userId){ return this.boardRepository.findBoardPermByUserIdAndBoardId(boardId,userId);}
-
+    public void delete (BoardUsersPermRel perm){this.boardRepository.delete(perm);}
 }
 

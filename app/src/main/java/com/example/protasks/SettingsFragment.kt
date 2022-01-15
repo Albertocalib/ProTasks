@@ -53,7 +53,8 @@ import kotlin.collections.ArrayList
 class SettingsFragment(
     private val taskLists: List<TaskList>,
     private val boardName: String,
-    private val supportFragmentManager: FragmentManager
+    private val supportFragmentManager: FragmentManager,
+    private val perm:BoardUsersPermRel
 ) : Fragment(),IBoardsView {
     private var wipLimit: TextInputEditText? = null
     private var wipLabelLimit: TextInputLayout?=null
@@ -193,7 +194,7 @@ class SettingsFragment(
     }
 
     fun setUsers(users: List<BoardUsersPermRel>) {
-        recyclerViewUsers!!.adapter = UsersPermAdapter(users, presenter!!,requireContext(),board!!)
+        recyclerViewUsers!!.adapter = UsersPermAdapter(users, presenter!!,requireContext(),board!!,perm)
     }
 
     companion object {
@@ -201,9 +202,10 @@ class SettingsFragment(
             taskLists: List<TaskList>,
             presenter: BoardPresenter,
             boardName: String,
-            supportFragmentManager: FragmentManager
+            supportFragmentManager: FragmentManager,
+            perm:BoardUsersPermRel
         ): SettingsFragment {
-            return SettingsFragment(taskLists, boardName, supportFragmentManager)
+            return SettingsFragment(taskLists, boardName, supportFragmentManager,perm)
         }
     }
 
@@ -226,5 +228,9 @@ class SettingsFragment(
     override fun setBoard(board:Board){
         this.board=board
         setUsers(board.getUsers())
+    }
+
+    override fun setRole(perm: BoardUsersPermRel) {
+        TODO("Not yet implemented")
     }
 }

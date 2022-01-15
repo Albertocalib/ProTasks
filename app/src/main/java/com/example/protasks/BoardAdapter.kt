@@ -32,18 +32,20 @@ class BoardAdapter(private val boards : List<Board>?,private val view:Int, val i
         val imageBytes = Base64.decode(boards[position].getPhoto(), Base64.DEFAULT)
         val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
         holder.boardImage.setImageBitmap(decodedImage)
+        holder.boardId=boards[position].getId()
     }
 
     class ViewHolderBoard(v: View,clickListener: OnItemClickListener) : RecyclerView.ViewHolder(v) {
         var boardName: TextView
         var boardImage: ImageView
+        var boardId:Long?=null
         var view:View=v
 
         init {
             boardName = view.findViewById(R.id.boardName)
             boardImage = view.findViewById(R.id.boardView)
             view.setOnClickListener {
-                clickListener.onItemClicked(boardName)
+                clickListener.onItemClicked(boardId,boardName.text.toString())
             }
         }
     }
@@ -51,6 +53,6 @@ class BoardAdapter(private val boards : List<Board>?,private val view:Int, val i
         return this.boards!!
     }
     interface OnItemClickListener{
-        fun onItemClicked(text: TextView)
+        fun onItemClicked(boardId: Long?,boardName: String)
     }
 }

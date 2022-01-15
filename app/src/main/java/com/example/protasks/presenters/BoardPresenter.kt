@@ -262,5 +262,34 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
 
     }
 
+    fun deleteUserFromBoard(userId:Long,boardId: Long ) {
+        val boardRes =
+            retrofitInsBoard.service.deleteUserFromBoard(boardId, userId)
+        boardRes.enqueue(object : Callback<Board> {
+            override fun onFailure(call: Call<Board>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Board>?, response: Response<Board>?) {
+                iBoardsView.setBoard(response!!.body()!!)
+            }
+
+        })
+
+    }
+    fun getRole(userId:Long,boardId:Long){
+        val board = retrofitInsBoard.service.getRol(boardId,userId)
+        board.enqueue(object : Callback<BoardUsersPermRel> {
+            override fun onFailure(call: Call<BoardUsersPermRel>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<BoardUsersPermRel>?, response: Response<BoardUsersPermRel>?) {
+                iBoardsView.setRole(response!!.body()!!)
+            }
+
+        })
+    }
+
 
 }
