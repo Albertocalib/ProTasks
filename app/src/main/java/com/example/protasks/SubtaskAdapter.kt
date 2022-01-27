@@ -3,8 +3,6 @@ package com.example.protasks
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +10,11 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
+import com.example.protasks.models.Rol
 import com.example.protasks.models.Task
 import com.example.protasks.presenters.TaskPresenter
 
@@ -29,7 +27,8 @@ class SubtaskAdapter(
         private val supportFragmentManager: FragmentManager,
         private val taskDialogExtend: TaskDialogExtend,
         private val boardId: Long,
-        private val boardName: String
+        private val boardName: String,
+        private val rol: Rol?
 ) : RecyclerView.Adapter<SubtaskAdapter.ViewHolderSubtask>() {
     override fun onCreateViewHolder(
             parent: ViewGroup,
@@ -74,7 +73,14 @@ class SubtaskAdapter(
             } else {
                 subtask.setParentTask(task!!)
                 val dialog =
-                        TaskDialogExtend(subtask, boardName, boardId, supportFragmentManager, null)
+                        TaskDialogExtend(
+                            subtask,
+                            boardName,
+                            boardId,
+                            supportFragmentManager,
+                            null,
+                            rol
+                        )
                 val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
                 dialog.show(ft, "TaskExtendDialog")
             }

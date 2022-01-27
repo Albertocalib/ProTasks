@@ -6,7 +6,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -26,6 +25,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.protasks.models.Rol
 import com.example.protasks.models.Tag
 import com.example.protasks.models.Task
 import com.example.protasks.models.User
@@ -45,7 +45,8 @@ class TaskDialogExtend(
     private val boardName: String,
     private val boardId: Long,
     private val fragmentMgr: FragmentManager,
-    private val viewHolder: TaskAdapterInsideBoard.ViewHolder?
+    private val viewHolder: TaskAdapterInsideBoard.ViewHolder?,
+    val rol: Rol?
 ) : DialogFragment(),
     ITasksView {
     var name: TextInputEditText? = null
@@ -324,7 +325,7 @@ class TaskDialogExtend(
         recyclerViewSubtasks!!.layoutManager = layoutManagerSubtasks
         if (!task.getSubtasks().isNullOrEmpty()){
             recyclerViewSubtasks!!.adapter =
-                    SubtaskAdapter(task.getSubtasks()!!,taskPresenter,task,requireContext(),fragmentMgr,this,boardId,boardName)
+                    SubtaskAdapter(task.getSubtasks()!!,taskPresenter,task,requireContext(),fragmentMgr,this,boardId,boardName,rol)
             recyclerViewSubtasks!!.visibility=View.VISIBLE
         }else{
             recyclerViewSubtasks!!.visibility=View.GONE
@@ -347,8 +348,23 @@ class TaskDialogExtend(
         deleteSubtasks!!.setOnClickListener {
             taskPresenter!!.deleteSubtasks(subtasksSelected)
         }
+        if (rol==Rol.WATCHER){
+            setViewAndChildrenEnabled(v,false)
+        }
 
         return v
+    }
+    private fun setViewAndChildrenEnabled(view: View, enabled: Boolean) {
+        if (view!=toolbar) {
+            view.isEnabled = enabled
+            if (view is ViewGroup) {
+                val viewGroup = view
+                for (i in 0 until viewGroup.childCount) {
+                    val child = viewGroup.getChildAt(i)
+                    setViewAndChildrenEnabled(child, enabled)
+                }
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -425,7 +441,7 @@ class TaskDialogExtend(
             viewAttachments!!.visibility=View.GONE
         }
         recyclerViewSubtasks!!.adapter =
-                SubtaskAdapter(task.getSubtasks()!!,taskPresenter,task,requireContext(),fragmentMgr,this,boardId,boardName)
+                SubtaskAdapter(task.getSubtasks()!!,taskPresenter,task,requireContext(),fragmentMgr,this,boardId,boardName,rol)
         if (task.getSubtasks()!!.isNotEmpty()){
             recyclerViewSubtasks!!.visibility=View.VISIBLE
         }else{

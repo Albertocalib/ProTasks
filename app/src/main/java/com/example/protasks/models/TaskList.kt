@@ -1,9 +1,11 @@
 package com.example.protasks.models
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class TaskList {
+class TaskList() :Parcelable {
     @Expose
     @SerializedName("id")
     private var id: Long = 0
@@ -23,6 +25,12 @@ class TaskList {
     @Expose
     @SerializedName("position")
     private var position: Int? = null
+
+    constructor(parcel: Parcel) : this() {
+        id = parcel.readLong()
+        title = parcel.readString()
+        position = parcel.readValue(Int::class.java.classLoader) as? Int
+    }
 
     fun getId(): Long {
         return id
@@ -61,6 +69,26 @@ class TaskList {
 
     fun setPosition(position: Int) {
         this.position = position
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
+        parcel.writeString(title)
+        parcel.writeValue(position)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<TaskList> {
+        override fun createFromParcel(parcel: Parcel): TaskList {
+            return TaskList(parcel)
+        }
+
+        override fun newArray(size: Int): Array<TaskList?> {
+            return arrayOfNulls(size)
+        }
     }
 
 }

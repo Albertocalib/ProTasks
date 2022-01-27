@@ -18,10 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.*
-import com.example.protasks.models.Board
-import com.example.protasks.models.BoardUsersPermRel
-import com.example.protasks.models.TaskList
-import com.example.protasks.models.User
+import com.example.protasks.models.*
 import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.presenters.TaskListPresenter
 import com.example.protasks.utils.Preference
@@ -105,7 +102,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
             true
         }
         if (savedInstanceState == null) {
-            showFragment(BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!))
+            showFragment(BoardFragment.instance(lists,boardName!!))
         }
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
         recyclerView2 = navigationView.findViewById(R.id.recycler_board_navigation_view)
@@ -159,9 +156,9 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     override fun setTaskLists(taskList: List<TaskList>) {
         lists = taskList
         fragment = if (preference.getModeView(this)==true){
-            ListFragment(lists,presenter!!,boardName!!,supportFragmentManager)
+            ListFragment.instance(lists,boardName!!)
         }else{
-            BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!)
+            BoardFragment.instance(lists,boardName!!)
 
         }
         showFragment(fragment!!)
@@ -183,6 +180,13 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     }
     override fun setRole(perm:BoardUsersPermRel){
         perms=perm
+        if (preference.getModeView(this)==true){
+            (fragment as ListFragment).rol=perm.getRol()
+            (fragment as ListFragment).setWatcherVisibility()
+        }else{
+            (fragment as BoardFragment).rol=perm.getRol()
+            (fragment as BoardFragment).setWatcherVisibility()
+        }
     }
     
 
@@ -219,12 +223,18 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when {
             item!!.itemId==R.id.listViewMode -> {
-                fragment = ListFragment(lists,presenter!!,boardName!!,supportFragmentManager)
+                fragment = ListFragment.instance(lists,boardName!!)
                 preference.setModeView(true,this)
+                if (perms!=null){
+                    (fragment as ListFragment).rol=perms!!.getRol()
+                }
             }
             item.itemId==R.id.BoardViewMode -> {
-                fragment = BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!)
+                fragment = BoardFragment.instance(lists,boardName!!)
                 preference.setModeView(false,this)
+                if (perms!=null){
+                    (fragment as BoardFragment).rol=perms!!.getRol()
+                }
             }
             else -> {
                 fragment = StatsFragment(lists,presenter!!,supportFragmentManager,boardName!!)
@@ -235,10 +245,16 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     }
     override fun updateTasks(listsUpdated:List<TaskList>){
         lists=listsUpdated
-        fragment = if (preference.getModeView(this)==true){
-            ListFragment(lists,presenter!!,boardName!!,supportFragmentManager)
+        if (preference.getModeView(this)==true){
+            fragment=ListFragment.instance(lists,boardName!!)
+            if (perms!=null){
+                (fragment as ListFragment).rol=perms!!.getRol()
+            }
         }else{
-            BoardFragment(lists,presenter!!,supportFragmentManager,boardName!!)
+            fragment=BoardFragment.instance(lists,boardName!!)
+            if (perms!=null){
+                (fragment as BoardFragment).rol=perms!!.getRol()
+            }
 
         }
         showFragment(fragment!!)

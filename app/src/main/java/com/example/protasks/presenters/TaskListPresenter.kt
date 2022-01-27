@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -27,7 +29,7 @@ import java.io.ByteArrayOutputStream
 import java.text.FieldPosition
 
 
-class TaskListPresenter(private var view: IInsideBoardsView, private var context: Context) :
+class TaskListPresenter(private var view: IInsideBoardsView?, private var context: Context) :
     ITaskListPresenter {
     private val retrofitInsTaskList: RetrofitInstance<TaskListRestService> =
         RetrofitInstance("api/list/", TaskListRestService::class.java)
@@ -102,7 +104,9 @@ class TaskListPresenter(private var view: IInsideBoardsView, private var context
             }
 
             override fun onResponse(call: Call<List<TaskList>>?, response: Response<List<TaskList>>?) {
-                view.setTaskLists(response!!.body()!!)
+                if (view!=null) {
+                    view!!.setTaskLists(response!!.body()!!)
+                }
             }
 
         })
@@ -143,7 +147,9 @@ class TaskListPresenter(private var view: IInsideBoardsView, private var context
             }
 
             override fun onResponse(call: Call<List<TaskList>>?, response: Response<List<TaskList>>?) {
-                view.updateTasks(response!!.body()!!)
+                if (view!=null){
+                    view!!.updateTasks(response!!.body()!!)
+                }
             }
 
         })

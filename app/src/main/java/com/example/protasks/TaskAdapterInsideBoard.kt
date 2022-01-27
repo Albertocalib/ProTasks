@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.example.protasks.models.Rol
 import com.example.protasks.models.Task
-import com.example.protasks.presenters.IPresenter
 import com.example.protasks.presenters.TaskListPresenter
 import com.example.protasks.utils.BottomSheet
 import com.woxthebox.draglistview.DragItemAdapter
@@ -27,7 +26,8 @@ class TaskAdapterInsideBoard(
     private val supportFragmentManager: FragmentManager,
     private val boardName: String,
     private val boardId: Long,
-    private val presenter:TaskListPresenter
+    private val presenter:TaskListPresenter,
+    private val rol:Rol?=null
 ) :
     DragItemAdapter<Triple<Long, Task, Boolean>, TaskAdapterInsideBoard.ViewHolder>() {
     override fun onCreateViewHolder(
@@ -80,6 +80,9 @@ class TaskAdapterInsideBoard(
             cardViewTask = itemView.findViewById(R.id.card2) as CardView
             image = itemView.findViewById(R.id.imageTaskInside) as ImageView
             optionsMenu = itemView.findViewById<View>(R.id.options) as ImageButton
+            if (rol==Rol.WATCHER){
+                optionsMenu!!.visibility=View.GONE
+            }
             optionsMenu!!.setOnClickListener {
                 val bottomSheet = BottomSheet(boardName, listText!!.text.toString(), presenter, "menu_task")
                 bottomSheet.task=task
@@ -90,9 +93,8 @@ class TaskAdapterInsideBoard(
 
         override fun onItemClicked(view: View) {
             if (task != null) {
-                Toast.makeText(view.context, "Item clicked", Toast.LENGTH_SHORT).show()
                 val dialog =
-                    TaskDialogExtend(task!!, boardName, boardId, supportFragmentManager, this)
+                    TaskDialogExtend(task!!, boardName, boardId, supportFragmentManager, this,rol)
                 val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
                 dialog.show(ft, "TaskExtendDialog")
             }
@@ -100,7 +102,6 @@ class TaskAdapterInsideBoard(
         }
 
         override fun onItemLongClicked(view: View): Boolean {
-            Toast.makeText(view.context, "Item long clicked", Toast.LENGTH_SHORT).show()
             return true
         }
 
