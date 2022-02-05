@@ -2,6 +2,7 @@ package protasks.backend.Task;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import protasks.backend.File.File;
+import protasks.backend.Rol.Priority;
 import protasks.backend.Tag.Tag;
 import protasks.backend.TaskList.TaskList;
 import protasks.backend.user.User;
@@ -46,6 +47,10 @@ public class Task implements Comparable<Task>,Cloneable {
     @JsonView(Task.TaskListBasicInfo.class)
     @Column(name="Description")
     private String description;
+
+    @JsonView(Task.TaskListBasicInfo.class)
+    @Column(name="Priority")
+    private Priority priority;
 
     @JsonView(Task.TaskListBasicInfo.class)
     @Column(name="Position")
@@ -227,5 +232,12 @@ public class Task implements Comparable<Task>,Cloneable {
         return newTask;
     }
 
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
 }
 

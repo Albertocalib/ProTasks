@@ -225,7 +225,7 @@ class BoardFragment : Fragment() {
             boardId=board!!.getId()
         }
         val listAdapter =
-            TaskAdapterInsideBoard(mItemArray, false,R.layout.column_item, R.id.item_layout, false,supportFragmentManager!!,boardName!!,boardId,presenter!!,rol)
+            TaskAdapterInsideBoard(mItemArray, false,R.layout.column_item, R.id.item_layout, true,supportFragmentManager!!,boardName!!,boardId,presenter!!,rol)
         val header =
             View.inflate(activity, R.layout.column_header, null)
         (header.findViewById<View>(R.id.text) as TextView).text = list.getTitle()

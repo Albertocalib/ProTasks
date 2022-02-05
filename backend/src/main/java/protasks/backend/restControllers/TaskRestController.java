@@ -9,6 +9,7 @@ import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.File.File;
 import protasks.backend.File.FileService;
+import protasks.backend.Rol.Priority;
 import protasks.backend.Task.Task;
 import protasks.backend.Task.TaskService;
 import protasks.backend.TaskList.TaskList;
@@ -349,6 +350,18 @@ public class TaskRestController {
         }else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @JsonView(TaskRequest.class)
+    @PutMapping("id={id}&newPriority={priority}")
+    public ResponseEntity<Task> updatePriorityTask(@PathVariable Long id, @PathVariable Priority priority) {
+        Task task = taskService.findById(id);
+        if (task != null && priority != null) {
+            task.setPriority(priority);
+            taskService.save(task);
+            return new ResponseEntity<>(task, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }

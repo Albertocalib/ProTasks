@@ -5,12 +5,14 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,13 +27,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.protasks.models.Rol
-import com.example.protasks.models.Tag
-import com.example.protasks.models.Task
-import com.example.protasks.models.User
 import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.utils.BottomSheet
 import com.example.protasks.utils.DatePicker
+import com.example.protasks.utils.SpinnerImage
 import com.example.protasks.views.ITasksView
 import com.google.android.material.textfield.TextInputEditText
 import java.text.DateFormat
@@ -39,6 +38,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
+import android.widget.Spinner
+import com.example.protasks.models.*
+import kotlin.collections.HashMap
 
 class TaskDialogExtend(
     private var task: Task,
@@ -78,6 +80,7 @@ class TaskDialogExtend(
     var buttonAddSubtasks:LinearLayout? = null
     var deleteSubtasks:ImageView? = null
     var subtasksSelected:ArrayList<Task> = ArrayList()
+    var spinnerPriorityList: ArrayList<SpinnerImage> = ArrayList()
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -351,6 +354,38 @@ class TaskDialogExtend(
         if (rol==Rol.WATCHER){
             setViewAndChildrenEnabled(v,false)
         }
+
+        val colors = Priority.getColors()
+        val priorities = Priority.getNames()
+        for (i in priorities.indices){
+            spinnerPriorityList.add(SpinnerImage(priorities[i],R.drawable.ic_baseline_flag_24,colors[i]))
+        }
+        val sp = v.findViewById(R.id.spinner_priority) as Spinner
+        val adapter = PrioritySpinnerAdapter(
+            requireContext(),
+            R.layout.spinner_image_item, R.id.text, spinnerPriorityList
+        )
+        sp.adapter = adapter
+        val priority = task.getPriority()
+        if (priority!=null){
+            sp.setSelection(priority.getIndex())
+        }
+        sp.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                Log.i("LISTSPINNER", "Nothing Selected")
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                taskPresenter!!.updatePriority(task.getId()!!, Priority.getPriorityByPrintableName(sp.selectedItem.toString()))
+            }
+
+        }
+
 
         return v
     }

@@ -54,6 +54,10 @@ class Task(
 
     private var selected:Boolean = false
 
+    @Expose
+    @SerializedName("priority")
+    private var priority: Priority? = null
+
     fun setSelected(selected:Boolean){
         this.selected=selected
     }
@@ -122,6 +126,13 @@ class Task(
     }
     fun setParentTask(parentTask:Task){
         this.parent_task=parentTask
+    }
+
+    fun getPriority(): Priority? {
+        return this.priority
+    }
+    fun setPriority(priority: Priority){
+        this.priority=priority
     }
 
 

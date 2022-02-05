@@ -1,9 +1,6 @@
 package com.example.protasks.restServices
 
-import com.example.protasks.models.File
-import com.example.protasks.models.Task
-import com.example.protasks.models.TaskList
-import com.example.protasks.models.User
+import com.example.protasks.models.*
 import retrofit2.Call
 import retrofit2.http.*
 import java.util.*
@@ -71,5 +68,8 @@ interface TaskRestService {
 
     @DELETE("ids={taskIds}")
     fun deleteSubTasks(@Path("taskIds") taskIds:String):Call<Task>
+
+    @PUT("id={id}&newPriority={priority}")
+    fun updatePriorityTask(@Path("id") id: Long, @Path("priority")priority: Priority): Call<Task>
 
 }

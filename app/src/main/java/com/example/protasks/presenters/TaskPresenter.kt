@@ -8,10 +8,7 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import com.example.protasks.RetrofitInstance
-import com.example.protasks.models.File
-import com.example.protasks.models.Tag
-import com.example.protasks.models.Task
-import com.example.protasks.models.User
+import com.example.protasks.models.*
 import com.example.protasks.restServices.*
 import com.example.protasks.utils.Preference
 import com.example.protasks.views.ITasksView
@@ -335,6 +332,20 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
             override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
                 view.updateTask(response!!.body()!!)
             }
+        })
+    }
+
+    fun updatePriority(id: Long, priority: Priority) {
+        val task = retrofitInsTask.service.updatePriorityTask(id, priority)
+        task.enqueue(object : Callback<Task> {
+            override fun onFailure(call: Call<Task>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
+                view.updateTask(response!!.body()!!)
+            }
+
         })
     }
 
