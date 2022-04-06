@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
@@ -106,11 +107,16 @@ class StatsFragment(
             }
         }
         recyclerView!!.adapter = PieAdapter(tasks_dict, users!!)
+        val timeActivated = taskLists[0].getBoard()!!.getTimeActivated()
         chartCycle = view.findViewById(R.id.chartcycle)
-        setHorizontalGraph(chartCycle!!,"cycle")
         chartLead = view.findViewById(R.id.chartlead)
-        setHorizontalGraph(chartLead!!,"lead")
-
+        if (timeActivated) {
+            setHorizontalGraph(chartCycle!!, "cycle")
+            setHorizontalGraph(chartLead!!, "lead")
+        }else{
+            val cycleLeadTimeActive:LinearLayout = view.findViewById(R.id.cycle_lead_time_active)
+            cycleLeadTimeActive.visibility=View.GONE
+        }
 
         return view
 

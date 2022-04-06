@@ -8,48 +8,54 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-
-        <TextView
+        <LinearLayout
+            android:id="@+id/cycle_lead_time_active"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="14dp"
-            android:paddingTop="20dp"
-            android:paddingEnd="14dp"
-            android:text="Cycle Time"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20sp" />
+            android:orientation="vertical">
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorPrimary" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="14dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="14dp"
+                android:text="Cycle Time"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
 
-        <com.github.mikephil.charting.charts.HorizontalBarChart
-            android:id="@+id/chartcycle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="14dp"
-            android:paddingTop="20dp"
-            android:paddingEnd="14dp"
-            android:text="Lead Time"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20sp" />
+            <com.github.mikephil.charting.charts.HorizontalBarChart
+                android:id="@+id/chartcycle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorPrimary" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="14dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="14dp"
+                android:text="Lead Time"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
 
-        <com.github.mikephil.charting.charts.HorizontalBarChart
-            android:id="@+id/chartlead"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary" />
+
+            <com.github.mikephil.charting.charts.HorizontalBarChart
+                android:id="@+id/chartlead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -71,8 +77,8 @@
             android:id="@+id/recycler_pie_chart_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="0dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="0dp"
             android:focusableInTouchMode="false" />
 
     </LinearLayout>

@@ -17,10 +17,7 @@ import protasks.backend.TaskList.TaskListService;
 import protasks.backend.user.User;
 import protasks.backend.user.UserService;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static protasks.backend.Rol.Rol.OWNER;
 
@@ -165,7 +162,7 @@ public class BoardRestController {
         if (b.isPresent()) {
             Board board = b.get();
             if (timeActivated){
-                if (!board.getCycleStartList().equals(cycleStart)){
+                if (cycleStart!=null && !Objects.equals(board.getCycleStartList(), cycleStart)){
                     List<TaskList> list_taskList = this.taskListService.findTaskList(board.getId(),cycleStart);
                     for (TaskList l:list_taskList) {
                         List<Task> tasks = l.getTasks();
@@ -176,7 +173,7 @@ public class BoardRestController {
                     }
                     board.setCycleStartList(cycleStart);
                 }
-                if (!board.getCycleEndList().equals(cycleEnd)){
+                if (cycleEnd!=null && !Objects.equals(board.getCycleEndList(), cycleEnd)){
                     List<TaskList> list_taskList = this.taskListService.findTaskList(board.getId(),cycleEnd);
                     for (TaskList l:list_taskList) {
                         List<Task> tasks = l.getTasks();
@@ -187,7 +184,7 @@ public class BoardRestController {
                     }
                     board.setCycleEndList(cycleEnd);
                 }
-                if (!board.getLeadStartList().equals(leadStart)){
+                if (leadStart!=null && !Objects.equals(board.getLeadStartList(), leadStart)){
                     List<TaskList> list_taskList = this.taskListService.findTaskList(board.getId(),leadStart);
                     for (TaskList l:list_taskList) {
                         List<Task> tasks = l.getTasks();
@@ -198,7 +195,7 @@ public class BoardRestController {
                     }
                     board.setLeadStartList(leadStart);
                 }
-                if (!board.getLeadEndList().equals(leadEnd)){
+                if (leadEnd!=null && !Objects.equals(board.getLeadEndList(), leadEnd)){
                     List<TaskList> list_taskList = this.taskListService.findTaskList(board.getId(),leadEnd);
                     for (TaskList l:list_taskList) {
                         List<Task> tasks = l.getTasks();
