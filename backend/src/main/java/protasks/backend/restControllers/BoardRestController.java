@@ -11,10 +11,14 @@ import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.Board.BoardUsersPermService;
 import protasks.backend.Rol.Rol;
 import protasks.backend.Task.Task;
+import protasks.backend.Task.TaskService;
 import protasks.backend.TaskList.TaskList;
+import protasks.backend.TaskList.TaskListService;
 import protasks.backend.user.User;
 import protasks.backend.user.UserService;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +29,7 @@ import static protasks.backend.Rol.Rol.OWNER;
 public class BoardRestController {
     interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo, BoardUsersPermRel.BoardBasicInfo, TaskList.TaskListBasicInfo {
     }
+
     interface BoardsUserRequest extends User.UserBasicInfo, Board.BoardBasicInfo, BoardUsersPermRel.BoardBasicInfo, TaskList.TaskListBasicInfo {
     }
 
@@ -33,6 +38,12 @@ public class BoardRestController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    TaskListService taskListService;
+
+    @Autowired
+    TaskService taskService;
 
     @Autowired
     BoardUsersPermService boardUsersPermService;
@@ -92,13 +103,14 @@ public class BoardRestController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
     @JsonView(BoardsUserRequest.class)
     @PutMapping("/id={id}/username={username}&rol{rol}")
     public ResponseEntity<Board> addUserToBoard(@PathVariable("id") Long id, @PathVariable("username") String username, @PathVariable("rol") Rol rol) {
         Optional<Board> b = boardService.findById(id);
-        User u =userService.findByUsernameOrEmailCustom(username);
-        if (b.isPresent() && u!=null){
-            Board board =b.get();
+        User u = userService.findByUsernameOrEmailCustom(username);
+        if (b.isPresent() && u != null) {
+            Board board = b.get();
             BoardUsersPermRel bs = new BoardUsersPermRel(board, u, rol);
             board.addUser(bs);
             boardService.save(board);
@@ -110,8 +122,8 @@ public class BoardRestController {
     @JsonView(BoardsUserRequest.class)
     @PutMapping("/id={id}/userId={userId}&role={role}")
     public ResponseEntity<Board> updateRole(@PathVariable("id") Long id, @PathVariable("userId") Long userId, @PathVariable("role") Rol role) {
-        BoardUsersPermRel b = boardUsersPermService.findBoardPermByUserIdAndBoardId(id,userId);
-        if (b!=null) {
+        BoardUsersPermRel b = boardUsersPermService.findBoardPermByUserIdAndBoardId(id, userId);
+        if (b != null) {
             b.setRol(role);
             boardUsersPermService.save(b);
             return new ResponseEntity<>(b.getBoard(), HttpStatus.CREATED);
@@ -122,23 +134,85 @@ public class BoardRestController {
     @JsonView(BoardsUserRequest.class)
     @DeleteMapping("/id={id}/userId={userId}")
     public ResponseEntity<Board> deleteUserFromBoard(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
-        BoardUsersPermRel b = boardUsersPermService.findBoardPermByUserIdAndBoardId(id,userId);
-        if (b!=null) {
+        BoardUsersPermRel b = boardUsersPermService.findBoardPermByUserIdAndBoardId(id, userId);
+        if (b != null) {
             boardUsersPermService.delete(b);
-            Optional<Board> board =boardService.findById(id);
+            Optional<Board> board = boardService.findById(id);
             if (board.isPresent()) {
                 return new ResponseEntity<>(b.getBoard(), HttpStatus.CREATED);
             }
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
     @JsonView(BoardsUserRequest.class)
     @GetMapping("/id={id}/userId={userId}")
     public ResponseEntity<BoardUsersPermRel> getRol(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
-        BoardUsersPermRel b = boardUsersPermService.findBoardPermByUserIdAndBoardId(id,userId);
-        if (b!=null) {
+        BoardUsersPermRel b = boardUsersPermService.findBoardPermByUserIdAndBoardId(id, userId);
+        if (b != null) {
             return new ResponseEntity<>(b, HttpStatus.CREATED);
 
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @JsonView(BoardsUserRequest.class)
+    @PutMapping("/id={id}/timeActivated={timeActivated}&cycleStart={cycleStart}&cycleEnd={cycleEnd}&leadStart={leadStart}&leadEnd={leadEnd}")
+    public ResponseEntity<Board> updateTime(@PathVariable("id") Long id, @PathVariable("timeActivated") Boolean timeActivated,
+                                           @PathVariable("cycleStart") String cycleStart, @PathVariable("cycleEnd") String cycleEnd,
+                                           @PathVariable("leadStart") String leadStart, @PathVariable("leadEnd") String leadEnd) {
+        Optional<Board> b = boardService.findById(id);
+        if (b.isPresent()) {
+            Board board = b.get();
+            if (timeActivated){
+                if (!board.getCycleStartList().equals(cycleStart)){
+                    List<TaskList> list_taskList = this.taskListService.findTaskList(board.getId(),cycleStart);
+                    for (TaskList l:list_taskList) {
+                        List<Task> tasks = l.getTasks();
+                        for (Task t:tasks){
+                            t.setDate_start_cycle_time(new Date());
+                            this.taskService.save(t);
+                        }
+                    }
+                    board.setCycleStartList(cycleStart);
+                }
+                if (!board.getCycleEndList().equals(cycleEnd)){
+                    List<TaskList> list_taskList = this.taskListService.findTaskList(board.getId(),cycleEnd);
+                    for (TaskList l:list_taskList) {
+                        List<Task> tasks = l.getTasks();
+                        for (Task t:tasks){
+                            t.setDate_end_cycle_time(new Date());
+                            this.taskService.save(t);
+                        }
+                    }
+                    board.setCycleEndList(cycleEnd);
+                }
+                if (!board.getLeadStartList().equals(leadStart)){
+                    List<TaskList> list_taskList = this.taskListService.findTaskList(board.getId(),leadStart);
+                    for (TaskList l:list_taskList) {
+                        List<Task> tasks = l.getTasks();
+                        for (Task t:tasks){
+                            t.setDate_start_lead_time(new Date());
+                            this.taskService.save(t);
+                        }
+                    }
+                    board.setLeadStartList(leadStart);
+                }
+                if (!board.getLeadEndList().equals(leadEnd)){
+                    List<TaskList> list_taskList = this.taskListService.findTaskList(board.getId(),leadEnd);
+                    for (TaskList l:list_taskList) {
+                        List<Task> tasks = l.getTasks();
+                        for (Task t:tasks){
+                            t.setDate_end_lead_time(new Date());
+                            this.taskService.save(t);
+                        }
+                    }
+                    board.setLeadEndList(cycleEnd);
+                }
+            }
+            board.setTimeActivated(timeActivated);
+            boardService.save(board);
+            return new ResponseEntity<>(board, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

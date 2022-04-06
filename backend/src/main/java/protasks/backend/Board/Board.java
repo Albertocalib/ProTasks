@@ -43,6 +43,7 @@ public class Board {
     @Temporal(TemporalType.TIMESTAMP)
     private Date write_date;
 
+    @JsonView(BoardBasicInfo.class)
     @Column(name="create_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date create_date;
@@ -62,6 +63,66 @@ public class Board {
     @JsonView(BoardBasicInfo.class)
     @Column(name="wipList")
     private String wipList;
+
+    @JsonView(BoardBasicInfo.class)
+    @Column(name="timeActivated")
+    private Boolean timeActivated;
+
+    @JsonView(BoardBasicInfo.class)
+    @Column(name="cycleStartList")
+    private String cycleStartList;
+
+    @JsonView(BoardBasicInfo.class)
+    @Column(name="cycleEndList")
+    private String cycleEndList;
+
+    @JsonView(BoardBasicInfo.class)
+    @Column(name="leadStartList")
+    private String leadStartList;
+
+    @JsonView(BoardBasicInfo.class)
+    @Column(name="leadEndList")
+    private String leadEndList;
+
+    public Boolean getTimeActivated() {
+        return timeActivated;
+    }
+
+    public void setTimeActivated(Boolean timeActivated) {
+        this.timeActivated = timeActivated;
+    }
+
+    public String getCycleStartList() {
+        return cycleStartList;
+    }
+
+    public void setCycleStartList(String cycleStartList) {
+        this.cycleStartList = cycleStartList;
+    }
+
+    public String getCycleEndList() {
+        return cycleEndList;
+    }
+
+    public void setCycleEndList(String cycleEndList) {
+        this.cycleEndList = cycleEndList;
+    }
+
+    public String getLeadStartList() {
+        return leadStartList;
+    }
+
+    public void setLeadStartList(String leadStartList) {
+        this.leadStartList = leadStartList;
+    }
+
+    public String getLeadEndList() {
+        return leadEndList;
+    }
+
+    public void setLeadEndList(String leadEndList) {
+        this.leadEndList = leadEndList;
+    }
 
     public String getWipList() {
         return wipList;

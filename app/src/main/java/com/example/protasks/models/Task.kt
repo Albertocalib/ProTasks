@@ -50,13 +50,60 @@ class Task(
 
     @Expose
     @SerializedName("parent_task")
-    private var parent_task: Task? = null
+    private var parentTask: Task? = null
 
     private var selected:Boolean = false
 
     @Expose
     @SerializedName("priority")
     private var priority: Priority? = null
+
+    @Expose
+    @SerializedName("date_start_cycle_time")
+    private var dateStartCycleTime: Date? = null
+
+    @Expose
+    @SerializedName("date_end_cycle_time")
+    private var dateEndCycleTime: Date? = null
+
+    @Expose
+    @SerializedName("date_start_lead_time")
+    private var dateStartLeadTime: Date? = null
+
+    @Expose
+    @SerializedName("date_end_lead_time")
+    private var dateEndLeadTime: Date? = null
+
+    fun getDateStartCycleTime(): Date? {
+        return dateStartCycleTime
+    }
+
+    fun setDateStartCycleTime(dateStartCycleTime: Date) {
+        this.dateStartCycleTime = dateStartCycleTime
+    }
+
+    fun getDateEndCycleTime(): Date? {
+        return dateEndCycleTime
+    }
+
+    fun setDateEndCycleTime(dateEndCycleTime: Date) {
+        this.dateEndCycleTime = dateEndCycleTime
+    }
+    fun getDateStartLeadTime(): Date? {
+        return dateStartLeadTime
+    }
+
+    fun setDateStartLeadTime(dateStartLeadTime: Date) {
+        this.dateStartLeadTime = dateStartLeadTime
+    }
+
+    fun getDateEndLeadTime(): Date? {
+        return dateEndLeadTime
+    }
+
+    fun setDateEndLeadTime(dateEndLeadTime: Date) {
+        this.dateEndLeadTime = dateEndLeadTime
+    }
 
     fun setSelected(selected:Boolean){
         this.selected=selected
@@ -69,7 +116,7 @@ class Task(
         return subTasks
     }
     fun getParentTask():Task?{
-        return parent_task
+        return parentTask
     }
 
     fun getUsers(): List<User>? {
@@ -125,7 +172,7 @@ class Task(
         return this.attachments
     }
     fun setParentTask(parentTask:Task){
-        this.parent_task=parentTask
+        this.parentTask=parentTask
     }
 
     fun getPriority(): Priority? {

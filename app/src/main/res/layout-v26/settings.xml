@@ -17,6 +17,131 @@
             android:paddingStart="14dp"
             android:paddingTop="20dp"
             android:paddingEnd="14dp"
+            android:text="Cycle y Lead time"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20dp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/cycle_lead_time_activated"
+            style="@style/SwitchCompatStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:text="Activar Cálculo Cycle-Lead time"
+            app:useMaterialThemeColors="false" />
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:paddingStart="14dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="14dp"
+            android:text="Columna Inicio"
+            android:id="@+id/column_start_label"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16dp" />
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:paddingStart="14dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="14dp"
+                android:text="Columna Final"
+                android:id="@+id/column_end_label"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16dp" />
+        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="14dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="14dp"
+            android:text="Cycle time"
+            android:id="@+id/cycle_time_label"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14dp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinner_list_cycle_start"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:dropDownWidth="match_parent"
+                android:backgroundTint="@color/colorPrimary" />
+
+            <Spinner
+                android:id="@+id/spinner_list_cycle_end"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:dropDownWidth="match_parent"
+                android:backgroundTint="@color/colorPrimary" />
+
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="14dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="14dp"
+            android:text="Lead time"
+            android:id="@+id/lead_time_label"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinner_list_lead_start"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:dropDownWidth="match_parent"
+                android:backgroundTint="@color/colorPrimary" />
+
+            <Spinner
+                android:id="@+id/spinner_list_lead_end"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:dropDownWidth="match_parent"
+                android:backgroundTint="@color/colorPrimary" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="14dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="14dp"
             android:text="WIP"
             android:textColor="@color/colorPrimary"
             android:textSize="20dp" />

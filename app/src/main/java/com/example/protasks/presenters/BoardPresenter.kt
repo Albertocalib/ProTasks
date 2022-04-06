@@ -294,5 +294,20 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
         })
     }
 
+    fun updateTime(checked: Boolean, board: Board?, cycleStart: String, cycleEnd: String, leadStart: String, leadEnd: String) {
+        val boardRes =
+            retrofitInsBoard.service.updateTime(board!!.getId(), checked, cycleStart, cycleEnd, leadStart, leadEnd)
+        boardRes.enqueue(object : Callback<Board> {
+            override fun onFailure(call: Call<Board>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Board>?, response: Response<Board>?) {
+                iBoardsView.setBoard(response!!.body()!!)
+            }
+
+        })
+    }
+
 
 }

@@ -91,6 +91,22 @@ public class Task implements Comparable<Task>,Cloneable {
     @ManyToOne
     private Task parent_task;
 
+    @JsonView(Task.TaskListBasicInfo.class)
+    @Column(name="date_start_cycle_time")
+    private Date date_start_cycle_time;
+
+    @JsonView(Task.TaskListBasicInfo.class)
+    @Column(name="date_end_cycle_time")
+    private Date date_end_cycle_time;
+
+    @JsonView(Task.TaskListBasicInfo.class)
+    @Column(name="date_start_lead_time")
+    private Date date_start_lead_time;
+
+    @JsonView(Task.TaskListBasicInfo.class)
+    @Column(name="date_end_lead_time")
+    private Date date_end_lead_time;
+
     public List<File> getAttachments() {
         return attachments;
     }
@@ -219,6 +235,38 @@ public class Task implements Comparable<Task>,Cloneable {
 
     public Task getParent_task() {
         return parent_task;
+    }
+
+    public Date getDate_start_cycle_time() {
+        return date_start_cycle_time;
+    }
+
+    public void setDate_start_cycle_time(Date date_start_cycle_time) {
+        this.date_start_cycle_time = date_start_cycle_time;
+    }
+
+    public Date getDate_end_cycle_time() {
+        return date_end_cycle_time;
+    }
+
+    public void setDate_end_cycle_time(Date date_end_cycle_time) {
+        this.date_end_cycle_time = date_end_cycle_time;
+    }
+
+    public Date getDate_start_lead_time() {
+        return date_start_lead_time;
+    }
+
+    public void setDate_start_lead_time(Date date_start_lead_time) {
+        this.date_start_lead_time = date_start_lead_time;
+    }
+
+    public Date getDate_end_lead_time() {
+        return date_end_lead_time;
+    }
+
+    public void setDate_end_lead_time(Date date_end_lead_time) {
+        this.date_end_lead_time = date_end_lead_time;
     }
 
     @Override

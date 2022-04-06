@@ -170,7 +170,7 @@ class BoardFragment : Fragment() {
                     if (toast==null){
                         toast = Toast.makeText(context, "WIP Superado, no puedes añadir más tareas a esta columna", Toast.LENGTH_SHORT)
                     }
-                    if (!toast!!.view.isShown){
+                    if (!toast!!.view!!.isShown){
                         toast!!.show()
                     }
                     Handler().postDelayed({

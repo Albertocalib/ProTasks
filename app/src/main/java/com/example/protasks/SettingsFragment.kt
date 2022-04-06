@@ -51,6 +51,11 @@ import com.woxthebox.draglistview.swipe.ListSwipeItem.SwipeDirection
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.ArrayList
+import android.view.Gravity
+
+import android.widget.Toast
+import kotlinx.android.synthetic.main.settings.*
+
 
 class SettingsFragment(
     private val taskLists: List<TaskList>,
@@ -68,6 +73,15 @@ class SettingsFragment(
     private var recyclerViewUsers: RecyclerView? = null
     private var layoutManager: LinearLayoutManager? = LinearLayoutManager(context)
     private var presenter: BoardPresenter? = null
+    private var timeActivated: SwitchMaterial? = null
+    private var spinnerListCycleStart: Spinner? = null
+    private var spinnerListCycleEnd: Spinner? = null
+    private var spinnerListLeadStart: Spinner? = null
+    private var spinnerListLeadEnd: Spinner? = null
+    private var timeStartLabel: TextView?=null
+    private var timeEndLabel: TextView?=null
+    private var leadLabel: TextView?=null
+    private var cycleLabel: TextView?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +111,21 @@ class SettingsFragment(
         )
         myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerListWip!!.adapter = myAdapter
+
+        timeActivated = view.findViewById(R.id.cycle_lead_time_activated)
+        spinnerListCycleStart = view.findViewById(R.id.spinner_list_cycle_start)
+        spinnerListCycleEnd = view.findViewById(R.id.spinner_list_cycle_end)
+        spinnerListLeadStart = view.findViewById(R.id.spinner_list_lead_start)
+        spinnerListLeadEnd = view.findViewById(R.id.spinner_list_lead_end)
+
+        timeStartLabel= view.findViewById(R.id.column_start_label)
+        timeEndLabel= view.findViewById(R.id.column_end_label)
+        leadLabel= view.findViewById(R.id.lead_time_label)
+        cycleLabel= view.findViewById(R.id.cycle_time_label)
+        spinnerListLeadStart!!.adapter=myAdapter
+        spinnerListLeadEnd!!.adapter=myAdapter
+        spinnerListCycleStart!!.adapter=myAdapter
+        spinnerListCycleEnd!!.adapter=myAdapter
         if (!taskLists.isNullOrEmpty()) {
             board = taskLists[0].getBoard()
         }
@@ -106,14 +135,40 @@ class SettingsFragment(
             if (board!!.getWipList() != null) {
                 spinnerListWip!!.setSelection(list.indexOf(board!!.getWipList()!!))
             }
+            timeActivated!!.isChecked = board!!.getTimeActivated()
+            if (board!!.getCycleStartList() !=null){
+                spinnerListCycleStart!!.setSelection(list.indexOf(board!!.getCycleStartList()))
+            }
+            if (board!!.getCycleEndList() !=null){
+                spinnerListCycleEnd!!.setSelection(list.indexOf(board!!.getCycleEndList()))
+            }
+            if (board!!.getLeadStartList() !=null){
+                spinnerListLeadStart!!.setSelection(list.indexOf(board!!.getLeadStartList()))
+            }
+            if (board!!.getLeadEndList() !=null){
+                spinnerListLeadEnd!!.setSelection(list.indexOf(board!!.getLeadEndList()))
+            }
+
         } else {
             wipActivated!!.isEnabled = false
+            timeActivated!!.isEnabled = false
         }
         if (!wipActivated!!.isChecked) {
             wipLimit!!.visibility = View.GONE
             spinnerListWip!!.visibility = View.GONE
             wipLabelLimit!!.visibility=View.GONE
 
+
+        }
+        if (!timeActivated!!.isChecked){
+            spinnerListLeadEnd!!.visibility = View.GONE
+            spinnerListCycleStart!!.visibility = View.GONE
+            spinnerListCycleEnd!!.visibility = View.GONE
+            spinnerListLeadStart!!.visibility = View.GONE
+            leadLabel!!.visibility=View.GONE
+            cycleLabel!!.visibility=View.GONE
+            timeEndLabel!!.visibility=View.GONE
+            timeStartLabel!!.visibility=View.GONE
         }
 
         recyclerViewUsers = view.findViewById(R.id.recycler_users)
@@ -190,11 +245,177 @@ class SettingsFragment(
                 bottomSheet.board = board
                 bottomSheet.show(supportFragmentManager, "bottomSheet")
             }
+            timeActivated!!.setOnCheckedChangeListener { _, isChecked ->
+                presenter!!.updateTime(
+                    isChecked,
+                    board,
+                    spinnerListCycleStart!!.selectedItem.toString(),
+                    spinnerListCycleEnd!!.selectedItem.toString(),
+                    spinnerListLeadStart!!.selectedItem.toString(),
+                    spinnerListLeadEnd!!.selectedItem.toString()
+                )
+                if (isChecked) {
+                    spinnerListLeadEnd!!.visibility = View.VISIBLE
+                    spinnerListCycleStart!!.visibility = View.VISIBLE
+                    spinnerListCycleEnd!!.visibility =View.VISIBLE
+                    spinnerListLeadStart!!.visibility = View.VISIBLE
+                    leadLabel!!.visibility=View.VISIBLE
+                    cycleLabel!!.visibility=View.VISIBLE
+                    timeEndLabel!!.visibility=View.VISIBLE
+                    timeStartLabel!!.visibility=View.VISIBLE
+                } else {
+                    spinnerListLeadEnd!!.visibility = View.GONE
+                    spinnerListCycleStart!!.visibility = View.GONE
+                    spinnerListCycleEnd!!.visibility = View.GONE
+                    spinnerListLeadStart!!.visibility = View.GONE
+                    leadLabel!!.visibility=View.GONE
+                    cycleLabel!!.visibility=View.GONE
+                    timeEndLabel!!.visibility=View.GONE
+                    timeStartLabel!!.visibility=View.GONE
+                }
+            }
+            spinnerListCycleStart!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    Log.i("WIPSPINNER", "Nothing Selected")
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    if (spinnerListCycleStart!!.selectedItem.toString()!="Ningún elemento seleccionado" && spinnerListCycleStart!!.selectedItem.toString()==spinnerListCycleEnd!!.selectedItem.toString()){
+                        if (board!!.getCycleStartList()!=null) {
+                            spinnerListCycleStart!!.setSelection(list.indexOf(board!!.getCycleStartList()))
+                        }else{
+                            spinnerListCycleStart!!.setSelection(0)
+                        }
+                        val toast: Toast = Toast.makeText(context, "No puedes seleccionar mismo estado de Inicio y fin para el Cycle Time", Toast.LENGTH_LONG)
+                        toast.show()
+                    }else {
+                        presenter!!.updateTime(
+                            timeActivated!!.isChecked,
+                            board,
+                            spinnerListCycleStart!!.selectedItem.toString(),
+                            spinnerListCycleEnd!!.selectedItem.toString(),
+                            spinnerListLeadStart!!.selectedItem.toString(),
+                            spinnerListLeadEnd!!.selectedItem.toString()
+                        )
+                    }
+
+                }
+
+            }
+            spinnerListCycleEnd!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    Log.i("WIPSPINNER", "Nothing Selected")
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    if (spinnerListCycleStart!!.selectedItem.toString()!="Ningún elemento seleccionado" && spinnerListCycleStart!!.selectedItem.toString()==spinnerListCycleEnd!!.selectedItem.toString()){
+                        if (board!!.getCycleEndList()!=null) {
+                            spinnerListCycleEnd!!.setSelection(list.indexOf(board!!.getCycleEndList()))
+                        }else{
+                            spinnerListCycleEnd!!.setSelection(0)
+                        }
+                        val toast: Toast = Toast.makeText(context, "No puedes seleccionar mismo estado de Inicio y fin para el Cycle Time", Toast.LENGTH_LONG)
+                        toast.show()
+                    }else {
+                        presenter!!.updateTime(
+                            timeActivated!!.isChecked,
+                            board,
+                            spinnerListCycleStart!!.selectedItem.toString(),
+                            spinnerListCycleEnd!!.selectedItem.toString(),
+                            spinnerListLeadStart!!.selectedItem.toString(),
+                            spinnerListLeadEnd!!.selectedItem.toString()
+                        )
+                    }
+
+                }
+
+            }
+            spinnerListLeadStart!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    Log.i("WIPSPINNER", "Nothing Selected")
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    if (spinnerListLeadStart!!.selectedItem.toString()!="Ningún elemento seleccionado" && spinnerListLeadStart!!.selectedItem.toString()==spinnerListLeadEnd!!.selectedItem.toString()){
+                        if (board!!.getLeadStartList()!=null) {
+                            spinnerListLeadStart!!.setSelection(list.indexOf(board!!.getLeadStartList()))
+                        }else{
+                            spinnerListLeadStart!!.setSelection(0)
+                        }
+                        val toast: Toast = Toast.makeText(context, "No puedes seleccionar mismo estado de Inicio y fin para el Lead Time", Toast.LENGTH_LONG)
+                        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
+                        toast.show()
+                    }else {
+                        presenter!!.updateTime(
+                            timeActivated!!.isChecked,
+                            board,
+                            spinnerListCycleStart!!.selectedItem.toString(),
+                            spinnerListCycleEnd!!.selectedItem.toString(),
+                            spinnerListLeadStart!!.selectedItem.toString(),
+                            spinnerListLeadEnd!!.selectedItem.toString()
+                        )
+                    }
+
+                }
+
+            }
+            spinnerListLeadEnd!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    Log.i("WIPSPINNER", "Nothing Selected")
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    if (spinnerListLeadStart!!.selectedItem.toString()!="Ningún elemento seleccionado" && spinnerListLeadStart!!.selectedItem.toString()==spinnerListLeadEnd!!.selectedItem.toString()){
+                        if (board!!.getLeadEndList()!=null) {
+                            spinnerListLeadEnd!!.setSelection(list.indexOf(board!!.getLeadEndList()))
+                        }else{
+                            spinnerListLeadEnd!!.setSelection(0)
+                        }
+                        val toast: Toast = Toast.makeText(context, "No puedes seleccionar mismo estado de Inicio y fin para el Cycle Time", Toast.LENGTH_LONG)
+                        toast.show()
+                    }else {
+                        presenter!!.updateTime(
+                            timeActivated!!.isChecked,
+                            board,
+                            spinnerListCycleStart!!.selectedItem.toString(),
+                            spinnerListCycleEnd!!.selectedItem.toString(),
+                            spinnerListLeadStart!!.selectedItem.toString(),
+                            spinnerListLeadEnd!!.selectedItem.toString()
+                        )
+                    }
+
+                }
+
+            }
         }else{
             wipLimit!!.isEnabled=false
             wipActivated!!.isEnabled=false
             spinnerListWip!!.isEnabled=false
             addUsersButton!!.visibility=View.GONE
+            spinnerListLeadEnd!!.isEnabled=false
+            spinnerListCycleStart!!.isEnabled=false
+            spinnerListCycleEnd!!.isEnabled=false
+            spinnerListLeadStart!!.isEnabled=false
         }
 
         recyclerViewUsers!!.layoutManager = layoutManager

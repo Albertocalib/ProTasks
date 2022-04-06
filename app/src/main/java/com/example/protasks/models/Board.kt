@@ -2,6 +2,8 @@ package com.example.protasks.models
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Board {
     @Expose
@@ -40,6 +42,65 @@ class Board {
     @SerializedName("wipList")
     private var wipList: String? = null
 
+    @Expose
+    @SerializedName("timeActivated")
+    private var timeActivated: Boolean = false
+
+    @Expose
+    @SerializedName("cycleStartList")
+    private var cycleStartList: String? = null
+
+    @Expose
+    @SerializedName("cycleEndList")
+    private var cycleEndList: String? = null
+
+    @Expose
+    @SerializedName("leadStartList")
+    private var leadStartList: String? = null
+
+    @Expose
+    @SerializedName("leadEndList")
+    private var leadEndList: String? = null
+
+    @Expose
+    @SerializedName("create_date")
+    private val createDate: Date? = null
+
+    fun getCreatedDate(): Date? {
+        return createDate
+    }
+
+    fun getLeadStartList(): String? {
+      return leadStartList
+    }
+    fun getLeadEndList(): String? {
+        return leadEndList
+    }
+    fun setLeadStartList(leadStartList: String) {
+        this.leadStartList = leadStartList
+    }
+    fun setLeadEndList(leadEndList: String) {
+        this.leadEndList = leadEndList
+    }
+    fun getCycleStartList(): String? {
+        return cycleStartList
+    }
+    fun getCycleEndList(): String? {
+        return cycleEndList
+    }
+    fun setCycleStartList(cycleStartList: String) {
+        this.cycleStartList = cycleStartList
+    }
+    fun setCycleEndList(cycleEndList: String) {
+        this.cycleEndList = cycleEndList
+    }
+    fun getTimeActivated(): Boolean {
+        return timeActivated
+    }
+
+    fun setTimeActivated(timeActivated: Boolean) {
+        this.timeActivated = timeActivated
+    }
     fun getWipList(): String? {
         return wipList
     }

@@ -48,11 +48,31 @@ public class TaskRestController {
         }
         List<TaskList> t = listService.findTaskList(username, boardName, listName);
         if (t != null && t.size() == 1) {
-            Task task1 = new Task(task.getTitle(), task.getDescription(), t.get(0));
+            TaskList list = t.get(0);
+            Task task1 = new Task(task.getTitle(), task.getDescription(), list);
+            Board b = t.get(0).getBoard();
+            if (b.getTimeActivated()) {
+                updateTaskTime(list, task1, b);
+            }
             taskService.save(task1);
             return new ResponseEntity<>(task1, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    private void updateTaskTime(TaskList list, Task task1, Board b) {
+        if (b.getCycleStartList().equals(list.getTitle())) {
+            task1.setDate_start_cycle_time(new Date());
+        }
+        if (b.getCycleEndList().equals(list.getTitle())) {
+            task1.setDate_end_cycle_time(new Date());
+        }
+        if (b.getLeadStartList().equals(list.getTitle())) {
+            task1.setDate_start_lead_time(new Date());
+        }
+        if (b.getLeadEndList().equals(list.getTitle())) {
+            task1.setDate_end_lead_time(new Date());
+        }
     }
 
     @JsonView(TaskRequest.class)
@@ -92,6 +112,11 @@ public class TaskRestController {
                 if (tl != null) {
                     //Update new List
                     updatePositions(t, tl, newPosition, false);
+                    Board b = t.getTaskList().getBoard();
+                    if (b.getTimeActivated()){
+                        updateTaskTime(tl, t, b);
+                        this.taskService.save(t);
+                    }
                 }
             } else {
                 //update list
