@@ -1,8 +1,6 @@
 package com.example.protasks.restServices
 
 import com.example.protasks.models.Tag
-import com.example.protasks.models.Task
-import com.example.protasks.models.User
 import retrofit2.Call
 import retrofit2.http.*
 

@@ -3,7 +3,7 @@ package com.example.protasks.presenters.register
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import com.example.protasks.RetrofitInstance
+import com.example.protasks.utils.RetrofitInstance
 import com.example.protasks.restServices.UserRestService
 import com.example.protasks.models.User
 import com.example.protasks.views.IRegisterView

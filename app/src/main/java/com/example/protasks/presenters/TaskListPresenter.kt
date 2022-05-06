@@ -1,8 +1,6 @@
 package com.example.protasks.presenters
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.util.Base64
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
@@ -16,7 +14,6 @@ import com.example.protasks.views.IInsideBoardsView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.ByteArrayOutputStream
 
 
 class TaskListPresenter(private var view: IInsideBoardsView?, private var context: Context) :
@@ -38,34 +35,6 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
 
     fun downloadImage(image: ImageView, context: Context) {
         image_handler.downloadImage(image, context)
-    }
-
-//    fun setImage(uri: Uri, context: Context) {
-//        val imageStream = context.contentResolver.openInputStream(uri)
-//        val thumbnail = BitmapFactory.decodeStream(imageStream)
-//        val img = bitmap2Base64(thumbnail)
-//        val username = preference.getEmail(context)
-//        val user = retrofitInsUser.service.updatePhoto(img, username)
-//        user!!.enqueue(object : Callback<User> {
-//            override fun onFailure(call: Call<User>?, t: Throwable?) {
-//                Log.v("retrofit", t.toString())
-//            }
-//
-//            override fun onResponse(call: Call<User>?, response: Response<User>?) {
-//                iBoardsView.setUser(response!!.body()!!)
-//
-//            }
-//
-//        })
-//
-//    }
-
-
-    fun bitmap2Base64(b: Bitmap): String {
-        val baos = ByteArrayOutputStream()
-        b.compress(Bitmap.CompressFormat.PNG, 60, baos)
-        val b1: ByteArray = baos.toByteArray()
-        return Base64.encodeToString(b1, Base64.NO_WRAP)
     }
 
     fun createTaskList(boardName: String, listName: String) {

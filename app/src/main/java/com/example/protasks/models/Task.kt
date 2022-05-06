@@ -6,7 +6,6 @@ import android.util.Base64
 import com.example.protasks.AttachmentsAdapter
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import java.nio.file.Files
 import java.util.*
 import kotlin.collections.ArrayList
 

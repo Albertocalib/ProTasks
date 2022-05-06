@@ -2,9 +2,6 @@ package com.example.protasks
 
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +13,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -24,14 +20,11 @@ import com.example.protasks.models.Rol
 import com.example.protasks.models.Tag
 import com.example.protasks.models.Task
 import com.example.protasks.presenters.TaskListPresenter
-import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.utils.BottomSheet
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.woxthebox.draglistview.DragItemAdapter
 import java.util.*
-import kotlin.coroutines.coroutineContext
-
 
 class TaskAdapterInsideBoard(
     private val context: Context,

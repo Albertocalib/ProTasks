@@ -1,24 +1,17 @@
 package com.example.protasks
 
-import android.accessibilityservice.GestureDescription
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.*
 import android.util.Base64
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.presenters.BoardPresenter
-import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.utils.ImageHandler
-import com.example.protasks.activities.MainActivity
 import com.example.protasks.models.*
-import org.w3c.dom.Text
-
 
 class UsersPermAdapter(private val users : List<BoardUsersPermRel>?, private val presenter:BoardPresenter, private val context: Context,private val board:Board,private val perm:BoardUsersPermRel) :RecyclerView.Adapter<UsersPermAdapter.ViewHolderUsersPerm>()
 {

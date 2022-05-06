@@ -3,19 +3,15 @@ package com.example.protasks
 import android.content.res.ColorStateList
 import android.graphics.*
 import android.os.Build
-import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import com.example.protasks.models.Board
 import com.example.protasks.models.Tag
 import com.example.protasks.models.Task
-import com.example.protasks.models.User
 import com.example.protasks.presenters.IPresenter
-import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.utils.ImageHandler
 
 

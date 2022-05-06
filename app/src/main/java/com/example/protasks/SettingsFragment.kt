@@ -1,22 +1,5 @@
-/*
-  Copyright 2014 Magnus Woxblom
-  <p/>
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  <p/>
-  http://www.apache.org/licenses/LICENSE-2.0
-  <p/>
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
- */
 package com.example.protasks
 
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -28,33 +11,22 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.*
 import com.example.protasks.presenters.BoardPresenter
-import com.example.protasks.presenters.TaskListPresenter
 import com.example.protasks.utils.BottomSheet
 import com.example.protasks.views.IBoardsView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.woxthebox.draglistview.DragListView
-import com.woxthebox.draglistview.DragListView.DragListListenerAdapter
-import com.woxthebox.draglistview.swipe.ListSwipeHelper
-import com.woxthebox.draglistview.swipe.ListSwipeItem
-import com.woxthebox.draglistview.swipe.ListSwipeItem.SwipeDirection
-import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.ArrayList
 import android.view.Gravity
 
 import android.widget.Toast
-import kotlinx.android.synthetic.main.settings.*
 
 
 class SettingsFragment(

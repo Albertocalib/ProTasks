@@ -32,8 +32,6 @@ import java.util.*
 import kotlin.collections.HashMap
 import android.widget.Toast
 import com.example.protasks.models.Rol
-import kotlinx.android.synthetic.main.user_element.*
-import java.lang.Exception
 
 
 class BoardFragment : Fragment() {

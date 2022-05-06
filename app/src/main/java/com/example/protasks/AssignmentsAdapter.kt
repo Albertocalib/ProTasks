@@ -5,12 +5,10 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.protasks.models.Board
 import com.example.protasks.models.Task
 import com.example.protasks.models.User
 import com.example.protasks.presenters.TaskPresenter

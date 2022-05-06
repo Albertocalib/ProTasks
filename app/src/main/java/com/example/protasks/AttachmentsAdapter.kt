@@ -13,7 +13,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.File
 import com.example.protasks.models.Task
-import com.example.protasks.presenters.TaskListPresenter
 import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.utils.ImageHandler
 import java.util.*
