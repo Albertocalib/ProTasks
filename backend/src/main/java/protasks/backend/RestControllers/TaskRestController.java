@@ -1,4 +1,4 @@
-package protasks.backend.restControllers;
+package protasks.backend.RestControllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,7 @@ import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.File.File;
 import protasks.backend.File.FileService;
+import protasks.backend.Message.Message;
 import protasks.backend.Rol.Priority;
 import protasks.backend.Task.Task;
 import protasks.backend.Task.TaskService;
@@ -22,7 +23,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/task")
 public class TaskRestController {
-    interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo,File.FileBasicInfo {
+    interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo,File.FileBasicInfo, Message.MessageBasicInfo, User.UserBasicInfo {
     }
 
     interface UserRequest extends User.UserBasicInfo, User.UserDetailsInfo, Board.BoardBasicInfo, BoardUsersPermRel.UserBasicInfo {
@@ -113,7 +114,7 @@ public class TaskRestController {
                     //Update new List
                     updatePositions(t, tl, newPosition, false);
                     Board b = t.getTaskList().getBoard();
-                    if (b.getTimeActivated()){
+                    if (b.getTimeActivated()!=null && b.getTimeActivated()){
                         updateTaskTime(tl, t, b);
                         this.taskService.save(t);
                     }

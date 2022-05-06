@@ -162,7 +162,7 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
         })
     }
 
-    fun removeTag(taskId: Long, tagId: Long,update:Boolean) {
+    override fun removeTag(taskId: Long, tagId: Long,update:Boolean) {
         val task = retrofitInsTag.service.removeTagToTask(tagId,taskId)
         task.enqueue(object : Callback<Boolean> {
             override fun onFailure(call: Call<Boolean>?, t: Throwable?) {

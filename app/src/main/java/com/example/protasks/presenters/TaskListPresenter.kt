@@ -13,10 +13,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.example.protasks.RetrofitInstance
 import com.example.protasks.models.*
-import com.example.protasks.restServices.BoardRestService
-import com.example.protasks.restServices.TaskListRestService
-import com.example.protasks.restServices.TaskRestService
-import com.example.protasks.restServices.UserRestService
+import com.example.protasks.restServices.*
 import com.example.protasks.utils.BottomSheet
 import com.example.protasks.utils.ImageHandler
 import com.example.protasks.utils.Preference
@@ -40,6 +37,9 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
         RetrofitInstance("api/board/", BoardRestService::class.java)
     private val preference: Preference = Preference()
     private val image_handler: ImageHandler = ImageHandler()
+    private val retrofitInsTag: RetrofitInstance<TagRestService> =
+        RetrofitInstance("api/tag/", TagRestService::class.java)
+
 
 
 
@@ -281,6 +281,21 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
                 if (board.getId()==boardDestId){
                     getLists(board.getName()!!)
                 }
+            }
+
+        })
+    }
+
+    override fun removeTag(taskId: Long, tagId: Long,update:Boolean) {
+        val task = retrofitInsTag.service.removeTagToTask(tagId,taskId)
+        task.enqueue(object : Callback<Boolean> {
+            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                Log.v("retrofit", t.toString())
+            }
+
+            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                Log.v("retrofit", response.toString())
+
             }
 
         })

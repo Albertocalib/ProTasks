@@ -1,5 +1,7 @@
 package com.example.protasks.models
 
+import android.graphics.Bitmap
+
 interface ITask {
     fun getTitle(): String?
 
@@ -17,7 +19,7 @@ interface ITask {
 
     fun getTaskList():TaskList
     fun setTaskList(tasklist:TaskList)
-    fun getPhotos():ArrayList<String>?
+    fun getPhotos():ArrayList<Bitmap>
 
 
 }

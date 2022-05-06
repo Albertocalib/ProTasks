@@ -195,7 +195,7 @@ class ListFragment : Fragment() {
             boardId= taskLists!![0].getBoard()!!.getId()
         }
         val listAdapter =
-            TaskAdapterInsideBoard(mItemArray!!, true, R.layout.column_item, R.id.item_layout, true,supportFragmentManager!!,boardName!!,boardId,presenter!!,rol)
+            TaskAdapterInsideBoard(requireContext(),mItemArray!!, true, R.layout.column_item, R.id.item_layout, true,supportFragmentManager!!,boardName!!,boardId,presenter!!,rol)
         mDragListView!!.setAdapter(listAdapter, true)
         mDragListView!!.setCanDragHorizontally(false)
     }

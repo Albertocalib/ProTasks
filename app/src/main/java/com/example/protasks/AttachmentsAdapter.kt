@@ -45,7 +45,7 @@ class AttachmentsAdapter(
         holder.name.text=attachment!!.getName()
         var type = ""
         if (attachment.getType()!=null) {
-            type = attachment.getType()!!.toLowerCase(Locale.ROOT)
+            type = attachment.getType()!!.lowercase(Locale.ROOT)
         }
         if (type=="pdf"){
             holder.image.setImageResource(R.drawable.pdf_logo)

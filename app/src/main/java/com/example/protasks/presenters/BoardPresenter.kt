@@ -109,6 +109,10 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
         }
     }
 
+    override fun removeTag(taskId: Long, tagId: Long, update: Boolean) {
+        TODO("Not yet implemented")
+    }
+
     fun downloadImage(image: ImageView, context: Context) {
         image_handler.downloadImage(image, context)
     }

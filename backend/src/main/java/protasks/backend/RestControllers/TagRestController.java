@@ -1,4 +1,4 @@
-package protasks.backend.restControllers;
+package protasks.backend.RestControllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,9 @@ import protasks.backend.Task.Task;
 import protasks.backend.Task.TaskService;
 import protasks.backend.TaskList.TaskList;
 import protasks.backend.user.User;
-import protasks.backend.user.UserService;
 
 import java.util.List;
 import java.util.Optional;
-
-import static protasks.backend.Rol.Rol.OWNER;
 
 @RestController
 @RequestMapping("/api/tag")

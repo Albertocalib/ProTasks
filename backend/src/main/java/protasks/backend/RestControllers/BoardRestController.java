@@ -1,4 +1,4 @@
-package protasks.backend.restControllers;
+package protasks.backend.RestControllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import protasks.backend.Board.BoardService;
 import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.Board.BoardUsersPermService;
 import protasks.backend.Rol.Rol;
+import protasks.backend.Tag.Tag;
 import protasks.backend.Task.Task;
 import protasks.backend.Task.TaskService;
 import protasks.backend.TaskList.TaskList;
@@ -24,10 +25,10 @@ import static protasks.backend.Rol.Rol.OWNER;
 @RestController
 @RequestMapping("/api/board")
 public class BoardRestController {
-    interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo, BoardUsersPermRel.BoardBasicInfo, TaskList.TaskListBasicInfo {
+    interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo, BoardUsersPermRel.BoardBasicInfo, TaskList.TaskListBasicInfo,Task.TaskListBasicInfo,Tag.TagBasicInfo {
     }
 
-    interface BoardsUserRequest extends User.UserBasicInfo, Board.BoardBasicInfo, BoardUsersPermRel.BoardBasicInfo, TaskList.TaskListBasicInfo {
+    interface BoardsUserRequest extends User.UserBasicInfo, Board.BoardBasicInfo, BoardUsersPermRel.BoardBasicInfo, TaskList.TaskListBasicInfo,Task.TaskListBasicInfo, Tag.TagBasicInfo {
     }
 
     @Autowired

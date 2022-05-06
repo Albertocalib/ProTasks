@@ -1,21 +1,25 @@
 package com.example.protasks
 
+import android.content.res.ColorStateList
 import android.graphics.*
+import android.os.Build
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.Board
 import com.example.protasks.models.Tag
 import com.example.protasks.models.Task
 import com.example.protasks.models.User
+import com.example.protasks.presenters.IPresenter
 import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.utils.ImageHandler
 
 
-class TagsAdapter(private val tags : List<Tag>?, private val taskPresenter:TaskPresenter, private val task: Task) :RecyclerView.Adapter<TagsAdapter.ViewHolderTags>(){
+class TagsAdapter(private val tags : List<Tag>?, private val presenter:IPresenter?, private val task: Task,private val remove:Boolean) :RecyclerView.Adapter<TagsAdapter.ViewHolderTags>(){
 
     private val imageHandler: ImageHandler = ImageHandler()
 
@@ -32,11 +36,23 @@ class TagsAdapter(private val tags : List<Tag>?, private val taskPresenter:TaskP
         return tags!!.size
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBindViewHolder(holder: TagsAdapter.ViewHolderTags, position: Int) {
-        holder.tagName.text=tags!![position].getName()
-        holder.removeTag!!.setOnClickListener {
-            taskPresenter.removeTag(task.getId()!!,tags[position].getId(),true)
+        holder.tagName.text = tags!![position].getName()
+        if (remove){
+            holder.removeTag!!.setOnClickListener {
+                presenter!!.removeTag(task.getId()!!, tags[position].getId(), true)
+
+            }
+        }else{
+            holder.removeTag!!.visibility=View.GONE
         }
+        val color = tags[position].getColor()
+        if (color!=null){
+            holder.view.backgroundTintList=ColorStateList.valueOf(Color.parseColor(color))
+        }
+
+
 
     }
 

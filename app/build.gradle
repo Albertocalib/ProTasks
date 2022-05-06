@@ -54,6 +54,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
     implementation "com.github.duanhong169:colorpicker:1.1.6"
+    implementation 'com.github.duanhong169:checkerboarddrawable:1.0.2'
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.6.2"
     implementation 'com.squareup.okhttp:okhttp:2.5.0'
     implementation 'androidx.preference:preference-ktx:1.2.0'

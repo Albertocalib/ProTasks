@@ -2,16 +2,17 @@ package com.example.protasks
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,35 +23,35 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.core.view.get
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.protasks.models.*
 import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.utils.BottomSheet
 import com.example.protasks.utils.DatePicker
 import com.example.protasks.utils.SpinnerImage
 import com.example.protasks.views.ITasksView
 import com.google.android.material.textfield.TextInputEditText
+import top.defaults.colorpicker.ColorPickerPopup
+import top.defaults.colorpicker.ColorPickerPopup.ColorPickerObserver
 import java.text.DateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
-import android.widget.Spinner
-import com.example.protasks.models.*
-import kotlin.collections.HashMap
 
-class TaskDialogExtend(
-    private var task: Task,
-    private val boardName: String,
-    private val boardId: Long,
-    private val fragmentMgr: FragmentManager,
-    private val viewHolder: TaskAdapterInsideBoard.ViewHolder?,
-    val rol: Rol?
-) : DialogFragment(),
-    ITasksView {
+class TaskDetailsTab(private val t: Toolbar,
+                     private var task: Task,
+                     private val boardName: String,
+                     private val boardId: Long,
+                     private val fragmentMgr: FragmentManager,
+                     private val viewHolder: TaskAdapterInsideBoard.ViewHolder?,
+                     val rol: Rol?) : Fragment(), ITasksView {
     var name: TextInputEditText? = null
     var description: TextInputEditText? = null
     var toolbar: Toolbar? = null
@@ -71,21 +72,20 @@ class TaskDialogExtend(
     var boardTagList: List<Tag>? = ArrayList()
     var dateEnd: TextView? = null
     var attachFiles: TextView? = null
-    var resultLauncher:ActivityResultLauncher<Intent>?=null
+    var resultLauncher: ActivityResultLauncher<Intent>?=null
     var recyclerViewAttachments: RecyclerView? = null
     var layoutManagerAttachments = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-    var viewAttachments:LinearLayout? = null
+    var viewAttachments: LinearLayout? = null
     var recyclerViewSubtasks: RecyclerView? = null
     var layoutManagerSubtasks = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-    var buttonAddSubtasks:LinearLayout? = null
-    var deleteSubtasks:ImageView? = null
+    var buttonAddSubtasks: LinearLayout? = null
+    var deleteSubtasks: ImageView? = null
     var subtasksSelected:ArrayList<Task> = ArrayList()
     var spinnerPriorityList: ArrayList<SpinnerImage> = ArrayList()
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uris = HashSet<Uri>()
@@ -103,25 +103,13 @@ class TaskDialogExtend(
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        val dialog: Dialog = dialog!!
-        val width = ViewGroup.LayoutParams.MATCH_PARENT
-        val height = ViewGroup.LayoutParams.MATCH_PARENT
-        dialog.window!!.setLayout(width, height)
-    }
-
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, state: Bundle?): View? {
         super.onCreateView(inflater, parent, state)
         val v: View = inflater.inflate(R.layout.task_dialog_extend, parent, false)
         name = v.findViewById(R.id.taskname)
         description = v.findViewById(R.id.taskDescription)
-        toolbar = v.findViewById(R.id.toolbar)
-        toolbar!!.setNavigationOnClickListener {
-            viewHolder?.updateTask(task)
-            dismiss()
-        }
+
         taskPresenter = TaskPresenter(this, requireContext())
 
         name!!.setText(task.getTitle())
@@ -325,8 +313,8 @@ class TaskDialogExtend(
         recyclerViewSubtasks= v.findViewById(R.id.recycler_subtasks)
         recyclerViewSubtasks!!.layoutManager = layoutManagerSubtasks
         if (!task.getSubtasks().isNullOrEmpty()){
-            //recyclerViewSubtasks!!.adapter =
-              //      SubtaskAdapter(task.getSubtasks()!!,taskPresenter,task,requireContext(),fragmentMgr,this,boardId,boardName,rol)
+           // recyclerViewSubtasks!!.adapter =
+             //   SubtaskAdapter(task.getSubtasks()!!,taskPresenter,task,requireContext(),fragmentMgr,this,boardId,boardName,rol)
             recyclerViewSubtasks!!.visibility=View.VISIBLE
         }else{
             recyclerViewSubtasks!!.visibility=View.GONE
@@ -473,8 +461,8 @@ class TaskDialogExtend(
         }else{
             viewAttachments!!.visibility=View.GONE
         }
-        //recyclerViewSubtasks!!.adapter =
-          //      SubtaskAdapter(task.getSubtasks()!!,taskPresenter,task,requireContext(),fragmentMgr,this,boardId,boardName,rol)
+        recyclerViewSubtasks!!.adapter =
+            SubtaskAdapter(task.getSubtasks()!!,taskPresenter,task,requireContext(),fragmentMgr,this,boardId,boardName,rol)
         if (task.getSubtasks()!!.isNotEmpty()){
             recyclerViewSubtasks!!.visibility=View.VISIBLE
         }else{
@@ -491,5 +479,15 @@ class TaskDialogExtend(
             deleteSubtasks!!.visibility=View.VISIBLE
         }
     }
+
+    companion object {
+        fun newInstance(t: Toolbar,task: Task,
+                        boardName: String,
+                        boardId: Long,
+                        fragmentMgr: FragmentManager,
+                        viewHolder: TaskAdapterInsideBoard.ViewHolder?,
+                        rol: Rol?): TaskDetailsTab = TaskDetailsTab(t,task,boardName,boardId,fragmentMgr,viewHolder,rol)
+    }
+
 
 }

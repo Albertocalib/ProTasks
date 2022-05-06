@@ -1,5 +1,6 @@
 package com.example.protasks
 
+import android.app.Dialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -7,16 +8,22 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.protasks.models.Rol
 import com.example.protasks.models.Task
 import com.example.protasks.presenters.TaskPresenter
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class SubtaskAdapter(
@@ -25,7 +32,7 @@ class SubtaskAdapter(
         private val task: Task?,
         private val context: Context,
         private val supportFragmentManager: FragmentManager,
-        private val taskDialogExtend: TaskDialogExtend,
+        private val taskDialogExtend: TaskDetailsTab,
         private val boardId: Long,
         private val boardName: String,
         private val rol: Rol?
@@ -72,17 +79,32 @@ class SubtaskAdapter(
                 taskDialogExtend.updateVisibilityDeleteSubtasks()
             } else {
                 subtask.setParentTask(task!!)
-                val dialog =
-                        TaskDialogExtend(
-                            subtask,
-                            boardName,
-                            boardId,
-                            supportFragmentManager,
-                            null,
-                            rol
-                        )
-                val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-                dialog.show(ft, "TaskExtendDialog")
+                val nagDialog2 = Dialog(context, android.R.style.ThemeOverlay_Material_Dark)
+                nagDialog2.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                nagDialog2.setCancelable(false)
+                nagDialog2.setContentView(R.layout.task_extend_tabs)
+                val tabLayout: TabLayout = nagDialog2.findViewById(R.id.tabsDialog)
+                val viewPager: ViewPager2 = nagDialog2.findViewById(R.id.view_pager)
+                val toolbar: Toolbar = nagDialog2.findViewById(R.id.toolbar)
+                toolbar.setNavigationOnClickListener { nagDialog2.dismiss() }
+
+                val adapter = TaskFragmentManagerDialog(context as FragmentActivity, toolbar,subtask,boardName,boardId,supportFragmentManager,null,rol)
+
+                viewPager.adapter = adapter
+                val mediator =
+                    TabLayoutMediator(tabLayout, viewPager) { tab: TabLayout.Tab, position: Int ->
+
+                        when (position) {
+                            0 -> {
+                                tab.text = "Detalles"
+                            }
+                            else -> {
+                                tab.text = "Comentarios"
+                            }
+                        }
+                    }
+                mediator.attach()
+                nagDialog2.show()
             }
         }
         holder.layout.setOnLongClickListener {

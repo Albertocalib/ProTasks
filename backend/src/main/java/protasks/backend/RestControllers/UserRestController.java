@@ -1,4 +1,4 @@
-package protasks.backend.restControllers;
+package protasks.backend.RestControllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,6 +2,7 @@ package protasks.backend.Task;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import protasks.backend.File.File;
+import protasks.backend.Message.Message;
 import protasks.backend.Rol.Priority;
 import protasks.backend.Tag.Tag;
 import protasks.backend.TaskList.TaskList;
@@ -106,6 +107,18 @@ public class Task implements Comparable<Task>,Cloneable {
     @JsonView(Task.TaskListBasicInfo.class)
     @Column(name="date_end_lead_time")
     private Date date_end_lead_time;
+
+    @JsonView(Task.TaskListBasicInfo.class)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    private List<Message> messages;
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
 
     public List<File> getAttachments() {
         return attachments;
@@ -222,6 +235,14 @@ public class Task implements Comparable<Task>,Cloneable {
         }
         if (!this.tag_ids.contains(t)){
             this.tag_ids.add(t);
+        }
+    }
+    public void addMessage(Message m) {
+        if (this.messages==null || this.messages.isEmpty()){
+            this.messages = new ArrayList<>();
+        }
+        if (!this.messages.contains(m)){
+            this.messages.add(m);
         }
     }
     public void addSubTask(Task st) {

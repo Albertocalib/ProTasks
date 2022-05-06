@@ -1,4 +1,4 @@
-package protasks.backend.restControllers;
+package protasks.backend.RestControllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,8 @@ import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardService;
 import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.File.File;
+import protasks.backend.Message.Message;
+import protasks.backend.Tag.Tag;
 import protasks.backend.Task.Task;
 import protasks.backend.Task.TaskService;
 import protasks.backend.TaskList.TaskList;
@@ -20,15 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static protasks.backend.Rol.Rol.OWNER;
-
 @RestController
 @RequestMapping("/api/list")
 public class TaskListRestController {
-    interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo, BoardUsersPermRel.BoardBasicInfo {
+    interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo, BoardUsersPermRel.BoardBasicInfo, Tag.TagBasicInfo {
     }
 
-    interface TaskListRequest extends TaskList.TaskListExtendedInfo, TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Board.BoardBasicInfo, BoardUsersPermRel.BoardBasicInfo,User.UserBasicInfo, File.FileBasicInfo {
+    interface TaskListRequest extends TaskList.TaskListExtendedInfo, TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Board.BoardBasicInfo, BoardUsersPermRel.BoardBasicInfo,User.UserBasicInfo, File.FileBasicInfo,Tag.TagBasicInfo, Message.MessageBasicInfo {
     }
 
     @Autowired

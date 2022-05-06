@@ -1,7 +1,12 @@
 package com.example.protasks.models
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
+import com.example.protasks.AttachmentsAdapter
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.nio.file.Files
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -23,10 +28,6 @@ class Task(
     @Expose
     @SerializedName("position")
     private var position: Int? = null
-
-    @Expose
-    @SerializedName("photos")
-    private var photos: ArrayList<String>? = ArrayList()
 
     @Expose
     @SerializedName("tag_ids")
@@ -74,6 +75,10 @@ class Task(
     @SerializedName("date_end_lead_time")
     private var dateEndLeadTime: Date? = null
 
+    @Expose
+    @SerializedName("messages")
+    private var messages: List<Message?>? = null
+
     fun getDateStartCycleTime(): Date? {
         return dateStartCycleTime
     }
@@ -119,6 +124,17 @@ class Task(
         return parentTask
     }
 
+    fun getMessages(): List<Message?>?{
+        return messages
+    }
+
+    fun getTags(): List<Tag?>?{
+        return tag_ids
+    }
+    fun setTags(tags:List<Tag>){
+        this.tag_ids=tags
+    }
+
     fun getUsers(): List<User>? {
         return users
     }
@@ -157,7 +173,22 @@ class Task(
         this.tasklist=tasklist
     }
 
-    override fun getPhotos(): ArrayList<String>? {
+    override fun getPhotos(): ArrayList<Bitmap> {
+        val files = this.getAttachments()
+        val photos = ArrayList<Bitmap>()
+        if (files != null) {
+            for (file in files){
+                var type=""
+                if (file!!.getType()!=null) {
+                    type = file.getType()!!.lowercase(Locale.ROOT)
+                }
+                if (AttachmentsAdapter.EXTENSIONS_IMAGES.contains(type)){
+                    val imageBytes = Base64.decode(file.getContent(), Base64.DEFAULT)
+                    val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                    photos.add(decodedImage)
+                }
+            }
+        }
         return photos
     }
 
