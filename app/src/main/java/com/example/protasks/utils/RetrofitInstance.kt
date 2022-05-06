@@ -1,4 +1,4 @@
-package com.example.protasks
+package com.example.protasks.utils
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

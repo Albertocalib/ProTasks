@@ -8,7 +8,7 @@ import android.util.Base64
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
-import com.example.protasks.RetrofitInstance
+import com.example.protasks.utils.RetrofitInstance
 import com.example.protasks.models.*
 import com.example.protasks.restServices.BoardRestService
 import com.example.protasks.restServices.TaskListRestService

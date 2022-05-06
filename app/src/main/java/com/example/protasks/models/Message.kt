@@ -3,22 +3,21 @@ package com.example.protasks.models
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class Message {
+class Message(
+    @Expose
+    @SerializedName("body")
+    private var body: String? = null,
+    @Expose
+    @SerializedName("user")
+    private var user: User? = null,
+    @Expose
+    @SerializedName("task")
+    private var task: Task? = null
+) {
     @Expose
     @SerializedName("id")
     private var id: Long = 0
 
-    @Expose
-    @SerializedName("task")
-    private var task: Task? = null
-
-    @Expose
-    @SerializedName("body")
-    private var body: String? = null
-
-    @Expose
-    @SerializedName("user")
-    private var user: User? = null
 
     fun setId(id: Long) {
         this.id = id

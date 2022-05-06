@@ -77,7 +77,7 @@ class Task(
 
     @Expose
     @SerializedName("messages")
-    private var messages: List<Message?>? = null
+    private var messages: ArrayList<Message?>? = null
 
     fun getDateStartCycleTime(): Date? {
         return dateStartCycleTime
@@ -211,6 +211,14 @@ class Task(
     }
     fun setPriority(priority: Priority){
         this.priority=priority
+    }
+    fun addMessage(m: Message?) {
+        if (this.messages == null || this.messages!!.isEmpty()) {
+            this.messages = ArrayList()
+        }
+        if (!this.messages!!.contains(m)) {
+            this.messages!!.add(m)
+        }
     }
 
 

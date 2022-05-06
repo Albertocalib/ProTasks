@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import com.example.protasks.RetrofitInstance
+import com.example.protasks.utils.RetrofitInstance
 import com.example.protasks.restServices.UserRestService
 import com.example.protasks.models.User
 import com.example.protasks.utils.Preference
@@ -17,7 +17,7 @@ import retrofit2.Response
 class LoginPresenterImp(private var iLoginView: ILoginView, private var context: Context) :
     ILoginPresenter {
     private var handler: Handler = Handler(Looper.getMainLooper())
-    private val retrofitIns:RetrofitInstance<UserRestService> = RetrofitInstance("api/user/",UserRestService::class.java)
+    private val retrofitIns: RetrofitInstance<UserRestService> = RetrofitInstance("api/user/",UserRestService::class.java)
     private val preference:Preference = Preference()
     override fun doLogin(userName: String, password: String, keep_login: Boolean) {
         val user = retrofitIns.service.logInAttempt(userName, password)

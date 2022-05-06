@@ -34,7 +34,7 @@ public class TagRestController {
     BoardService boardService;
 
     @JsonView(Tag.TagBasicInfo.class)
-    @GetMapping("tags/task_id={id}")
+    @GetMapping("/tags/task_id={id}")
     public ResponseEntity<List<Tag>> getTagsByTaskId(@PathVariable Long id) {
         Task task = taskService.findById(id);
         if (task != null) {
@@ -44,7 +44,7 @@ public class TagRestController {
         }
     }
 
-    @DeleteMapping("id={id}/task={task_id}")
+    @DeleteMapping("/id={id}/task={task_id}")
     public ResponseEntity<Boolean> deleteUserToTask(@PathVariable Long id, @PathVariable Long task_id) {
         Optional<Tag> tag = tagService.findTagById(id);
         if (tag.isPresent()) {
@@ -60,7 +60,7 @@ public class TagRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @PostMapping("id={id}/tag={tag_id}")
+    @PostMapping("/id={id}/tag={tag_id}")
     public ResponseEntity<Boolean> addTagToTask(@PathVariable Long id,@PathVariable Long tag_id) {
         Task task = taskService.findById(id);
         if (task!=null){
@@ -88,7 +88,7 @@ public class TagRestController {
     }
 
     @JsonView(Tag.TagBasicInfo.class)
-    @PostMapping("newTag/board={boardName}&username={username}")
+    @PostMapping("/newTag/board={boardName}&username={username}")
     public ResponseEntity<Tag> createTag(@RequestBody Tag tag, @PathVariable("boardName") String boardName, @PathVariable("username") String username){
         if (boardName == null || tag == null || username == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

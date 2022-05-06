@@ -23,7 +23,7 @@ class User(@Expose
 
     @Expose
     @SerializedName("id")
-    private val id: Long? = null
+    private var id: Long? = null
 
     @Expose
     @SerializedName("photo")
@@ -64,6 +64,9 @@ class User(@Expose
     }
     fun setPhoto(img:String){
         photo=img
+    }
+    fun setId(id:Long){
+        this.id=id
     }
 
 

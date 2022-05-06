@@ -9,15 +9,28 @@
         android:layout_height="wrap_content"
         android:id="@+id/left_layout"
         android:layout_gravity="left"
+        android:orientation="vertical"
         android:background="@drawable/message_shape_incoming">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:textColor="#fff"
+            android:id="@+id/user_left"
+            android:textStyle="bold"
+            android:textSize="16dp"
+            android:text="Usuario1"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/left_msg"
             android:layout_gravity="center"
-            android:layout_margin="16dp"
-            android:layout_marginStart="20dp"
-            android:textColor="#fff"/>
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:textColor="#fff"
+            android:text="Mensaje Izquierda"
+            android:textSize="13dp" />
 
     </LinearLayout>
     <LinearLayout
@@ -26,15 +39,29 @@
         android:id="@+id/right_layout"
         android:layout_gravity="right"
         android:background="@drawable/message_shape_outgoing"
+        android:orientation="vertical"
         >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="#fff"
+            android:id="@+id/user_right"
+            android:textStyle="bold"
+            android:text="Usuario1"
+            android:textSize="16dp"
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/right_msg"
             android:layout_gravity="center"
-            android:layout_marginEnd="20dp"
-            android:layout_margin="16dp"
-            android:textColor="#fff"/>
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:textColor="#fff"
+            android:textSize="13dp"
+            android:text="Mensaje Dereche"/>
     </LinearLayout>
 
 </LinearLayout>

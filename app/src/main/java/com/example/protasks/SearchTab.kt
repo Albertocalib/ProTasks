@@ -74,6 +74,10 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,Bo
         TODO("Not yet implemented")
     }
 
+    override fun addMessage(msg: Message) {
+        TODO("Not yet implemented")
+    }
+
     override fun logOut() {
         TODO("Not yet implemented")
     }

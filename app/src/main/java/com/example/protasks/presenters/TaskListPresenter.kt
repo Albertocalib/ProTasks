@@ -2,28 +2,21 @@ package com.example.protasks.presenters
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.Base64
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
-import com.example.protasks.RetrofitInstance
+import com.example.protasks.utils.RetrofitInstance
 import com.example.protasks.models.*
 import com.example.protasks.restServices.*
 import com.example.protasks.utils.BottomSheet
 import com.example.protasks.utils.ImageHandler
 import com.example.protasks.utils.Preference
-import com.example.protasks.views.IBoardsView
 import com.example.protasks.views.IInsideBoardsView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
-import java.text.FieldPosition
 
 
 class TaskListPresenter(private var view: IInsideBoardsView?, private var context: Context) :

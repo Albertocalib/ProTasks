@@ -127,10 +127,6 @@ class TaskAdapterInsideBoard(
 
         override fun onItemClicked(view: View) {
             if (task != null) {
-                //val dialog =
-                  //  TaskDialogExtend(task!!, boardName, boardId, supportFragmentManager, this,rol)
-                //val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-                //dialog.show(ft, "TaskExtendDialog")
                 val nagDialog2 = Dialog(context, android.R.style.ThemeOverlay_Material_Dark)
                 nagDialog2.requestWindowFeature(Window.FEATURE_NO_TITLE)
                 nagDialog2.setCancelable(false)

@@ -7,7 +7,7 @@ import android.util.Base64
 import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.Toast
-import com.example.protasks.RetrofitInstance
+import com.example.protasks.utils.RetrofitInstance
 import com.example.protasks.models.*
 import com.example.protasks.restServices.*
 import com.example.protasks.utils.Preference

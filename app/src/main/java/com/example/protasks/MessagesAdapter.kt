@@ -26,6 +26,9 @@ class MessagesAdapter(
             itemView.findViewById<View>(R.id.right_layout) as LinearLayout
         var leftMsg: TextView = itemView.findViewById<View>(R.id.left_msg) as TextView
         var rightMsg: TextView = itemView.findViewById<View>(R.id.right_msg) as TextView
+        var leftUser: TextView =itemView.findViewById(R.id.user_left)
+        var rightUser: TextView =itemView.findViewById(R.id.user_right)
+
 
     }
 
@@ -42,10 +45,12 @@ class MessagesAdapter(
             holder.leftLayout.visibility = View.VISIBLE
             holder.rightLayout.visibility = View.GONE
             holder.leftMsg.text = msg.getBody()
+            holder.leftUser.text = msg.getUser()!!.getUsername()
         } else{
             holder.rightLayout.visibility = View.VISIBLE
             holder.leftLayout.visibility = View.GONE
             holder.rightMsg.text = msg.getBody()
+            holder.rightUser.text = msg.getUser()!!.getUsername()
         }
     }
 

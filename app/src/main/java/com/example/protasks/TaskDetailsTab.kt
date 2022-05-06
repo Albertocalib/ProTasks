@@ -470,7 +470,23 @@ class TaskDetailsTab(private val t: Toolbar,
         }
         subtasksSelected= ArrayList()
         updateVisibilityDeleteSubtasks()
+        val photos = task.getPhotos()
+        if (photos.isEmpty()) {
+            imageTask!!.visibility = View.GONE
+        } else {
+            imageTask!!.visibility = View.VISIBLE
+            imageTask!!.setImageBitmap(photos[0])
+        }
     }
+
+    override fun setUser(u: User) {
+        TODO("Not yet implemented")
+    }
+
+    override fun addMessage(msg: Message) {
+        TODO("Not yet implemented")
+    }
+
     fun updateVisibilityDeleteSubtasks(){
         subtasksSelected = (recyclerViewSubtasks!!.adapter as SubtaskAdapter).getSubTasksSelected()
         if (subtasksSelected.isEmpty()){
