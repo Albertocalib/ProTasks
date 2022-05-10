@@ -11,4 +11,5 @@ interface IBoardsView {
     fun getBoards()
     fun setBoard(board: Board)
     fun setRole(perm:BoardUsersPermRel)
+    fun showToast(message:String)
 }

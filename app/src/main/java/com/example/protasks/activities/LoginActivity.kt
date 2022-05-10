@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.protasks.R
 import com.example.protasks.presenters.login.ILoginPresenter
 import com.example.protasks.presenters.login.LoginPresenterImp
+import com.example.protasks.utils.Preference
 import com.example.protasks.views.ILoginView
 
 
@@ -33,7 +34,7 @@ class LoginActivity : AppCompatActivity(), ILoginView, View.OnClickListener {
         //set listener
         btnLogin!!.setOnClickListener(this)
         //init
-        loginPresenter = LoginPresenterImp(this,baseContext)
+        loginPresenter = LoginPresenterImp(this, Preference(baseContext))
         loginPresenter!!.setProgressBarVisiblity(View.INVISIBLE)
         loginPresenter!!.cheekKeepLogin()
     }

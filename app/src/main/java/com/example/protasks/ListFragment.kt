@@ -13,6 +13,7 @@ import com.example.protasks.models.Rol
 import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
 import com.example.protasks.presenters.TaskListPresenter
+import com.example.protasks.utils.Preference
 import com.woxthebox.draglistview.DragListView
 import com.woxthebox.draglistview.DragListView.DragListListenerAdapter
 import com.woxthebox.draglistview.swipe.ListSwipeHelper
@@ -48,7 +49,7 @@ class ListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         taskLists = arguments?.getParcelableArrayList("taskLists")
         boardName = arguments?.getString("boardName")
-        presenter = TaskListPresenter(null, requireContext())
+        presenter = TaskListPresenter(null, Preference(requireContext()))
         supportFragmentManager = this.fragmentManager
         mDragListView!!.recyclerView.isVerticalScrollBarEnabled = true
         mDragListView!!.isDragEnabled = true

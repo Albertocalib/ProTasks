@@ -3,47 +3,47 @@ package com.example.protasks.utils
 import android.content.Context
 import androidx.preference.PreferenceManager
 
-class Preference {
+class Preference(private val context:Context) {
 
-    fun saveEmail(email: String?, context: Context?): Boolean {
+    fun saveEmail(email: String?): Boolean {
         val prefs =
-            PreferenceManager.getDefaultSharedPreferences(context!!)
+            PreferenceManager.getDefaultSharedPreferences(context)
         val prefsEditor = prefs.edit()
         prefsEditor.putString(Constants.KEY_EMAIL, email)
         prefsEditor.apply()
         return true
     }
 
-    fun getEmail(context: Context?): String? {
+    fun getEmail(): String? {
         val prefs =
-            PreferenceManager.getDefaultSharedPreferences(context!!)
+            PreferenceManager.getDefaultSharedPreferences(context)
         return prefs.getString(Constants.KEY_EMAIL, null)
     }
 
-    fun saveKeepLogin(keepLogin: Boolean, context: Context?) {
+    fun saveKeepLogin(keepLogin: Boolean) {
         val prefs =
-            PreferenceManager.getDefaultSharedPreferences(context!!)
+            PreferenceManager.getDefaultSharedPreferences(context)
         val prefsEditor = prefs.edit()
         prefsEditor.putBoolean(Constants.KEY_KEEP_LOGIN, keepLogin)
         prefsEditor.apply()
     }
 
-    fun getKeepLogin(context: Context?): Boolean? {
-        val prefs =PreferenceManager.getDefaultSharedPreferences(context!!)
+    fun getKeepLogin(): Boolean {
+        val prefs =PreferenceManager.getDefaultSharedPreferences(context)
         return prefs.getBoolean(Constants.KEY_KEEP_LOGIN, false)
     }
 
-    fun getPrefViewMode(context: Context?): Boolean? {
+    fun getPrefViewMode(): Boolean {
         val prefs =
-            PreferenceManager.getDefaultSharedPreferences(context!!)
+            PreferenceManager.getDefaultSharedPreferences(context)
         return prefs.getBoolean(Constants.KEY_BOARDS_LIST_VIEW, false)
     }
-    fun removePreferences(context: Context?) {
-       PreferenceManager.getDefaultSharedPreferences(context!!).edit().clear().apply()    }
+    fun removePreferences() {
+       PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply()    }
 
-    fun setPrefViewMode(listMode: Boolean, context: Context?) {
+    fun setPrefViewMode(listMode: Boolean) {
         val prefs =
-            PreferenceManager.getDefaultSharedPreferences(context!!)
+            PreferenceManager.getDefaultSharedPreferences(context)
         val prefsEditor = prefs.edit()
         prefsEditor.putBoolean(Constants.KEY_BOARDS_LIST_VIEW, listMode)
         prefsEditor.apply()
@@ -55,9 +55,9 @@ class Preference {
         prefsEditor.putBoolean(Constants.MODE_VIEW, listMode)
         prefsEditor.apply()
     }
-    fun getModeView(context: Context?):Boolean? {
+    fun getModeView():Boolean {
         val prefs =
-            PreferenceManager.getDefaultSharedPreferences(context!!)
+            PreferenceManager.getDefaultSharedPreferences(context)
         return prefs.getBoolean(Constants.MODE_VIEW, false)
     }
 }

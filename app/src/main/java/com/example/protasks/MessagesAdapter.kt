@@ -13,10 +13,9 @@ import com.example.protasks.utils.Preference
 
 
 class MessagesAdapter(
-    private val context: Context,
-    private val msgList: List<Message?>
+    private val msgList: List<Message?>,
+    private val preference:Preference
 ) : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
-    private val preference= Preference()
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var leftLayout: LinearLayout = itemView.findViewById<View>(R.id.left_layout) as LinearLayout
@@ -38,7 +37,7 @@ class MessagesAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val msg: Message = msgList[position]!!
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         if (msg.getUser()!!.getEmail() != username) {
             holder.leftLayout.visibility = View.VISIBLE
             holder.rightLayout.visibility = View.GONE

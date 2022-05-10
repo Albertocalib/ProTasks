@@ -27,6 +27,7 @@ import kotlin.collections.ArrayList
 import android.view.Gravity
 
 import android.widget.Toast
+import com.example.protasks.utils.Preference
 
 
 class SettingsFragment(
@@ -66,7 +67,7 @@ class SettingsFragment(
         savedInstanceState: Bundle?
     ): View {
         val view: View = inflater.inflate(R.layout.settings, container, false)
-        presenter= BoardPresenter(this,requireContext())
+        presenter= BoardPresenter(this, Preference(requireContext()))
         wipActivated = view.findViewById(R.id.wip_activated)
         wipLimit = view.findViewById(R.id.wipLimit)
         wipLabelLimit=view.findViewById(R.id.label_wip)
@@ -437,5 +438,9 @@ class SettingsFragment(
 
     override fun setRole(perm: BoardUsersPermRel) {
         TODO("Not yet implemented")
+    }
+
+    override fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }

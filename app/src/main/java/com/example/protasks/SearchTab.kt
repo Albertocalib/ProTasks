@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,6 +14,7 @@ import com.example.protasks.activities.BoardInsideActivity
 import com.example.protasks.models.*
 import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.presenters.TaskPresenter
+import com.example.protasks.utils.Preference
 import com.example.protasks.views.IBoardsView
 import com.example.protasks.views.ITasksView
 
@@ -30,9 +32,9 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,Bo
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.search_view, container, false)
-        presenter = BoardPresenter(this, cont)
+        presenter = BoardPresenter(this, Preference(cont))
         presenter!!.getBoards()
-        taskPresenter= TaskPresenter(this,cont)
+        taskPresenter= TaskPresenter(this, Preference(requireContext()),requireContext().contentResolver)
         taskPresenter!!.getTasks()
         recyclerViewTask = view.findViewById(R.id.recycler_task_search)
         recyclerViewBoard = view.findViewById(R.id.recycler_board_search)
@@ -91,6 +93,10 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,Bo
 
     override fun setRole(perm: BoardUsersPermRel) {
         TODO("Not yet implemented")
+    }
+
+    override fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun setTasks(tasks: List<Task>) {

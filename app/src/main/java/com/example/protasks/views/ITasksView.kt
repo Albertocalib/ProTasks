@@ -15,4 +15,5 @@ interface ITasksView {
     fun updateTask(t: Task)
     fun setUser(u:User)
     fun addMessage(msg:Message)
+    fun showToast(message:String)
 }

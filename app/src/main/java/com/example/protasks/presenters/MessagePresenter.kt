@@ -12,17 +12,15 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class MessagePresenter(private var view: ITasksView, private var context: Context){
+class MessagePresenter(private var view: ITasksView, private val preference: Preference){
     private val retrofitInsUser: RetrofitInstance<UserRestService> =
         RetrofitInstance("api/user/", UserRestService::class.java)
 
     private val retrofitInsMessage: RetrofitInstance<MessageRestService> =
         RetrofitInstance("/api/message/", MessageRestService::class.java)
 
-    private val preference: Preference = Preference()
-
     fun getUser(){
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val user = retrofitInsUser.service.getUser(username!!)
         user.enqueue(object : Callback<User> {
             override fun onFailure(call: Call<User>?, t: Throwable?) {

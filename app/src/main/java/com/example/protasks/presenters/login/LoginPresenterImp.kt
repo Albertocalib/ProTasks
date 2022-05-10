@@ -1,6 +1,5 @@
 package com.example.protasks.presenters.login
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -14,12 +13,11 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class LoginPresenterImp(private var iLoginView: ILoginView, private var context: Context) :
+class LoginPresenterImp(private var iLoginView: ILoginView, private val preference:Preference) :
     ILoginPresenter {
     private var handler: Handler = Handler(Looper.getMainLooper())
     private val retrofitIns: RetrofitInstance<UserRestService> = RetrofitInstance("api/user/",UserRestService::class.java)
-    private val preference:Preference = Preference()
-    override fun doLogin(userName: String, password: String, keep_login: Boolean) {
+    override fun doLogin(userName: String, password: String, keepLogin: Boolean) {
         val user = retrofitIns.service.logInAttempt(userName, password)
         user.enqueue(object : Callback<User> {
             override fun onFailure(call: Call<User>?, t: Throwable?) {
@@ -28,8 +26,8 @@ class LoginPresenterImp(private var iLoginView: ILoginView, private var context:
 
             override fun onResponse(call: Call<User>?, response: Response<User>?) {
                 if (response?.isSuccessful!!){
-                    preference.saveKeepLogin(keep_login,context)
-                    preference.saveEmail(userName,context)
+                    preference.saveKeepLogin(keepLogin)
+                    preference.saveEmail(userName)
                 }
                 handler.postDelayed({ iLoginView.onLoginResult(response.isSuccessful, response.code()) },0)
 
@@ -43,7 +41,7 @@ class LoginPresenterImp(private var iLoginView: ILoginView, private var context:
     }
 
     override fun cheekKeepLogin() {
-        if (preference.getKeepLogin(context)!!){
+        if (preference.getKeepLogin()){
             iLoginView.goToMainactivity()
         }
     }

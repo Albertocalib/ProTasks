@@ -67,6 +67,10 @@ class BottomSheet(
                 viewId = R.layout.user_dialog
                 nameFieldId = R.id.usernameOrEmail
                 buttonNameId = R.id.AddUserButton
+            }"filter"->{
+                viewId = R.layout.tag_dialog
+                nameFieldId = R.id.tagName
+                buttonNameId = R.id.createTagBtn
             }
             else -> {
                 viewId = R.layout.tag_dialog

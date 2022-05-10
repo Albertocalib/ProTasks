@@ -21,6 +21,7 @@ import com.example.protasks.*
 import com.example.protasks.models.*
 import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.presenters.TaskListPresenter
+import com.example.protasks.utils.BottomSheet
 import com.example.protasks.utils.Preference
 import com.example.protasks.views.IBoardsView
 import com.example.protasks.views.IInsideBoardsView
@@ -47,15 +48,17 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     var userCompleteName: TextView? = null
     var logoutButton: ImageButton? = null
     var viewMode: ImageButton? = null
-    private val preference = Preference()
+    private var preference:Preference?=null
     private var perms: BoardUsersPermRel? = null
     private var boardId: Long? = null
+    private var filterButton:ImageButton?=null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter = TaskListPresenter(this, baseContext)
+        preference = Preference(baseContext)
+        presenter = TaskListPresenter(this, preference!!)
         val bundle = intent.getBundleExtra("BOARD_INFO")
         boardName = bundle!!.getString("BOARD_NAME")
         boardId = bundle.getLong("BOARD_ID",-1)
@@ -70,11 +73,16 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
             menu.inflate(R.menu.view_mode_button_in)
             menu.show()
         }
+        filterButton = toolbar?.findViewById(R.id.filterButton)
+        filterButton?.setOnClickListener {
+            val bottomSheet = BottomSheet(boardName!!,"",presenter!!,"filter")
+            bottomSheet.show(supportFragmentManager, "bottomSheet")
+        }
         mDrawer = findViewById(R.id.drawer)
         actionBar = ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open, R.string.close)
         mDrawer!!.addDrawerListener(actionBar!!)
         actionBar!!.syncState()
-        boardPresenter = BoardPresenter(this, baseContext)
+        boardPresenter = BoardPresenter(this,preference!!)
         boardPresenter!!.getUser()
         boardPresenter!!.getBoards()
         bottomNavView =findViewById(R.id.bottom_bar_board)
@@ -155,7 +163,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
 
     override fun setTaskLists(taskList: List<TaskList>) {
         lists = taskList
-        fragment = if (preference.getModeView(this)==true){
+        fragment = if (preference!!.getModeView()){
             ListFragment.instance(lists,boardName!!)
         }else{
             BoardFragment.instance(lists,boardName!!)
@@ -180,7 +188,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     }
     override fun setRole(perm:BoardUsersPermRel){
         perms=perm
-        if (preference.getModeView(this)==true){
+        if (preference!!.getModeView()){
             (fragment as ListFragment).rol=perm.getRol()
             (fragment as ListFragment).setWatcherVisibility()
         }else{
@@ -188,7 +196,11 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
             (fragment as BoardFragment).setWatcherVisibility()
         }
     }
-    
+
+    override fun showToast(message:String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
 
     override fun logOut() {
         boardPresenter!!.removePreferences()
@@ -224,14 +236,14 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
         when {
             item!!.itemId==R.id.listViewMode -> {
                 fragment = ListFragment.instance(lists,boardName!!)
-                preference.setModeView(true,this)
+                preference!!.setModeView(true,this)
                 if (perms!=null){
                     (fragment as ListFragment).rol=perms!!.getRol()
                 }
             }
             item.itemId==R.id.BoardViewMode -> {
                 fragment = BoardFragment.instance(lists,boardName!!)
-                preference.setModeView(false,this)
+                preference!!.setModeView(false,this)
                 if (perms!=null){
                     (fragment as BoardFragment).rol=perms!!.getRol()
                 }
@@ -245,7 +257,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     }
     override fun updateTasks(listsUpdated:List<TaskList>){
         lists=listsUpdated
-        if (preference.getModeView(this)==true){
+        if (preference!!.getModeView()){
             fragment=ListFragment.instance(lists,boardName!!)
             if (perms!=null){
                 (fragment as ListFragment).rol=perms!!.getRol()

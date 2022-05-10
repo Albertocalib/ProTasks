@@ -23,6 +23,7 @@ import com.example.protasks.models.BoardUsersPermRel
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
 import com.example.protasks.utils.ImageHandler
+import com.example.protasks.utils.Preference
 import com.example.protasks.views.IBoardsView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
@@ -56,7 +57,7 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
             menu.inflate(R.menu.view_mode_button)
             menu.show()
         }
-        presenter = BoardPresenter(this, cont)
+        presenter = BoardPresenter(this, Preference(cont))
         presenter!!.getBoards()
         recyclerView = view.findViewById(R.id.recycler_board_list)
         setLayoutManager()
@@ -197,6 +198,10 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
 
     override fun setRole(perm: BoardUsersPermRel) {
         TODO("Not yet implemented")
+    }
+
+    override fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {

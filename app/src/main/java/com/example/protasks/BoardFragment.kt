@@ -5,8 +5,6 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +29,9 @@ import com.woxthebox.draglistview.DragItem
 import java.util.*
 import kotlin.collections.HashMap
 import android.widget.Toast
+import androidx.core.view.children
 import com.example.protasks.models.Rol
+import com.example.protasks.utils.Preference
 
 
 class BoardFragment : Fragment() {
@@ -63,7 +63,7 @@ class BoardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         taskLists = arguments?.getParcelableArrayList("taskLists")
         boardName = arguments?.getString("boardName")
-        presenter = TaskListPresenter(null,requireContext())
+        presenter = TaskListPresenter(null, Preference(requireContext()))
         supportFragmentManager = this.fragmentManager
         mBoardView!!.setSnapToColumnsWhenScrolling(true)
         mBoardView!!.setSnapToColumnWhenDragging(true)
@@ -371,6 +371,21 @@ class BoardFragment : Fragment() {
             val text =
                 (clickedView.findViewById<View>(R.id.text) as TextView).text
             (dragView.findViewById<View>(R.id.text) as TextView).text = text
+            val image = (clickedView.findViewById<View>(R.id.imageTaskInside) as ImageView)
+            val recyclerView = (clickedView.findViewById<View>(R.id.recycler_tags_inside) as RecyclerView)
+            val imageDrag = dragView.findViewById<View>(R.id.imageTaskInside) as ImageView
+            if (image.visibility==View.VISIBLE){
+                imageDrag.setImageDrawable(image.drawable)
+            }else{
+                imageDrag.visibility=View.GONE
+            }
+            if (recyclerView.childCount>0){
+                val recyclerDrag=(dragView.findViewById<View>(R.id.recycler_tags_inside) as RecyclerView)
+                recyclerDrag.adapter=recyclerView.adapter
+
+            }
+
+
             val dragCard: CardView = dragView.findViewById(R.id.card2)
             val clickedCard: CardView = clickedView.findViewById(R.id.card2)
             dragCard.maxCardElevation = 40f

@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.*
 import com.example.protasks.presenters.MessagePresenter
+import com.example.protasks.utils.Preference
 import com.example.protasks.views.ITasksView
 
 
@@ -37,13 +38,13 @@ class TaskCommentsTab(private val t: Toolbar,
         super.onCreateView(inflater, parent, state)
         val v: View = inflater.inflate(R.layout.message_fragment, parent, false)
         msgList= task.getMessages() as ArrayList<Message?>?
-        presenter=MessagePresenter(this,requireContext())
+        presenter=MessagePresenter(this,Preference(requireContext()))
         presenter!!.getUser()
         inputText = v.findViewById(R.id.input_text) as EditText?
         send = v.findViewById(R.id.send) as Button?
         recyclerView = v.findViewById(R.id.recycler_view) as RecyclerView?
         recyclerView!!.layoutManager = layoutManager
-        adapter = MessagesAdapter(requireContext(),msgList!!)
+        adapter = MessagesAdapter(msgList!!, Preference(requireContext()))
         recyclerView!!.adapter = adapter
         send!!.setOnClickListener {
             val content = inputText!!.text.toString()
@@ -110,6 +111,10 @@ class TaskCommentsTab(private val t: Toolbar,
         adapter!!.notifyItemInserted(msgList!!.size - 1)
         recyclerView!!.scrollToPosition(msgList!!.size - 1)
         task.addMessage(msg)
+    }
+
+    override fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
 

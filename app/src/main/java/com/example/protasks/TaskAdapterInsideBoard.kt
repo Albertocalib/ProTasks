@@ -113,7 +113,7 @@ class TaskAdapterInsideBoard(
             optionsMenu!!.setOnClickListener {
                 val bottomSheet = BottomSheet(boardName, listText!!.text.toString(), presenter, "menu_task")
                 bottomSheet.task=task
-                //bottomSheet.show(supportFragmentManager, "bottomSheet")
+                bottomSheet.show(supportFragmentManager, "bottomSheet")
 
             }
         }

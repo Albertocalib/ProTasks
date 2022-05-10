@@ -27,6 +27,7 @@ import com.example.protasks.models.*
 import com.example.protasks.presenters.TaskPresenter
 import com.example.protasks.utils.BottomSheet
 import com.example.protasks.utils.DatePicker
+import com.example.protasks.utils.Preference
 import com.example.protasks.utils.SpinnerImage
 import com.example.protasks.views.ITasksView
 import com.google.android.material.textfield.TextInputEditText
@@ -101,7 +102,7 @@ class TaskDetailsTab(private val t: Toolbar,
         name = v.findViewById(R.id.taskname)
         description = v.findViewById(R.id.taskDescription)
 
-        taskPresenter = TaskPresenter(this, requireContext())
+        taskPresenter = TaskPresenter(this, Preference(requireContext()),requireContext().contentResolver)
 
         name!!.setText(task.getTitle())
         if (task.getDescription() != null) {
@@ -476,6 +477,10 @@ class TaskDetailsTab(private val t: Toolbar,
 
     override fun addMessage(msg: Message) {
         TODO("Not yet implemented")
+    }
+
+    override fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     fun updateVisibilityDeleteSubtasks(){

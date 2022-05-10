@@ -23,7 +23,7 @@ import retrofit2.Response
 import java.io.ByteArrayOutputStream
 
 
-class BoardPresenter(private var iBoardsView: IBoardsView, private var context: Context) :
+class BoardPresenter(private var iBoardsView: IBoardsView, private val preference: Preference) :
     IBoardPresenter {
     private val retrofitInsBoard: RetrofitInstance<BoardRestService> =
         RetrofitInstance("api/board/", BoardRestService::class.java)
@@ -33,10 +33,9 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
         RetrofitInstance("api/list/", TaskListRestService::class.java)
     private val retrofitInsTask: RetrofitInstance<TaskRestService> =
         RetrofitInstance("api/task/", TaskRestService::class.java)
-    private val preference: Preference = Preference()
     private val image_handler: ImageHandler = ImageHandler()
     override fun getBoards() {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val boards = retrofitInsBoard.service.getBoardsByUser(username!!)
         boards.enqueue(object : Callback<List<Board>> {
             override fun onFailure(call: Call<List<Board>>?, t: Throwable?) {
@@ -52,7 +51,7 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
     }
 
     override fun getUser() {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val user = retrofitInsUser.service.getUser(username!!)
         user.enqueue(object : Callback<User> {
             override fun onFailure(call: Call<User>?, t: Throwable?) {
@@ -68,7 +67,7 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
     }
 
     override fun getViewPref(): Boolean {
-        return preference.getPrefViewMode(context)!!
+        return preference.getPrefViewMode()
 
     }
 
@@ -78,16 +77,16 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
     }
 
     override fun removePreferences() {
-        preference.removePreferences(context)
+        preference.removePreferences()
     }
 
     override fun setViewPref(listMode: Boolean) {
-        preference.setPrefViewMode(listMode, context)
+        preference.setPrefViewMode(listMode)
 
     }
 
     override fun filterBoards(name: String) {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         if (name == "") {
             getBoards()
         } else {
@@ -121,7 +120,7 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
         val imageStream = context.contentResolver.openInputStream(uri)
         val thumbnail = BitmapFactory.decodeStream(imageStream)
         val img = bitmap2Base64(thumbnail)
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val user = retrofitInsUser.service.updatePhoto(img, username)
         user!!.enqueue(object : Callback<User> {
             override fun onFailure(call: Call<User>?, t: Throwable?) {
@@ -142,7 +141,7 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
         val b1 = Board()
         b1.setPhoto(img)
         b1.setName(name)
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val board = retrofitInsBoard.service.createBoard(b1, username!!)
         board.enqueue(object : Callback<Board> {
             override fun onFailure(call: Call<Board>?, t: Throwable?) {
@@ -151,6 +150,7 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
 
             override fun onResponse(call: Call<Board>?, response: Response<Board>?) {
                 iBoardsView.getBoards()
+                iBoardsView.showToast("Board Created")
             }
 
         })
@@ -164,7 +164,7 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
     }
 
     fun createTaskList(boardName: String, listName: String) {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val t = TaskList()
         t.setTitle(listName)
         val taskList = retrofitInsTaskList.service.createList(t, boardName, username!!)
@@ -175,7 +175,7 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
 
             override fun onResponse(call: Call<TaskList>?, response: Response<TaskList>?) {
                 iBoardsView.getBoards()
-                Toast.makeText(context, "List Created", Toast.LENGTH_SHORT).show()
+                iBoardsView.showToast("List Created")
 
             }
 
@@ -184,7 +184,7 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
     }
 
     fun createTask(boardName: String, taskName: String, listName: String, description: String) {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val t = Task(taskName, description)
         val task = retrofitInsTask.service.createTask(t, boardName, listName, username!!)
         task.enqueue(object : Callback<Task> {
@@ -194,7 +194,7 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
 
             override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
                 iBoardsView.getBoards()
-                Toast.makeText(context, "Task Created", Toast.LENGTH_SHORT).show()
+                iBoardsView.showToast("Task Created")
 
             }
 
@@ -231,8 +231,7 @@ class BoardPresenter(private var iBoardsView: IBoardsView, private var context: 
 
             override fun onResponse(call: Call<Board>?, response: Response<Board>?) {
                 if (response!!.code() != 201 && response.code() != 200) {
-                    Toast.makeText(context, "El usuario indicado no existe", Toast.LENGTH_SHORT)
-                        .show()
+                    iBoardsView.showToast("El usuario indicado no existe")
                 }else{
                     iBoardsView.setBoard(response.body()!!)
                 }

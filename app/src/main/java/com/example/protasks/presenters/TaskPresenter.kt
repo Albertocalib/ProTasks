@@ -1,5 +1,6 @@
 package com.example.protasks.presenters
 
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
@@ -19,7 +20,7 @@ import java.util.*
 import kotlin.collections.HashSet
 
 
-class TaskPresenter(private var view: ITasksView, private var context: Context) :
+class TaskPresenter(private var view: ITasksView, private val preference:Preference,private val contentResolver: ContentResolver) :
     ITaskPresenter {
     private val retrofitInsBoard: RetrofitInstance<BoardRestService> =
         RetrofitInstance("api/board/", BoardRestService::class.java)
@@ -31,10 +32,9 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
         RetrofitInstance("api/task/", TaskRestService::class.java)
     private val retrofitInsTag: RetrofitInstance<TagRestService> =
         RetrofitInstance("api/tag/", TagRestService::class.java)
-    private val preference: Preference = Preference()
 
     override fun getTasks() {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val task = retrofitInsTask.service.getTasksByUser(username!!)
         task.enqueue(object : Callback<List<Task>> {
             override fun onFailure(call: Call<List<Task>>?, t: Throwable?) {
@@ -50,7 +50,7 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
     }
 
     override fun filterTasks(name: String) {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         if (name == "") {
             getTasks()
         } else {
@@ -207,7 +207,7 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
         })
     }
     fun createTag(boardName: String ,name:String,color:String){
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val t = Tag()
         t.setName(name)
         t.setColor(color)
@@ -218,7 +218,7 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
             }
 
             override fun onResponse(call: Call<Tag>?, response: Response<Tag>?) {
-                Toast.makeText(context, "Tag Created", Toast.LENGTH_SHORT).show()
+                view.showToast("Tag created")
                 view.updateTags(response!!.body()!!)
             }
 
@@ -253,12 +253,12 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
         })
     }
     private fun fileToBase64(uri:Uri):String{
-        val imageStream = context.contentResolver.openInputStream(uri)!!.readBytes()
+        val imageStream = contentResolver.openInputStream(uri)!!.readBytes()
         return Base64.encodeToString(imageStream, Base64.NO_WRAP)
     }
 
-    private fun getFileName(uri: Uri): String? {
-        val cursor= context.contentResolver.query(uri, null, null, null, null)
+    private fun getFileName(uri: Uri): String {
+        val cursor= contentResolver.query(uri, null, null, null, null)
         if (cursor!!.count > 0) {
             cursor.moveToFirst()
             val fileName: String =
@@ -272,9 +272,8 @@ class TaskPresenter(private var view: ITasksView, private var context: Context) 
     fun addAttachedFile(data: HashSet<Uri>, id: Long?) {
         val files = HashSet<File>()
         for( file in data) {
-            val cR = context.contentResolver
             val mime = MimeTypeMap.getSingleton()
-            val type = mime.getExtensionFromMimeType(cR.getType(file))
+            val type = mime.getExtensionFromMimeType(contentResolver.getType(file))
             val fileName = getFileName(file)
             val fileBase64 = fileToBase64(file)
             files.add(File(fileName,type,fileBase64))

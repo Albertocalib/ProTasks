@@ -21,6 +21,7 @@ import com.example.protasks.models.Board
 import com.example.protasks.models.BoardUsersPermRel
 import com.example.protasks.models.User
 import com.example.protasks.presenters.BoardPresenter
+import com.example.protasks.utils.Preference
 import com.example.protasks.views.IBoardsView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_screen)
-        presenter = BoardPresenter(this, baseContext)
+        presenter = BoardPresenter(this, Preference(baseContext))
         presenter!!.getBoards()
         toolbar = findViewById(R.id.toolbar)
         val changeViewModeButton:ImageButton = toolbar!!.findViewById(R.id.viewModeButton)
@@ -164,6 +165,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
 
     override fun setRole(perm: BoardUsersPermRel) {
         TODO("Not yet implemented")
+    }
+
+    override fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

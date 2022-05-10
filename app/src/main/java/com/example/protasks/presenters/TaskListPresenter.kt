@@ -16,7 +16,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class TaskListPresenter(private var view: IInsideBoardsView?, private var context: Context) :
+class TaskListPresenter(private var view: IInsideBoardsView?, private val preference: Preference) :
     ITaskListPresenter {
     private val retrofitInsTaskList: RetrofitInstance<TaskListRestService> =
         RetrofitInstance("api/list/", TaskListRestService::class.java)
@@ -25,7 +25,6 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
 
     private val retrofitInsBoard: RetrofitInstance<BoardRestService> =
         RetrofitInstance("api/board/", BoardRestService::class.java)
-    private val preference: Preference = Preference()
     private val image_handler: ImageHandler = ImageHandler()
     private val retrofitInsTag: RetrofitInstance<TagRestService> =
         RetrofitInstance("api/tag/", TagRestService::class.java)
@@ -38,7 +37,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
     }
 
     fun createTaskList(boardName: String, listName: String) {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val t = TaskList()
         t.setTitle(listName)
         val taskList = retrofitInsTaskList.service.createList(t, boardName, username!!)
@@ -48,7 +47,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
             }
 
             override fun onResponse(call: Call<TaskList>?, response: Response<TaskList>?) {
-                Toast.makeText(context, "List Created", Toast.LENGTH_SHORT).show()
+                view!!.showToast("List created")
                 getLists(boardName)
 
             }
@@ -58,7 +57,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
     }
 
     override fun getLists(boardName: String) {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val taskLists = retrofitInsTaskList.service.getTaskListsByBoard(boardName,username!!)
         taskLists.enqueue(object : Callback<List<TaskList>> {
             override fun onFailure(call: Call<List<TaskList>>?, t: Throwable?) {
@@ -117,7 +116,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
         })
     }
     fun createTask(boardName: String,taskName:String,listName: String,description:String){
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val t = Task(taskName,description)
         val task = retrofitInsTask.service.createTask(t, boardName, listName,username!!)
         task.enqueue(object : Callback<Task> {
@@ -126,7 +125,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
             }
 
             override fun onResponse(call: Call<Task>?, response: Response<Task>?) {
-                Toast.makeText(context, "Task Created", Toast.LENGTH_SHORT).show()
+                view!!.showToast("Task created")
                 getLists(boardName)
             }
 
@@ -134,7 +133,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
 
     }
     override fun deleteTaskList(boardName: String,listName: String){
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val taskList = retrofitInsTaskList.service.deleteTaskList(boardName, listName,username!!)
         taskList.enqueue(object : Callback<Boolean> {
             override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
@@ -142,14 +141,14 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
             }
 
             override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
-                Toast.makeText(context, "Tasklist deleted", Toast.LENGTH_SHORT).show()
+                view!!.showToast("Tasklist deleted")
                 getLists(boardName)
             }
 
         })
     }
     fun getBoards(view: BottomSheet) {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val boards = retrofitInsBoard.service.getBoardsByUser(username!!)
         boards.enqueue(object : Callback<List<Board>> {
             override fun onFailure(call: Call<List<Board>>?, t: Throwable?) {
@@ -165,7 +164,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
     }
 
     fun moveTaskList(board: Board, listName: String, boardDestId: Long) {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val taskList = retrofitInsTaskList.service.moveTaskList(board.getName()!!, listName, boardDestId,username!!)
         taskList.enqueue(object : Callback<Boolean> {
             override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
@@ -173,7 +172,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
             }
 
             override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
-                Toast.makeText(context, "Tasklist moved", Toast.LENGTH_SHORT).show()
+                view!!.showToast("Tasklist moved")
                 getLists(board.getName()!!)
             }
 
@@ -182,7 +181,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
     }
 
     fun copyTaskList(board: Board, listName: String, boardDestId: Long) {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val taskList = retrofitInsTaskList.service.copyTaskList(board.getName()!!, listName, boardDestId,username!!)
         taskList.enqueue(object : Callback<Boolean> {
             override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
@@ -190,7 +189,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
             }
 
             override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
-                Toast.makeText(context, "Tasklist copied", Toast.LENGTH_SHORT).show()
+                view!!.showToast("Tasklist copied")
                 if (board.getId()==boardDestId){
                     getLists(board.getName()!!)
                 }
@@ -206,7 +205,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
             }
 
             override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
-                Toast.makeText(context, "Task deleted", Toast.LENGTH_SHORT).show()
+                view!!.showToast("Task deleted")
                 getLists(boardName)
             }
 
@@ -214,7 +213,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
     }
 
     fun copyTask(board: Board, listName: String, taskId: Long?, boardDestId: Long) {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val task = retrofitInsTask.service.copyTask(taskId!!,listName,boardDestId,username!!)
         task.enqueue(object : Callback<Boolean> {
             override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
@@ -222,7 +221,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
             }
 
             override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
-                Toast.makeText(context, "Task copied", Toast.LENGTH_SHORT).show()
+                view!!.showToast("Task copied")
                 if (board.getId()==boardDestId){
                     getLists(board.getName()!!)
                 }
@@ -231,7 +230,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
         })
     }
     fun moveTask(board: Board, listName: String, taskId: Long?, boardDestId: Long) {
-        val username = preference.getEmail(context)
+        val username = preference.getEmail()
         val task = retrofitInsTask.service.moveTask(taskId!!,listName,boardDestId,username!!)
         task.enqueue(object : Callback<Boolean> {
             override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
@@ -239,7 +238,7 @@ class TaskListPresenter(private var view: IInsideBoardsView?, private var contex
             }
 
             override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
-                Toast.makeText(context, "Task moved", Toast.LENGTH_SHORT).show()
+                view!!.showToast("Task moved")
                 if (board.getId()==boardDestId){
                     getLists(board.getName()!!)
                 }
