@@ -2,6 +2,8 @@ package com.example.protasks.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -26,6 +28,7 @@ class RegisterActivity : AppCompatActivity(), IRegisterView, View.OnClickListene
     private var btnRegister: Button? = null
     private var registerPresenter: IRegisterPresenter? = null
     private var progressBar: ProgressBar? = null
+    private val handler:Handler= Handler(Looper.myLooper()!!)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,6 +118,10 @@ class RegisterActivity : AppCompatActivity(), IRegisterView, View.OnClickListene
 
     override fun onSetProgressBarVisibility(visibility: Int) {
         progressBar!!.visibility = visibility
+    }
+
+    override fun postResult(successful: Boolean?, code: Int) {
+        handler.postDelayed({onRegisterResult(successful, code)},0)
     }
 }
 

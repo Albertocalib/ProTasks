@@ -15,7 +15,6 @@ import retrofit2.Response
 
 class LoginPresenterImp(private var iLoginView: ILoginView, private val preference:Preference) :
     ILoginPresenter {
-    private var handler: Handler = Handler(Looper.getMainLooper())
     private val retrofitIns: RetrofitInstance<UserRestService> = RetrofitInstance("api/user/",UserRestService::class.java)
     override fun doLogin(userName: String, password: String, keepLogin: Boolean) {
         val user = retrofitIns.service.logInAttempt(userName, password)
@@ -29,8 +28,7 @@ class LoginPresenterImp(private var iLoginView: ILoginView, private val preferen
                     preference.saveKeepLogin(keepLogin)
                     preference.saveEmail(userName)
                 }
-                handler.postDelayed({ iLoginView.onLoginResult(response.isSuccessful, response.code()) },0)
-
+                iLoginView.sendLoginResult(response.isSuccessful,response.code())
             }
 
         })

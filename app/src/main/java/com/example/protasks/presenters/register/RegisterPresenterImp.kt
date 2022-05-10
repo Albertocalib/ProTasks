@@ -15,7 +15,6 @@ import java.util.regex.Pattern
 
 class RegisterPresenterImp(private var iRegisterView: IRegisterView) :
     IRegisterPresenter {
-    private var handler: Handler
     private val retrofitIns: RetrofitInstance<UserRestService> = RetrofitInstance("api/user/",UserRestService::class.java)
 
     override fun createUser(name:String,surname:String,userName: String, password: String,email:String) {
@@ -27,7 +26,7 @@ class RegisterPresenterImp(private var iRegisterView: IRegisterView) :
             }
 
             override fun onResponse(call: Call<User>?, response: Response<User>?) {
-                handler.postDelayed({ iRegisterView.onRegisterResult(response?.isSuccessful, response!!.code()) },0)
+                iRegisterView.postResult(response?.isSuccessful, response!!.code())
 
             }
 
@@ -44,7 +43,4 @@ class RegisterPresenterImp(private var iRegisterView: IRegisterView) :
     }
 
 
-    init {
-        handler = Handler(Looper.getMainLooper())
-    }
 }

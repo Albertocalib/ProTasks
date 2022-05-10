@@ -2,6 +2,8 @@ package com.example.protasks.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +22,7 @@ class LoginActivity : AppCompatActivity(), ILoginView, View.OnClickListener {
     private var loginPresenter: ILoginPresenter? = null
     private var progressBar: ProgressBar? = null
     private var keep_login: CheckBox? = null
+    private val handler: Handler = Handler(Looper.myLooper()!!)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +77,10 @@ class LoginActivity : AppCompatActivity(), ILoginView, View.OnClickListener {
     override fun goToMainactivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+    }
+
+    override fun sendLoginResult(successful: Boolean, code: Int) {
+        handler.postDelayed({ onLoginResult(successful,code) },0)
     }
 }
 

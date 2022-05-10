@@ -5,4 +5,5 @@ interface ILoginView {
     fun onSetProgressBarVisibility(visibility: Int)
     fun goToSignUpActivity()
     fun goToMainactivity()
+    fun sendLoginResult(successful: Boolean, code: Int)
 }
