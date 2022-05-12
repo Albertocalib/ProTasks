@@ -1,37 +1,18 @@
 package com.example.protasks.presenters.login
 
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import com.example.protasks.utils.RetrofitInstance
-import com.example.protasks.restServices.UserRestService
 import com.example.protasks.models.User
 import com.example.protasks.utils.Preference
-import com.example.protasks.views.ILoginView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
-class LoginPresenterImp(private var iLoginView: ILoginView, private val preference:Preference) :
-    ILoginPresenter {
-    private val retrofitIns: RetrofitInstance<UserRestService> = RetrofitInstance("api/user/",UserRestService::class.java)
+class LoginPresenterImp(private var iLoginView: ILoginContract.View, private val preference:Preference) :
+    ILoginContract.Presenter,ILoginContract.Model.OnFinishedListener {
+
+    private var keepLogin:Boolean = false
+    private val loginModel: LoginModel = LoginModel()
+
     override fun doLogin(userName: String, password: String, keepLogin: Boolean) {
-        val user = retrofitIns.service.logInAttempt(userName, password)
-        user.enqueue(object : Callback<User> {
-            override fun onFailure(call: Call<User>?, t: Throwable?) {
-                Log.v("retrofit", t.toString())
-            }
-
-            override fun onResponse(call: Call<User>?, response: Response<User>?) {
-                if (response?.isSuccessful!!){
-                    preference.saveKeepLogin(keepLogin)
-                    preference.saveEmail(userName)
-                }
-                iLoginView.sendLoginResult(response.isSuccessful,response.code())
-            }
-
-        })
+        this.keepLogin = keepLogin
+        loginModel.doLogin(this,userName,password)
     }
 
     override fun setProgressBarVisiblity(visiblity: Int) {
@@ -42,6 +23,18 @@ class LoginPresenterImp(private var iLoginView: ILoginView, private val preferen
         if (preference.getKeepLogin()){
             iLoginView.goToMainactivity()
         }
+    }
+
+    override fun onFinished(successful: Boolean, code: Int, user:User?) {
+        if (successful){
+            preference.saveKeepLogin(keepLogin)
+            preference.saveEmail(user!!.getEmail())
+        }
+        iLoginView.onLoginResult(successful,code)
+    }
+
+    override fun onFailure(t: Throwable?) {
+        iLoginView.onResponseFailure(t)
     }
 
 

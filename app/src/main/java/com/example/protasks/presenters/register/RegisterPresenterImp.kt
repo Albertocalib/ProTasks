@@ -1,36 +1,16 @@
 package com.example.protasks.presenters.register
 
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import com.example.protasks.utils.RetrofitInstance
-import com.example.protasks.restServices.UserRestService
 import com.example.protasks.models.User
-import com.example.protasks.views.IRegisterView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.regex.Pattern
 
 
-class RegisterPresenterImp(private var iRegisterView: IRegisterView) :
-    IRegisterPresenter {
-    private val retrofitIns: RetrofitInstance<UserRestService> = RetrofitInstance("api/user/",UserRestService::class.java)
+class RegisterPresenterImp(private var iRegisterView: IRegisterContract.View) :
+    IRegisterContract.Presenter,IRegisterContract.Model.OnFinishedListener {
+    private val registerModel:RegisterModel= RegisterModel()
 
     override fun createUser(name:String,surname:String,userName: String, password: String,email:String) {
-        val newUser=User(name,surname,userName,password,email)
-        val user = retrofitIns.service.createUser(newUser)
-        user?.enqueue(object : Callback<User> {
-            override fun onFailure(call: Call<User>?, t: Throwable?) {
-                Log.v("retrofit", t.toString())
-            }
-
-            override fun onResponse(call: Call<User>?, response: Response<User>?) {
-                iRegisterView.postResult(response?.isSuccessful, response!!.code())
-
-            }
-
-        })
+        val newUser = User(name,surname,userName,password,email)
+        registerModel.createUser(this,newUser)
     }
 
     override fun setProgressBarVisiblity(visiblity: Int) {
@@ -40,6 +20,14 @@ class RegisterPresenterImp(private var iRegisterView: IRegisterView) :
     override fun checkEmail(email: String):Boolean {
         val anyChar="^([^\\s()<>,:;\\[\\]Çç%&@á-źÁ-Ź]+@[^\\s()<>,:;\\[\\]Çç%&@á-źÁ-Ź+.]+(\\.[^\\s()<>,:;\\[\\]Çç%&@á-źÁ-Ź+.]+)+)$"
         return Pattern.compile(anyChar).matcher(email).matches()
+    }
+
+    override fun onFinished(successful: Boolean, code: Int) {
+        iRegisterView.postResult(successful, code)
+    }
+
+    override fun onFailure(t: Throwable?) {
+        iRegisterView.onResponseFailure(t)
     }
 
 

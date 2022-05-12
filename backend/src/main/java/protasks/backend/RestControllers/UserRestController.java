@@ -26,7 +26,7 @@ public class UserRestController {
     @JsonView(User.UserBasicInfo.class)
     @PostMapping("/logIn")
     public ResponseEntity<User> logIn(String username, String password){
-        User u=userService.findByUsernameOrEmailCustom(username);
+        User u = userService.findByUsernameOrEmailCustom(username);
         if (u != null && new BCryptPasswordEncoder().matches(password,u.getPassword())){
             return new ResponseEntity<>(u, HttpStatus.OK);
         }else{
@@ -68,7 +68,7 @@ public class UserRestController {
         user.setWrite_date();
         user.setPhoto(photo);
         userService.save(user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @JsonView(UserRequest.class)

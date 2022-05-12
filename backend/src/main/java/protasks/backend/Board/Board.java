@@ -200,7 +200,13 @@ public class Board {
         this.taskLists = new ArrayList<>();
         this.tags= new ArrayList<>();
     }
-    public Board(){}
+    public Board(){
+        this.users=new ArrayList<>();
+        this.create_date=new Date();
+        this.write_date =new Date();
+        this.taskLists = new ArrayList<>();
+        this.tags= new ArrayList<>();
+    }
 
     public Date getWrite_date() {
         return write_date;

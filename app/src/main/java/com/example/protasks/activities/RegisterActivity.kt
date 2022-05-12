@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -13,12 +14,11 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.protasks.R
-import com.example.protasks.presenters.register.IRegisterPresenter
+import com.example.protasks.presenters.register.IRegisterContract
 import com.example.protasks.presenters.register.RegisterPresenterImp
-import com.example.protasks.views.IRegisterView
 
 
-class RegisterActivity : AppCompatActivity(), IRegisterView, View.OnClickListener {
+class RegisterActivity : AppCompatActivity(), IRegisterContract.View, View.OnClickListener {
     private var editUser: EditText? = null
     private var editPass: EditText? = null
     private var editEmail: EditText? = null
@@ -26,7 +26,7 @@ class RegisterActivity : AppCompatActivity(), IRegisterView, View.OnClickListene
     private var editSurname: EditText? = null
     private var editPassRepeat: EditText? = null
     private var btnRegister: Button? = null
-    private var registerPresenter: IRegisterPresenter? = null
+    private var registerPresenter: IRegisterContract.Presenter? = null
     private var progressBar: ProgressBar? = null
     private val handler:Handler= Handler(Looper.myLooper()!!)
 
@@ -122,6 +122,12 @@ class RegisterActivity : AppCompatActivity(), IRegisterView, View.OnClickListene
 
     override fun postResult(successful: Boolean?, code: Int) {
         handler.postDelayed({onRegisterResult(successful, code)},0)
+    }
+
+    override fun onResponseFailure(t: Throwable?) {
+        Log.e("REGISTER", t!!.message!!);
+        Toast.makeText(this, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
+
     }
 }
 

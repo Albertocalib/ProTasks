@@ -4,22 +4,22 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.protasks.R
-import com.example.protasks.presenters.login.ILoginPresenter
+import com.example.protasks.presenters.login.ILoginContract
 import com.example.protasks.presenters.login.LoginPresenterImp
 import com.example.protasks.utils.Preference
-import com.example.protasks.views.ILoginView
 
 
-class LoginActivity : AppCompatActivity(), ILoginView, View.OnClickListener {
+class LoginActivity : AppCompatActivity(), ILoginContract.View, View.OnClickListener {
     private var editUser: EditText? = null
     private var editPass: EditText? = null
     private var btnLogin: Button? = null
     private var linkSignUp: TextView? = null
-    private var loginPresenter: ILoginPresenter? = null
+    private var loginPresenter: LoginPresenterImp? = null
     private var progressBar: ProgressBar? = null
     private var keep_login: CheckBox? = null
     private val handler: Handler = Handler(Looper.myLooper()!!)
@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity(), ILoginView, View.OnClickListener {
             R.id.loginButton -> {
                 loginPresenter!!.setProgressBarVisiblity(View.VISIBLE)
                 btnLogin!!.isEnabled = false
-                loginPresenter!!.doLogin(editUser!!.text.toString(), editPass!!.text.toString(),keep_login!!.isChecked)
+                loginPresenter!!.doLogin(getUserName(), getPassword(),keep_login!!.isChecked)
             }
             R.id.link_signup -> {
                 goToSignUpActivity()
@@ -81,6 +81,19 @@ class LoginActivity : AppCompatActivity(), ILoginView, View.OnClickListener {
 
     override fun sendLoginResult(successful: Boolean, code: Int) {
         handler.postDelayed({ onLoginResult(successful,code) },0)
+    }
+
+    override fun onResponseFailure(t: Throwable?) {
+        Log.e("LOGIN", t!!.message!!);
+        Toast.makeText(this, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun getUserName():String {
+        return editUser!!.text.toString()
+    }
+
+    override fun getPassword():String {
+        return editPass!!.text.toString()
     }
 }
 

@@ -30,4 +30,5 @@
         <item>Elige una imagen</item>
         <item>Elige un color como imagen</item>
     </string-array>
+    <string name="communication_error">Error obteniendo datos. Por favor, inténtelo más tarde.</string>
 </resources>
