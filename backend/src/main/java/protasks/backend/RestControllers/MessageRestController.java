@@ -18,6 +18,7 @@ import protasks.backend.TaskList.TaskList;
 import protasks.backend.TaskList.TaskListService;
 import protasks.backend.user.User;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +36,7 @@ public class MessageRestController {
         if(message == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
+        message.setCreate_date(new Date());
         messageService.save(message);
         return new ResponseEntity<>(message, HttpStatus.CREATED);
     }

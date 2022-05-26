@@ -1,25 +1,18 @@
 package protasks.backend;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.RestControllers.UserRestController;
 import protasks.backend.user.User;
-import protasks.backend.user.UserRepository;
 import protasks.backend.user.UserService;
 
 import java.util.ArrayList;
@@ -45,7 +38,7 @@ class UserRestControllerTests {
         String name = "Wrong User";
         Mockito.when(userService.findByUsernameOrEmailCustom(name)).thenReturn(null);
         ResponseEntity<User> response = userRestController.logIn(name,"123456789");
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.UNAUTHORIZED.value());
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED.value(),response.getStatusCodeValue());
     }
 
     @Test
@@ -58,7 +51,7 @@ class UserRestControllerTests {
         user.setPassword("Good Password");
         Mockito.when(userService.findByUsernameOrEmailCustom(name)).thenReturn(user);
         ResponseEntity<User> response = userRestController.logIn(name, password);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.UNAUTHORIZED.value());
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED.value(),response.getStatusCodeValue());
     }
 
     @Test
@@ -71,13 +64,13 @@ class UserRestControllerTests {
         user.setPassword(password);
         Mockito.when(userService.findByUsernameOrEmailCustom(name)).thenReturn(user);
         ResponseEntity<User> response = userRestController.logIn(name, password);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.OK.value());
+        Assertions.assertEquals(HttpStatus.OK.value(),response.getStatusCodeValue());
     }
     @Test
     void testRegisterUserNull() {
         MockitoAnnotations.initMocks(this);
         ResponseEntity<User> response = userRestController.register(null);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.BAD_REQUEST.value());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatusCodeValue());
     }
     @Test
     void testRegisterUserOk() {
@@ -89,7 +82,7 @@ class UserRestControllerTests {
         user.setPassword(password);
         Mockito.when(userService.findByUsernameOrEmailCustom(name)).thenReturn(user);
         ResponseEntity<User> response = userRestController.logIn(name, password);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.OK.value());
+        Assertions.assertEquals(HttpStatus.OK.value(),response.getStatusCodeValue());
     }
     @Test
     void testRegisterUserCheckExist() {
@@ -101,7 +94,7 @@ class UserRestControllerTests {
         user.setPassword(password);
         Mockito.when(userService.findByUsernameOrEmailCustom(name)).thenReturn(null);
         ResponseEntity<User> response = userRestController.register(user);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.CREATED.value());
+        Assertions.assertEquals(HttpStatus.CREATED.value(),response.getStatusCodeValue());
     }
 
     @Test
@@ -110,7 +103,7 @@ class UserRestControllerTests {
         String name = "Albertocalib12";
         Mockito.when(userService.findByUsernameOrEmailCustom(name)).thenReturn(null);
         ResponseEntity<User> response = userRestController.getUser(name);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.BAD_REQUEST.value());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatusCodeValue());
     }
     @Test
     void testGetUserExist() {
@@ -120,7 +113,7 @@ class UserRestControllerTests {
         u.setName(name);
         Mockito.when(userService.findByUsernameOrEmailCustom(name)).thenReturn(u);
         ResponseEntity<User> response = userRestController.getUser(name);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.OK.value());
+        Assertions.assertEquals(HttpStatus.OK.value(),response.getStatusCodeValue());
     }
 
     @Test
@@ -132,8 +125,8 @@ class UserRestControllerTests {
         u.setName(name);
         Mockito.when(userService.findByUsernameOrEmailCustom(name)).thenReturn(u);
         ResponseEntity<User> response = userRestController.updatePhoto(photo,name);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.OK.value());
-        Assertions.assertEquals(Objects.requireNonNull(response.getBody()).getPhoto(), photo);
+        Assertions.assertEquals(HttpStatus.OK.value(),response.getStatusCodeValue());
+        Assertions.assertEquals(photo,Objects.requireNonNull(response.getBody()).getPhoto());
     }
     @Test
     void testUpdatePhotoUserNoExist() {
@@ -144,7 +137,7 @@ class UserRestControllerTests {
         u.setName(name);
         Mockito.when(userService.findByUsernameOrEmailCustom(name)).thenReturn(null);
         ResponseEntity<User> response = userRestController.updatePhoto(photo,name);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.BAD_REQUEST.value());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatusCodeValue());
     }
 
     @Test
@@ -153,7 +146,7 @@ class UserRestControllerTests {
         long board_id = 1;
         Mockito.when(userService.findByBoardId(board_id)).thenReturn(null);
         ResponseEntity<List<User>> response = userRestController.getUsersInBoard(board_id);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.BAD_REQUEST.value());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatusCodeValue());
     }
     @Test
     void testGetUsersInBoardIdOk() {
@@ -173,7 +166,7 @@ class UserRestControllerTests {
         }
         Mockito.when(userService.findByBoardId(board_id)).thenReturn(userInBoard);
         ResponseEntity<List<User>> response = userRestController.getUsersInBoard(board_id);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.OK.value());
+        Assertions.assertEquals(HttpStatus.OK.value(),response.getStatusCodeValue());
     }
 
 }

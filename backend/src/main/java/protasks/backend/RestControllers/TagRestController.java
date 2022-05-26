@@ -68,6 +68,7 @@ public class TagRestController {
             if (t.isPresent()) {
                 Tag tag=t.get();
                 task.addTag(tag);
+                task.setWrite_date();
                 taskService.save(task);
                 return new ResponseEntity<>(true, HttpStatus.OK);
             } else {
@@ -95,9 +96,9 @@ public class TagRestController {
         }
         List<Board> b = boardService.filterBoardsByNameUnique(boardName,username);
         if (b != null && b.size() == 1) {
-            Tag tag1 = new Tag(tag.getName(),tag.getColor(),b.get(0));
-            tagService.save(tag1);
-            return new ResponseEntity<>(tag1, HttpStatus.CREATED);
+            tag.setBoard(b.get(0));
+            tagService.save(tag);
+            return new ResponseEntity<>(tag, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

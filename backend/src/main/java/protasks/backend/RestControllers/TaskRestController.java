@@ -50,28 +50,28 @@ public class TaskRestController {
         List<TaskList> t = listService.findTaskList(username, boardName, listName);
         if (t != null && t.size() == 1) {
             TaskList list = t.get(0);
-            Task task1 = new Task(task.getTitle(), task.getDescription(), list);
+            task.setTaskList(list);
             Board b = t.get(0).getBoard();
-            if (b.getTimeActivated()) {
-                updateTaskTime(list, task1, b);
+            if (b.getTimeActivated()!=null && b.getTimeActivated()) {
+                updateTaskTime(list, task, b);
             }
-            taskService.save(task1);
-            return new ResponseEntity<>(task1, HttpStatus.CREATED);
+            taskService.save(task);
+            return new ResponseEntity<>(task, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     private void updateTaskTime(TaskList list, Task task1, Board b) {
-        if (b.getCycleStartList().equals(list.getTitle())) {
+        if (b.getCycleStartList()!=null && b.getCycleStartList().equals(list.getTitle())) {
             task1.setDate_start_cycle_time(new Date());
         }
-        if (b.getCycleEndList().equals(list.getTitle())) {
+        if (b.getCycleEndList()!=null && b.getCycleEndList().equals(list.getTitle())) {
             task1.setDate_end_cycle_time(new Date());
         }
-        if (b.getLeadStartList().equals(list.getTitle())) {
+        if (b.getLeadStartList()!=null && b.getLeadStartList().equals(list.getTitle())) {
             task1.setDate_start_lead_time(new Date());
         }
-        if (b.getLeadEndList().equals(list.getTitle())) {
+        if (b.getLeadEndList()!=null && b.getLeadEndList().equals(list.getTitle())) {
             task1.setDate_end_lead_time(new Date());
         }
     }
@@ -124,7 +124,7 @@ public class TaskRestController {
                 updatePositions(t, null, newPosition, false);
             }
 
-            return new ResponseEntity<>(t, HttpStatus.CREATED);
+            return new ResponseEntity<>(t, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -269,16 +269,11 @@ public class TaskRestController {
         Task t = taskService.findById(taskId);
         if (t != null) {
             if (!listDestName.equals(t.getTaskList().getTitle())) {
-                //Update old list (eraseMode=True)
-                updatePositions(t, null, 0, true);
                 List<TaskList> tl = listService.findTaskList(boardDestId, listDestName);
                 if (tl != null && tl.size() == 1) {
-                    t.setPosition(tl.get(0).getTasks().size()+1);
-                    t.setTaskList(tl.get(0));
-                    taskService.save(t);
-                    tl.get(0).addTask(t);
-                    listService.save(tl.get(0));
-                    return new ResponseEntity<>(true, HttpStatus.OK);
+                    //Update old list (eraseMode=True)
+                    updatePositions(t, null, 0, true);
+                    return updateTaskListAndPosition(t, tl);
                 }
             }
         }
@@ -288,24 +283,31 @@ public class TaskRestController {
 
     }
 
+    private ResponseEntity<Boolean> updateTaskListAndPosition(Task t, List<TaskList> tl) {
+        t.setPosition(tl.get(0).getTasks().size()+1);
+        t.setTaskList(tl.get(0));
+        taskService.save(t);
+        tl.get(0).addTask(t);
+        listService.save(tl.get(0));
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
     @JsonView(TaskRequest.class)
     @PostMapping(value = "id={taskId}&listDestName={listDestName}&boardDestId={boardDestId}&username={username}")
     public ResponseEntity<Boolean> copyTask(@PathVariable("taskId") Long taskId,
                                             @PathVariable("listDestName") String listDestName,
                                             @PathVariable("boardDestId") Long boardDestId,
                                             @PathVariable("username") String username) throws CloneNotSupportedException {
+        if (taskId == null || listDestName == null || boardDestId == null || username == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Task t = taskService.findById(taskId);
         if (t != null) {
             Task t2 = (Task)t.clone();
             if (t2!=null) {
                 List<TaskList> tl = listService.findTaskList(boardDestId, listDestName);
                 if (tl != null && tl.size() == 1) {
-                    t2.setPosition(tl.get(0).getTasks().size()+1);
-                    t2.setTaskList(tl.get(0));
-                    taskService.save(t2);
-                    tl.get(0).addTask(t2);
-                    listService.save(tl.get(0));
-                    return new ResponseEntity<>(true, HttpStatus.OK);
+                    return updateTaskListAndPosition(t2, tl);
                 }
 
             }
@@ -338,7 +340,7 @@ public class TaskRestController {
         if (f!=null){
             fileService.delete(f);
             Task t = taskService.findById(taskId);
-            return new ResponseEntity<>(t,HttpStatus.CREATED);
+            return new ResponseEntity<>(t,HttpStatus.OK);
 
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -346,7 +348,7 @@ public class TaskRestController {
 
     @JsonView(TaskRequest.class)
     @PostMapping(value = "newSubTask/task={taskId}")
-    public ResponseEntity<Task> addAttachments(@PathVariable("taskId")Long taskId, @RequestBody Task subTask){
+    public ResponseEntity<Task> addSubtasks(@PathVariable("taskId")Long taskId, @RequestBody Task subTask){
 
         Task t = taskService.findById(taskId);
         if (t!=null){
@@ -365,14 +367,22 @@ public class TaskRestController {
         String[] taskIds = taskIdsStr.split("&");
         Task t = null;
         for (String id:taskIds) {
-            Task subtask = taskService.findById(Long.parseLong(id));
+            Task subtask = null;
+            try {
+                subtask = taskService.findById(Long.parseLong(id));
+            }catch (NumberFormatException ex){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            if (subtask==null){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
             if (t==null){
                 t=subtask.getParent_task();
             }
             taskService.delete(subtask);
         }
         if (t!=null){
-            return new ResponseEntity<>(t,HttpStatus.CREATED);
+            return new ResponseEntity<>(t,HttpStatus.OK);
         }else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

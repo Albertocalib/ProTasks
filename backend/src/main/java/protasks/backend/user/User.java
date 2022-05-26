@@ -74,6 +74,10 @@ public class User {
 
 
     public User() {
+        this.boardList=new ArrayList<>();
+        this.create_date=new Date();
+        this.write_date =new Date();
+        this.tasks = new ArrayList<>();
     }
     public User(String name,String surname,String userName,String password,String email ) {
         this.name = name;
@@ -84,6 +88,7 @@ public class User {
         this.boardList=new ArrayList<>();
         this.create_date=new Date();
         this.write_date =new Date();
+        this.tasks = new ArrayList<>();
     }
     public long getId() {
         return id;

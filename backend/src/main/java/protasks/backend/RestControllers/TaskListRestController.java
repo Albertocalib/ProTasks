@@ -19,6 +19,7 @@ import protasks.backend.user.User;
 import protasks.backend.user.UserService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,9 +53,10 @@ public class TaskListRestController {
         }
         List<Board> b = boardService.filterBoardsByNameUnique(boardName, username);
         if (b != null && b.size() == 1) {
-            TaskList t = new TaskList(list.getTitle(), b.get(0));
-            listService.save(t);
-            return new ResponseEntity<>(t, HttpStatus.CREATED);
+            list.setBoard(b.get(0));
+            list.setCreate_date(new Date());
+            listService.save(list);
+            return new ResponseEntity<>(list, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -67,9 +69,9 @@ public class TaskListRestController {
         }
         List<TaskList> tl = listService.findTasksListsByBoardName(username, boardName);
         if (tl != null) {
-            return new ResponseEntity<>(tl, HttpStatus.CREATED);
+            return new ResponseEntity<>(tl, HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
     }
 
     @JsonView(TaskList.TaskListBasicInfo.class)
@@ -81,7 +83,7 @@ public class TaskListRestController {
         TaskList tl = listService.findById(id);
         if (tl != null) {
             updatePositions(tl, position, "update");
-            return new ResponseEntity<>(tl, HttpStatus.CREATED);
+            return new ResponseEntity<>(tl, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -110,12 +112,14 @@ public class TaskListRestController {
                 TaskList tln = lists.get(i);
                 if (tln != tl) {
                     tln.setPosition(tln.getPosition() + incr);
+                    tln.setWrite_date();
                     this.listService.save(tln);
                 }
             }
         }
         if (mode.equals("update")) {
             tl.setPosition(newPosition);
+            tl.setWrite_date();
             this.listService.save(tl);
         }
     }
@@ -130,7 +134,7 @@ public class TaskListRestController {
         if (b != null) {
             return new ResponseEntity<>(b.getTaskLists(), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping(value = "/board={boardName}&list={listName}&username={username}")
@@ -188,6 +192,7 @@ public class TaskListRestController {
                 TaskList ntl= (TaskList) t.clone();
                 ntl.setPosition(b.get().getTaskLists().size() + 1);
                 ntl.setBoard(b.get());
+                ntl.setCreate_date(new Date());
                 listService.save(ntl);
                 List<Task> tasks=ntl.getTasks();
                 for (Task t0:t.getTasks()) {
@@ -196,6 +201,7 @@ public class TaskListRestController {
                         if (nt.isPresent()) {
                             for (User u : t0.getUsers()) {
                                 u.addTask(nt.get());
+                                u.setWrite_date();
                                 this.userService.save(u);
                             }
                         }

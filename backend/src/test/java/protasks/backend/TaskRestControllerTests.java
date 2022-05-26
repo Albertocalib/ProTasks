@@ -9,18 +9,25 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import protasks.backend.Board.Board;
+import protasks.backend.File.File;
 import protasks.backend.File.FileService;
-import protasks.backend.RestControllers.UserRestController;
+import protasks.backend.RestControllers.TaskRestController;
+import protasks.backend.Rol.Priority;
+import protasks.backend.Task.Task;
 import protasks.backend.Task.TaskService;
+import protasks.backend.TaskList.TaskList;
 import protasks.backend.TaskList.TaskListService;
 import protasks.backend.user.User;
 import protasks.backend.user.UserService;
+
+import java.util.*;
 
 @SpringBootTest
 class TaskRestControllerTests {
 
     @InjectMocks
-    private UserRestController userRestController;
+    private TaskRestController taskRestController;
 
     @Mock
     TaskListService listService;
@@ -36,405 +43,710 @@ class TaskRestControllerTests {
 
 
     @Test
-    void testUserWrongUsername() {
+    void testCreateTaskAnyParameterNull() {
         MockitoAnnotations.initMocks(this);
-        String name = "Wrong User";
-        Mockito.when(userService.findByUsernameOrEmailCustom(name)).thenReturn(null);
-        ResponseEntity<User> response = userRestController.logIn(name,"123456789");
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.UNAUTHORIZED.value());
+        ResponseEntity<Task> response = taskRestController.createTask(null, "", "", "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+        response = taskRestController.createTask(new Task(), null, "", "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+        response = taskRestController.createTask(new Task(), "", null, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+        response = taskRestController.createTask(new Task(), "", "", null);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
     @Test
-    void testUserWrongPassword() {
+    void testCreateTaskOKUpdateTime() {
         MockitoAnnotations.initMocks(this);
-        String name = "AlbertoCalib";
-        String password = "Wrong Password";
-        User user = new User();
-        user.setName(name);
-        user.setPassword("Good Password");
-        Mockito.when(userService.findByUsernameOrEmailCustom(name)).thenReturn(user);
-        ResponseEntity<User> response = userRestController.logIn(name, password);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.UNAUTHORIZED.value());
+        Board b = new Board();
+        b.setName("Prueba1");
+        b.setTimeActivated(true);
+        b.setCycleStartList("TO DO");
+        TaskList tl = new TaskList();
+        tl.setTitle("TO DO");
+        TaskList tl2 = new TaskList();
+        tl2.setTitle("DOING");
+        tl2.setBoard(b);
+        tl.setBoard(b);
+        ArrayList<TaskList> list = new ArrayList<>();
+        list.add(tl);
+        Mockito.when(listService.findTaskList("Albertocalib", "Prueba1", "To DO")).thenReturn(list);
+        Task t = new Task();
+        t.setTaskList(tl);
+        t.setTitle("Prueba");
+        ResponseEntity<Task> response = taskRestController.createTask(t, "Prueba1", "To DO", "Albertocalib");
+        Assertions.assertEquals(HttpStatus.CREATED.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(t, response.getBody());
+        Assertions.assertNotNull(t.getDate_start_cycle_time());
     }
 
     @Test
-    void testUserLoginOk() {
+    void testCreateTaskOKNoUpdateTime() {
         MockitoAnnotations.initMocks(this);
-        String name = "Albertocalib";
-        String password = "Good Password";
-        User user = new User();
-        user.setName(name);
-        user.setPassword(password);
-        Mockito.when(userService.findByUsernameOrEmailCustom(name)).thenReturn(user);
-        ResponseEntity<User> response = userRestController.logIn(name, password);
-        Assertions.assertEquals(response.getStatusCodeValue(), HttpStatus.OK.value());
+        Board b = new Board();
+        b.setName("Prueba1");
+        b.setTimeActivated(false);
+        b.setCycleStartList("TO DO");
+        TaskList tl = new TaskList();
+        tl.setTitle("TO DO");
+        TaskList tl2 = new TaskList();
+        tl2.setTitle("DOING");
+        tl2.setBoard(b);
+        tl.setBoard(b);
+        ArrayList<TaskList> list = new ArrayList<>();
+        list.add(tl);
+        Mockito.when(listService.findTaskList("Albertocalib", "Prueba1", "To DO")).thenReturn(list);
+        Task t = new Task();
+        t.setTaskList(tl);
+        t.setTitle("Prueba");
+        ResponseEntity<Task> response = taskRestController.createTask(t, "Prueba1", "To DO", "Albertocalib");
+        Assertions.assertEquals(HttpStatus.CREATED.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(t, response.getBody());
+        Assertions.assertNull(t.getDate_start_cycle_time());
     }
 
-
-    /*
-
-@RestController
-@RequestMapping("/api/task")
-public class TaskRestController {
-    interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo,File.FileBasicInfo, Message.MessageBasicInfo, User.UserBasicInfo {
+    @Test
+    void testCreateTaskMoreThanOneList() {
+        MockitoAnnotations.initMocks(this);
+        Board b = new Board();
+        b.setName("Prueba1");
+        TaskList tl = new TaskList();
+        tl.setTitle("TO DO");
+        TaskList tl2 = new TaskList();
+        tl2.setTitle("TO DO");
+        tl2.setBoard(b);
+        tl.setBoard(b);
+        ArrayList<TaskList> list = new ArrayList<>();
+        list.add(tl);
+        list.add(tl2);
+        b.setTaskLists(list);
+        Mockito.when(listService.findTaskList("Albertocalib", "Prueba1", "To DO")).thenReturn(b.getTaskLists());
+        ResponseEntity<Task> response = taskRestController.createTask(new Task(), "Prueba1", "To DO", "Albertocalib");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-    interface UserRequest extends User.UserBasicInfo, User.UserDetailsInfo, Board.BoardBasicInfo, BoardUsersPermRel.UserBasicInfo {
+    @Test
+    void testCreateTaskNoList() {
+        MockitoAnnotations.initMocks(this);
+        Mockito.when(listService.findTaskList("Albertocalib", "Prueba1", "To DO")).thenReturn(null);
+        ResponseEntity<Task> response = taskRestController.createTask(new Task(), "Prueba1", "To DO", "Albertocalib");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-
-
-    @JsonView(TaskRequest.class)
-    @PostMapping(value = "/newTask/board={boardName}&list={listName}&username={username}")
-    public ResponseEntity<Task> createTask(@RequestBody Task task, @PathVariable String boardName, @PathVariable String listName, @PathVariable String username) {
-        if (boardName == null || task == null || username == null || listName == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        List<TaskList> t = listService.findTaskList(username, boardName, listName);
-        if (t != null && t.size() == 1) {
-            TaskList list = t.get(0);
-            Task task1 = new Task(task.getTitle(), task.getDescription(), list);
-            Board b = t.get(0).getBoard();
-            if (b.getTimeActivated()) {
-                updateTaskTime(list, task1, b);
-            }
-            taskService.save(task1);
-            return new ResponseEntity<>(task1, HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @Test
+    void testGetTasksByUsernameNoTasks() {
+        MockitoAnnotations.initMocks(this);
+        Mockito.when(taskService.findByUsername("Albertocalib12")).thenReturn(null);
+        ResponseEntity<List<Task>> response = taskRestController.getTasksByUsername("Albertocalib12");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-    private void updateTaskTime(TaskList list, Task task1, Board b) {
-        if (b.getCycleStartList().equals(list.getTitle())) {
-            task1.setDate_start_cycle_time(new Date());
-        }
-        if (b.getCycleEndList().equals(list.getTitle())) {
-            task1.setDate_end_cycle_time(new Date());
-        }
-        if (b.getLeadStartList().equals(list.getTitle())) {
-            task1.setDate_start_lead_time(new Date());
-        }
-        if (b.getLeadEndList().equals(list.getTitle())) {
-            task1.setDate_end_lead_time(new Date());
-        }
+    @Test
+    void testGetTasksByUsernameOk() {
+        MockitoAnnotations.initMocks(this);
+        Task t = new Task();
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(t);
+        Mockito.when(taskService.findByUsername("Albertocalib")).thenReturn(tasks);
+        ResponseEntity<List<Task>> response = taskRestController.getTasksByUsername("Albertocalib");
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
     }
 
-    @JsonView(TaskRequest.class)
-    @GetMapping("/username={username}")
-    public ResponseEntity<List<Task>> getTasksByUsername(@PathVariable String username) {
-        List<Task> tasks = taskService.findByUsername(username);
-        if (tasks != null) {
-            return new ResponseEntity<>(tasks, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    @Test
+    void testGetTasksFilterByNameNoTasks() {
+        MockitoAnnotations.initMocks(this);
+        Mockito.when(taskService.filterByName("Prueba1", "Albertocalib12")).thenReturn(null);
+        ResponseEntity<List<Task>> response = taskRestController.getTasksFilterByName("Prueba1", "Albertocalib12");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-    @JsonView(TaskRequest.class)
-    @GetMapping("/taskName={name}&username={username}")
-    public ResponseEntity<List<Task>> getTasksFilterByName(@PathVariable String name, @PathVariable String username) {
-        List<Task> tasks = taskService.filterByName(name, username);
-        if (tasks != null) {
-            return new ResponseEntity<>(tasks, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    @Test
+    void testGetTasksFilterByNameOk() {
+        MockitoAnnotations.initMocks(this);
+        Task t = new Task();
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(t);
+        Mockito.when(taskService.filterByName("Prueba1", "Albertocalib12")).thenReturn(tasks);
+        ResponseEntity<List<Task>> response = taskRestController.getTasksFilterByName("Prueba1", "Albertocalib12");
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
     }
 
-    @JsonView(TaskRequest.class)
-    @PutMapping("id={id}&newPosition={newPosition}&newTaskList={newTaskList}")
-    public ResponseEntity<Task> updateTaskPosition(@PathVariable("id") Long id, @PathVariable("newPosition") Long newPosition, @PathVariable("newTaskList") Long newTaskList) {
-        if (id == null || newPosition == null || newTaskList == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Task t = taskService.findById(id);
-        if (t != null) {
-            if (newTaskList != t.getTaskList().getId()) {
-                //Update old list (eraseMode=True)
-                updatePositions(t, null, 0, true);
-                TaskList tl = listService.findById(newTaskList);
-                if (tl != null) {
-                    //Update new List
-                    updatePositions(t, tl, newPosition, false);
-                    Board b = t.getTaskList().getBoard();
-                    if (b.getTimeActivated()!=null && b.getTimeActivated()){
-                        updateTaskTime(tl, t, b);
-                        this.taskService.save(t);
-                    }
-                }
-            } else {
-                //update list
-                updatePositions(t, null, newPosition, false);
-            }
+    @Test
+    void testUpdateTaskPositionAnyParameterNull() {
+        MockitoAnnotations.initMocks(this);
+        long newPosition = 2;
+        long newList = 3;
+        long id = 1;
+        ResponseEntity<Task> response = taskRestController.updateTaskPosition(null, newPosition, newList);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
 
-            return new ResponseEntity<>(t, HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        response = taskRestController.updateTaskPosition(id, null, newList);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+
+        response = taskRestController.updateTaskPosition(id, newPosition, null);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-    private void updatePositions(Task t, TaskList taskListNew, long newPosition, boolean eraseMode) {
-        List<Task> lists;
-        if (taskListNew != null) {
-            lists = taskListNew.getTasks();
-        } else {
-            lists = t.getTaskList().getTasks();
-        }
-        lists.sort(Task::compareTo);
-        if (eraseMode) {
-            lists.remove(t);
-            for (int i = 0; i < lists.size(); i++) {
-                Task task = lists.get(i);
-                task.setPosition(i + 1);
-                this.taskService.save(task);
-            }
-        } else {
-            int initialPosition;
-            int finalPosition;
-            int incr;
-            if (t.getPosition() < newPosition && taskListNew == null) {
-                initialPosition = (int) t.getPosition() - 1;
-                finalPosition = (int) newPosition;
-                incr = -1;
-            } else {
-                if (taskListNew != null) {
-                    finalPosition = lists.size();
-                } else {
-                    finalPosition = (int) t.getPosition();
-                }
-                initialPosition = (int) newPosition - 1;
-                incr = 1;
-            }
-            for (int i = initialPosition; i < finalPosition; i++) {
-                Task tln = lists.get(i);
-                tln.setPosition(tln.getPosition() + incr);
-                this.taskService.save(tln);
-            }
-            t.setPosition(newPosition);
-            if (taskListNew != null) {
-                t.setTaskList(taskListNew);
-            }
-            this.taskService.save(t);
-        }
+    @Test
+    void testUpdateTaskPositionNoTask() {
+        MockitoAnnotations.initMocks(this);
+        long newPosition = 2;
+        long newList = 3;
+        long id = 1;
+        Mockito.when(taskService.findById(id)).thenReturn(null);
+        ResponseEntity<Task> response = taskRestController.updateTaskPosition(id, newPosition, newList);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-    @JsonView(UserRequest.class)
-    @GetMapping("users/task_id={id}")
-    public ResponseEntity<List<User>> getUsersByTaskId(@PathVariable Long id) {
-        Task task = taskService.findById(id);
-        if (task != null) {
-            return new ResponseEntity<>(task.getUsers(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PostMapping("id={id}/user={user_id}")
-    public ResponseEntity<Boolean> addUserToTask(@PathVariable Long id, @PathVariable Long user_id) {
-        Optional<User> u = userService.findById(user_id);
-        if (u.isPresent()) {
-            Task task = taskService.findById(id);
-            if (task != null) {
-                User user = u.get();
-                user.addTask(task);
-                userService.save(user);
-                return new ResponseEntity<>(true, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @DeleteMapping("id={id}/user={user_id}")
-    public ResponseEntity<Boolean> deleteUserToTask(@PathVariable Long id, @PathVariable Long user_id) {
-        Optional<User> u = userService.findById(user_id);
-        if (u.isPresent()) {
-            Task task = taskService.findById(id);
-            if (task != null) {
-                User user = u.get();
-                user.removeTask(task);
-                userService.save(user);
-                return new ResponseEntity<>(true, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @JsonView(TaskRequest.class)
-    @PutMapping("id={id}&newDateEnd={newDate}")
-    public ResponseEntity<Task> updateDateEnd(@PathVariable Long id, @PathVariable Date newDate) {
-        Task task = taskService.findById(id);
-        if (task != null && newDate != null) {
-            task.setDate_end(newDate);
-            taskService.save(task);
-            return new ResponseEntity<>(task, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @JsonView(TaskRequest.class)
-    @PutMapping("id={id}&newTitle={title}")
-    public ResponseEntity<Task> updateTitleTask(@PathVariable Long id, @PathVariable String title) {
-        Task task = taskService.findById(id);
-        if (task != null && title != null) {
-            task.setTitle(title);
-            taskService.save(task);
-            return new ResponseEntity<>(task, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @JsonView(TaskRequest.class)
-    @PutMapping("id={id}&newDescription={description}")
-    public ResponseEntity<Task> updateDescriptionTask(@PathVariable Long id, @PathVariable String description) {
-        Task task = taskService.findById(id);
-        if (task != null && description != null) {
-            task.setDescription(description);
-            taskService.save(task);
-            return new ResponseEntity<>(task, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @JsonView(TaskRequest.class)
-    @PutMapping(value = "id={taskId}&listDestName={listDestName}&boardDestId={boardDestId}&username={username}")
-    public ResponseEntity<Boolean> moveTask(@PathVariable("taskId") Long taskId,
-                                            @PathVariable("listDestName") String listDestName,
-                                            @PathVariable("boardDestId") Long boardDestId,
-                                            @PathVariable("username") String username) throws CloneNotSupportedException {
-        if (taskId == null || listDestName == null || boardDestId == null || username == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Task t = taskService.findById(taskId);
-        if (t != null) {
-            if (!listDestName.equals(t.getTaskList().getTitle())) {
-                //Update old list (eraseMode=True)
-                updatePositions(t, null, 0, true);
-                List<TaskList> tl = listService.findTaskList(boardDestId, listDestName);
-                if (tl != null && tl.size() == 1) {
-                    t.setPosition(tl.get(0).getTasks().size()+1);
-                    t.setTaskList(tl.get(0));
-                    taskService.save(t);
-                    tl.get(0).addTask(t);
-                    listService.save(tl.get(0));
-                    return new ResponseEntity<>(true, HttpStatus.OK);
-                }
-            }
-        }
-
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @Test
+    void testUpdateTaskPositionSameTaskListOk() {
+        MockitoAnnotations.initMocks(this);
+        long newPosition = 3;
+        long newList = 3;
+        long id = 1;
+        Task t = new Task();
+        t.setId(1);
+        t.setPosition(1);
+        Task t2 = new Task();
+        t2.setPosition(2);
+        Task t3 = new Task();
+        t3.setPosition(3);
+        TaskList tl = new TaskList();
+        tl.setId(newList);
+        t.setTaskList(tl);
+        t2.setTaskList(tl);
+        t3.setTaskList(tl);
+        tl.addTask(t);
+        tl.addTask(t2);
+        tl.addTask(t3);
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        ResponseEntity<Task> response = taskRestController.updateTaskPosition(id, newPosition, newList);
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(3, t.getPosition());
+        Assertions.assertEquals(2, t3.getPosition());
+        Assertions.assertEquals(1, t2.getPosition());
+        Assertions.assertEquals(t, response.getBody());
 
     }
 
-    @JsonView(TaskRequest.class)
-    @PostMapping(value = "id={taskId}&listDestName={listDestName}&boardDestId={boardDestId}&username={username}")
-    public ResponseEntity<Boolean> copyTask(@PathVariable("taskId") Long taskId,
-                                            @PathVariable("listDestName") String listDestName,
-                                            @PathVariable("boardDestId") Long boardDestId,
-                                            @PathVariable("username") String username) throws CloneNotSupportedException {
-        Task t = taskService.findById(taskId);
-        if (t != null) {
-            Task t2 = (Task)t.clone();
-            if (t2!=null) {
-                List<TaskList> tl = listService.findTaskList(boardDestId, listDestName);
-                if (tl != null && tl.size() == 1) {
-                    t2.setPosition(tl.get(0).getTasks().size()+1);
-                    t2.setTaskList(tl.get(0));
-                    taskService.save(t2);
-                    tl.get(0).addTask(t2);
-                    listService.save(tl.get(0));
-                    return new ResponseEntity<>(true, HttpStatus.OK);
-                }
+    @Test
+    void testUpdateTaskPositionOtherTaskListOk() {
+        MockitoAnnotations.initMocks(this);
+        long newPosition = 2;
+        long newList = 3;
+        long id = 1;
+        Task t = new Task();
+        t.setId(1);
+        t.setPosition(1);
+        Task t2 = new Task();
+        t2.setPosition(2);
+        Task t3 = new Task();
+        t3.setPosition(3);
+        TaskList tl = new TaskList();
+        TaskList tl2 = new TaskList();
+        tl.setId(1);
+        tl2.setId(newList);
+        t.setTaskList(tl);
+        t2.setTaskList(tl);
+        t3.setTaskList(tl);
+        tl.addTask(t);
+        tl.addTask(t2);
+        tl.addTask(t3);
+        Task t4 = new Task();
+        t4.setPosition(0);
+        t4.setTaskList(tl2);
+        tl2.addTask(t4);
+        Board b = new Board();
+        b.setTimeActivated(false);
+        tl2.setBoard(b);
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        Mockito.when(listService.findById(newList)).thenReturn(tl2);
+        ResponseEntity<Task> response = taskRestController.updateTaskPosition(id, newPosition, newList);
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(2, t.getPosition());
+        Assertions.assertEquals(2, t3.getPosition());
+        Assertions.assertEquals(1, t2.getPosition());
+        Assertions.assertEquals(t, response.getBody());
+        Assertions.assertEquals(tl2, Objects.requireNonNull(response.getBody()).getTaskList());
 
-            }
-        }
+    }
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @Test
+    void testGetUsersByTaskIdNoTask() {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(null);
+        ResponseEntity<List<User>> response = taskRestController.getUsersByTaskId(id);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testGetUsersByTaskIdOk() {
+        MockitoAnnotations.initMocks(this);
+        Task t = new Task();
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        ResponseEntity<List<User>> response = taskRestController.getUsersByTaskId(id);
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testUpdateTitleTaskNoTask() {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(null);
+        ResponseEntity<Task> response = taskRestController.updateTitleTask(id, "");
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testUpdateTitleTaskOk() {
+        MockitoAnnotations.initMocks(this);
+        Task t = new Task();
+        t.setTitle("Prueba");
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        ResponseEntity<Task> response = taskRestController.updateTitleTask(id, "Prueba2");
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(t.getTitle(), "Prueba2");
+    }
+
+    @Test
+    void testUpdatePriorityNoTask() {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(null);
+        ResponseEntity<Task> response = taskRestController.updatePriorityTask(id, Priority.NORMAL);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testUpdatePriorityOk() {
+        MockitoAnnotations.initMocks(this);
+        Task t = new Task();
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        ResponseEntity<Task> response = taskRestController.updatePriorityTask(id, Priority.NORMAL);
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(t.getPriority(), Priority.NORMAL);
+    }
+
+    @Test
+    void testUpdateDateEndNoTask() {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(null);
+        ResponseEntity<Task> response = taskRestController.updateDateEnd(id, new Date());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testUpdateDateEndOk() {
+        MockitoAnnotations.initMocks(this);
+        Task t = new Task();
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        Date date = new Date();
+        ResponseEntity<Task> response = taskRestController.updateDateEnd(id, date);
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(t.getDate_end(), date);
+    }
+
+    @Test
+    void testUpdateDescriptionTaskNoTask() {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(null);
+        ResponseEntity<Task> response = taskRestController.updateDescriptionTask(id, "");
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testUpdateDescriptionTaskOK() {
+        MockitoAnnotations.initMocks(this);
+        Task t = new Task();
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        ResponseEntity<Task> response = taskRestController.updateDescriptionTask(id, "date");
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(t.getDescription(), "date");
+    }
+
+    @Test
+    void testAddUserToTaskNoUser() {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Mockito.when(userService.findById(id)).thenReturn(Optional.empty());
+        ResponseEntity<Boolean> response = taskRestController.addUserToTask(id, id);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testAddUserToTaskNoTask() {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        User u = new User();
+        Mockito.when(userService.findById(id)).thenReturn(Optional.of(u));
+        Mockito.when(taskService.findById(id)).thenReturn(null);
+        ResponseEntity<Boolean> response = taskRestController.addUserToTask(id, id);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testAddUserToTaskOK() {
+        MockitoAnnotations.initMocks(this);
+        Task t = new Task();
+        long id = 2;
+        User u = new User();
+        Mockito.when(userService.findById(id)).thenReturn(Optional.of(u));
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        ResponseEntity<Boolean> response = taskRestController.addUserToTask(id, id);
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(Boolean.TRUE, response.getBody());
+        Assertions.assertTrue(u.getTasks().contains(t));
+    }
+
+    @Test
+    void testDeleteUserToTaskNoUser() {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Mockito.when(userService.findById(id)).thenReturn(Optional.empty());
+        ResponseEntity<Boolean> response = taskRestController.deleteUserToTask(id, id);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testDeleteUserToTaskNoTask() {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        User u = new User();
+        Mockito.when(userService.findById(id)).thenReturn(Optional.of(u));
+        Mockito.when(taskService.findById(id)).thenReturn(null);
+        ResponseEntity<Boolean> response = taskRestController.deleteUserToTask(id, id);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testDeleteUserToTaskOK() {
+        MockitoAnnotations.initMocks(this);
+        Task t = new Task();
+        long id = 2;
+        User u = new User();
+        u.addTask(t);
+        Mockito.when(userService.findById(id)).thenReturn(Optional.of(u));
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        ResponseEntity<Boolean> response = taskRestController.deleteUserToTask(id, id);
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(Boolean.TRUE, response.getBody());
+        Assertions.assertFalse(u.getTasks().contains(t));
+    }
+
+    @Test
+    void testAddAttachmentsNoTask() {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(null);
+        ResponseEntity<Task> response = taskRestController.addAttachments(id, new HashSet<>());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testAddAttachmentsOK() {
+        MockitoAnnotations.initMocks(this);
+        Task t = new Task();
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        ResponseEntity<Task> response = taskRestController.addAttachments(id, new HashSet<>());
+        Assertions.assertEquals(HttpStatus.CREATED.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(t, response.getBody());
+    }
+
+    @Test
+    void testAddSubtasksNoTask() {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(null);
+        ResponseEntity<Task> response = taskRestController.addSubtasks(id, new Task());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testAddSubTasksOK() {
+        MockitoAnnotations.initMocks(this);
+        Task t = new Task();
+        long id = 2;
+        Task parent_t = new Task();
+        t.setParent_task(parent_t);
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        ResponseEntity<Task> response = taskRestController.addSubtasks(id, parent_t);
+        Assertions.assertEquals(HttpStatus.CREATED.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(t, response.getBody());
+        Assertions.assertEquals(parent_t, Objects.requireNonNull(response.getBody()).getParent_task());
+
+    }
+
+    @Test
+    void testRemoveSubtasksNoTask() {
+        MockitoAnnotations.initMocks(this);
+        String ids = "2";
+        long id1 = 2;
+        Mockito.when(taskService.findById(id1)).thenReturn(null);
+        ResponseEntity<Task> response = taskRestController.removeSubtasks(ids);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testRemoveSubtasksNoAllTask() {
+        MockitoAnnotations.initMocks(this);
+        String ids = "2&3";
+        long id1 = 2;
+        long id2 = 3;
+        Mockito.when(taskService.findById(id1)).thenReturn(new Task());
+        Mockito.when(taskService.findById(id2)).thenReturn(null);
+        ResponseEntity<Task> response = taskRestController.removeSubtasks(ids);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testRemoveSubtasksNoIds() {
+        MockitoAnnotations.initMocks(this);
+        String ids = "";
+        ResponseEntity<Task> response = taskRestController.removeSubtasks(ids);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testRemoveSubTasksOK() {
+        MockitoAnnotations.initMocks(this);
+        String ids = "2&3";
+        long id1 = 2;
+        long id2 = 3;
+        Task t = new Task();
+        Task t1 = new Task();
+        Task p = new Task();
+        t1.setParent_task(p);
+        Mockito.when(taskService.findById(id1)).thenReturn(t);
+        Mockito.when(taskService.findById(id2)).thenReturn(t1);
+        ResponseEntity<Task> response = taskRestController.removeSubtasks(ids);
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(p, response.getBody());
+        Mockito.verify(taskService, Mockito.times(1)).delete(t);
+        Mockito.verify(taskService, Mockito.times(1)).delete(t);
 
 
     }
-    @JsonView(TaskRequest.class)
-    @PostMapping(value = "newAttachments/task={taskId}")
-    public ResponseEntity<Task> addAttachments(@PathVariable("taskId")Long taskId, @RequestBody HashSet<File> files){
-        Task t = taskService.findById(taskId);
-        if (t!=null){
-            for (File f:files) {
-                File newFile = new File(f.getName(),f.getContent(),f.getType(),t);
-                fileService.save(newFile);
-            }
-            t = taskService.findById(taskId);
-            return new ResponseEntity<>(t,HttpStatus.CREATED);
 
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @Test
+    void testRemoveAttachmentNoFile() {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Mockito.when(fileService.findById(id)).thenReturn(null);
+        ResponseEntity<Task> response = taskRestController.removeAttachment(id, id);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-    @JsonView(TaskRequest.class)
-    @DeleteMapping("id={taskId}/fileId={fileId}")
-    public ResponseEntity<Task> removeAttachment(@PathVariable("taskId") Long taskId, @PathVariable("fileId")Long fileId){
-        File f = fileService.findById(fileId);
-        if (f!=null){
-            fileService.delete(f);
-            Task t = taskService.findById(taskId);
-            return new ResponseEntity<>(t,HttpStatus.CREATED);
+    @Test
+    void testRemoveAttachmentOK() {
+        MockitoAnnotations.initMocks(this);
+        File f = new File();
+        long id = 2;
+        Task t = new Task();
+        List<File> list = new ArrayList<>();
+        list.add(f);
+        t.setAttachments(list);
+        Mockito.when(fileService.findById(id)).thenReturn(f);
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        ResponseEntity<Task> response = taskRestController.removeAttachment(id, id);
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(t, response.getBody());
+        Mockito.verify(fileService, Mockito.times(1)).delete(f);
 
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @JsonView(TaskRequest.class)
-    @PostMapping(value = "newSubTask/task={taskId}")
-    public ResponseEntity<Task> addAttachments(@PathVariable("taskId")Long taskId, @RequestBody Task subTask){
-
-        Task t = taskService.findById(taskId);
-        if (t!=null){
-            subTask.setParent_task(t);
-            taskService.save(subTask);
-            t.addSubTask(subTask);
-            return new ResponseEntity<>(t,HttpStatus.CREATED);
-
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @Test
+    void testMoveTaskAnyParameterNull() throws CloneNotSupportedException {
+        MockitoAnnotations.initMocks(this);
+        long taskIdOrBoardId = 2;
+        ResponseEntity<Boolean> response = taskRestController.moveTask(null, "", taskIdOrBoardId, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+        response = taskRestController.moveTask(taskIdOrBoardId, null, taskIdOrBoardId, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+        response = taskRestController.moveTask(taskIdOrBoardId, "", null, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+        response = taskRestController.moveTask(taskIdOrBoardId, "", taskIdOrBoardId, null);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-    @JsonView(TaskRequest.class)
-    @DeleteMapping("ids={taskIds}")
-    public ResponseEntity<Task> removeSubtasks(@PathVariable("taskIds") String taskIdsStr){
-        String[] taskIds = taskIdsStr.split("&");
-        Task t = null;
-        for (String id:taskIds) {
-            Task subtask = taskService.findById(Long.parseLong(id));
-            if (t==null){
-                t=subtask.getParent_task();
-            }
-            taskService.delete(subtask);
-        }
-        if (t!=null){
-            return new ResponseEntity<>(t,HttpStatus.CREATED);
-        }else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    @Test
+    void testMoveTaskNoTask() throws CloneNotSupportedException {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(null);
+        ResponseEntity<Boolean> response = taskRestController.moveTask(id, "", id, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-    @JsonView(TaskRequest.class)
-    @PutMapping("id={id}&newPriority={priority}")
-    public ResponseEntity<Task> updatePriorityTask(@PathVariable Long id, @PathVariable Priority priority) {
-        Task task = taskService.findById(id);
-        if (task != null && priority != null) {
-            task.setPriority(priority);
-            taskService.save(task);
-            return new ResponseEntity<>(task, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @Test
+    void testMoveTaskSameList() throws CloneNotSupportedException {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Task t = new Task();
+        TaskList tl = new TaskList();
+        tl.setTitle("Prueba");
+        tl.addTask(t);
+        t.setTaskList(tl);
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        ResponseEntity<Boolean> response = taskRestController.moveTask(id, "Prueba", id, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-}
-*/
+    @Test
+    void testMoveTaskNoTaskListOrMoreThanOne() throws CloneNotSupportedException {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Task t = new Task();
+        TaskList tl = new TaskList();
+        TaskList tl2 = new TaskList();
+        tl.setTitle("Prueba");
+        tl.addTask(t);
+        t.setTaskList(tl);
+        List<TaskList> list = new ArrayList<>();
+        list.add(tl);
+        list.add(tl2);
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        Mockito.when(listService.findTaskList(id, "Prueba1")).thenReturn(null);
+        ResponseEntity<Boolean> response = taskRestController.moveTask(id, "Prueba1", id, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
 
+        Mockito.when(listService.findTaskList(id, "Prueba")).thenReturn(list);
+        response = taskRestController.moveTask(id, "Prueba", id, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testMoveTaskOk() throws CloneNotSupportedException {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Task t = new Task();
+        t.setPosition(2);
+        Task t_old1 = new Task();
+        t_old1.setPosition(1);
+        Task t_old2 = new Task();
+        t_old2.setPosition(3);
+        Task t_old3 = new Task();
+        t_old3.setPosition(4);
+        Task t_new1 = new Task();
+        t_new1.setPosition(1);
+        TaskList tl = new TaskList();
+        TaskList tl2 = new TaskList();
+        tl.setTitle("Prueba");
+        tl2.addTask(t);
+        tl.addTask(t_new1);
+        tl2.addTask(t_old1);
+        tl2.addTask(t_old2);
+        tl2.addTask(t_old3);
+        t.setTaskList(tl2);
+        t_old1.setTaskList(tl2);
+        t_old2.setTaskList(tl2);
+        t_old3.setTaskList(tl2);
+        t_new1.setTaskList(tl);
+        List<TaskList> list = new ArrayList<>();
+        list.add(tl);
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        Mockito.when(listService.findTaskList(id, "Prueba1")).thenReturn(list);
+        ResponseEntity<Boolean> response = taskRestController.moveTask(id, "Prueba1", id, "");
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(Boolean.TRUE, response.getBody());
+        Assertions.assertEquals(2, t.getPosition());
+        Assertions.assertEquals(1, t_old1.getPosition());
+        Assertions.assertEquals(2, t_old2.getPosition());
+        Assertions.assertEquals(3, t_old3.getPosition());
+        Assertions.assertTrue(tl.getTasks().contains(t));
+        Assertions.assertFalse(tl2.getTasks().contains(t));
+
+    }
+
+    @Test
+    void testCopyTaskAnyParameterNull() throws CloneNotSupportedException {
+        MockitoAnnotations.initMocks(this);
+        long taskIdOrBoardId = 2;
+        ResponseEntity<Boolean> response = taskRestController.copyTask(null, "", taskIdOrBoardId, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+        response = taskRestController.copyTask(taskIdOrBoardId, null, taskIdOrBoardId, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+        response = taskRestController.copyTask(taskIdOrBoardId, "", null, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+        response = taskRestController.copyTask(taskIdOrBoardId, "", taskIdOrBoardId, null);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testCopyTaskNoTask() throws CloneNotSupportedException {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Mockito.when(taskService.findById(id)).thenReturn(null);
+        ResponseEntity<Boolean> response = taskRestController.copyTask(id, "", id, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+    }
+
+
+    @Test
+    void testCopyTaskNoTaskListOrMoreThanOne() throws CloneNotSupportedException {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Task t = new Task();
+        TaskList tl = new TaskList();
+        TaskList tl2 = new TaskList();
+        tl.setTitle("Prueba");
+        tl.addTask(t);
+        t.setTaskList(tl);
+        List<TaskList> list = new ArrayList<>();
+        list.add(tl);
+        list.add(tl2);
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        Mockito.when(listService.findTaskList(id, "Prueba1")).thenReturn(null);
+        ResponseEntity<Boolean> response = taskRestController.copyTask(id, "Prueba1", id, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+
+        Mockito.when(listService.findTaskList(id, "Prueba")).thenReturn(list);
+        response = taskRestController.copyTask(id, "Prueba", id, "");
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void testCopyTaskOk() throws CloneNotSupportedException {
+        MockitoAnnotations.initMocks(this);
+        long id = 2;
+        Task t = new Task();
+        t.setPosition(2);
+        Task t_old1 = new Task();
+        t_old1.setPosition(1);
+        Task t_old2 = new Task();
+        t_old2.setPosition(3);
+        Task t_old3 = new Task();
+        t_old3.setPosition(4);
+        Task t_new1 = new Task();
+        t_new1.setPosition(1);
+        TaskList tl = new TaskList();
+        TaskList tl2 = new TaskList();
+        tl.setTitle("Prueba");
+        tl2.addTask(t);
+        tl.addTask(t_new1);
+        tl2.addTask(t_old1);
+        tl2.addTask(t_old2);
+        tl2.addTask(t_old3);
+        t.setTaskList(tl2);
+        t_old1.setTaskList(tl2);
+        t_old2.setTaskList(tl2);
+        t_old3.setTaskList(tl2);
+        t_new1.setTaskList(tl);
+        List<TaskList> list = new ArrayList<>();
+        list.add(tl);
+        Mockito.when(taskService.findById(id)).thenReturn(t);
+        Mockito.when(listService.findTaskList(id, "Prueba1")).thenReturn(list);
+        ResponseEntity<Boolean> response = taskRestController.copyTask(id, "Prueba1", id, "");
+        Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        Assertions.assertEquals(Boolean.TRUE, response.getBody());
+    }
 
 }

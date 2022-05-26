@@ -76,13 +76,15 @@ public class BoardRestController {
         }
         User u = userService.findByUsernameOrEmailCustom(username);
         if (u != null) {
-            Board b = new Board(board.getName(), board.getPhoto());
-            BoardUsersPermRel bs = new BoardUsersPermRel(b, u, OWNER);
-            b.addUser(bs);
+            BoardUsersPermRel bs = new BoardUsersPermRel(board, u, OWNER);
+            board.addUser(bs);
             u.addBoard(bs);
-            boardService.save(b);
+            board.setWrite_date();
+            board.setCreate_date();
+            u.setWrite_date();
+            boardService.save(board);
             userService.save(u);
-            return new ResponseEntity<>(b, HttpStatus.CREATED);
+            return new ResponseEntity<>(board, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -96,8 +98,9 @@ public class BoardRestController {
             board.setWipActivated(wipActivated);
             board.setWipLimit(wipLimit);
             board.setWipList(wipList);
+            board.setWrite_date();
             boardService.save(board);
-            return new ResponseEntity<>(board, HttpStatus.CREATED);
+            return new ResponseEntity<>(board, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -111,8 +114,10 @@ public class BoardRestController {
             Board board = b.get();
             BoardUsersPermRel bs = new BoardUsersPermRel(board, u, rol);
             board.addUser(bs);
+            board.setWrite_date();
+            u.setWrite_date();
             boardService.save(board);
-            return new ResponseEntity<>(board, HttpStatus.CREATED);
+            return new ResponseEntity<>(board, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -124,7 +129,7 @@ public class BoardRestController {
         if (b != null) {
             b.setRol(role);
             boardUsersPermService.save(b);
-            return new ResponseEntity<>(b.getBoard(), HttpStatus.CREATED);
+            return new ResponseEntity<>(b.getBoard(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -135,10 +140,7 @@ public class BoardRestController {
         BoardUsersPermRel b = boardUsersPermService.findBoardPermByUserIdAndBoardId(id, userId);
         if (b != null) {
             boardUsersPermService.delete(b);
-            Optional<Board> board = boardService.findById(id);
-            if (board.isPresent()) {
-                return new ResponseEntity<>(b.getBoard(), HttpStatus.CREATED);
-            }
+            return new ResponseEntity<>(b.getBoard(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -148,7 +150,7 @@ public class BoardRestController {
     public ResponseEntity<BoardUsersPermRel> getRol(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
         BoardUsersPermRel b = boardUsersPermService.findBoardPermByUserIdAndBoardId(id, userId);
         if (b != null) {
-            return new ResponseEntity<>(b, HttpStatus.CREATED);
+            return new ResponseEntity<>(b, HttpStatus.OK);
 
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -169,6 +171,7 @@ public class BoardRestController {
                         List<Task> tasks = l.getTasks();
                         for (Task t:tasks){
                             t.setDate_start_cycle_time(new Date());
+                            t.setWrite_date();
                             this.taskService.save(t);
                         }
                     }
@@ -180,6 +183,7 @@ public class BoardRestController {
                         List<Task> tasks = l.getTasks();
                         for (Task t:tasks){
                             t.setDate_end_cycle_time(new Date());
+                            t.setWrite_date();
                             this.taskService.save(t);
                         }
                     }
@@ -191,6 +195,7 @@ public class BoardRestController {
                         List<Task> tasks = l.getTasks();
                         for (Task t:tasks){
                             t.setDate_start_lead_time(new Date());
+                            t.setWrite_date();
                             this.taskService.save(t);
                         }
                     }
@@ -202,6 +207,7 @@ public class BoardRestController {
                         List<Task> tasks = l.getTasks();
                         for (Task t:tasks){
                             t.setDate_end_lead_time(new Date());
+                            t.setWrite_date();
                             this.taskService.save(t);
                         }
                     }
@@ -209,8 +215,9 @@ public class BoardRestController {
                 }
             }
             board.setTimeActivated(timeActivated);
+            board.setWrite_date();
             boardService.save(board);
-            return new ResponseEntity<>(board, HttpStatus.CREATED);
+            return new ResponseEntity<>(board, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

@@ -139,6 +139,10 @@ public class Task implements Comparable<Task>,Cloneable {
     public Task() {
         this.create_date=new Date();
         this.write_date =new Date();
+        this.tag_ids = new ArrayList<>();
+        this.attachments = new ArrayList<>();
+        this.subTasks = new ArrayList<>();
+        this.messages = new ArrayList<>();
     }
     public Task(String title,String description,TaskList list,long position) {
         this.title=title;
@@ -147,6 +151,11 @@ public class Task implements Comparable<Task>,Cloneable {
         this.create_date=new Date();
         this.taskList=list;
         this.write_date =new Date();
+        this.tag_ids = new ArrayList<>();
+        this.attachments = new ArrayList<>();
+        this.subTasks = new ArrayList<>();
+        this.messages = new ArrayList<>();
+
     }
     public Task(String title,String description,TaskList list) {
         this.title=title;
@@ -155,6 +164,11 @@ public class Task implements Comparable<Task>,Cloneable {
         this.write_date =new Date();
         this.taskList=list;
         this.position = taskList.getTasks().size()+1;
+        this.tag_ids = new ArrayList<>();
+        this.attachments = new ArrayList<>();
+        this.subTasks = new ArrayList<>();
+        this.messages = new ArrayList<>();
+
     }
     public long getId() {
         return id;

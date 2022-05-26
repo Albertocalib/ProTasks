@@ -220,6 +220,10 @@ public class Board {
         return create_date;
     }
 
+    public void setCreate_date() {
+        this.create_date = new Date();
+    }
+
     public List<Tag> getTags() {
         return tags;
     }
