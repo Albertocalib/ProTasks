@@ -110,7 +110,7 @@ class BoardFragment(private var boardsView: ITaskListContract.ViewNormal) : Frag
             }
 
             override fun onItemChangedColumn(oldColumn: Int, newColumn: Int) {
-
+                //I dont want to do anything in this function
             }
 
             override fun onFocusedColumnChanged(

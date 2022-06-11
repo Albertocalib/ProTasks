@@ -1,7 +1,6 @@
 package com.example.protasks.presenters.login
 
 import com.example.protasks.models.User
-import com.example.protasks.utils.Preference
 import com.example.protasks.utils.PreferencesManager
 
 

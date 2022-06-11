@@ -10,13 +10,11 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
 import com.example.protasks.models.User
-import com.example.protasks.presenters.tasklist.TaskListPresenter
 import com.github.mikephil.charting.charts.HorizontalBarChart
 import com.github.mikephil.charting.components.Description
 import kotlin.collections.ArrayList
@@ -38,13 +36,10 @@ import java.util.stream.IntStream
 
 
 class StatsFragment(
-    private val taskLists: List<TaskList>, private val presenter: TaskListPresenter,
-    private val supportFragmentManager: FragmentManager, private val boardName: String
+    private val taskLists: List<TaskList>
 ) :
     Fragment() {
     private var recyclerView: RecyclerView? = null
-    private var mColumns = 0
-    private var listMap: HashMap<String, Long>? = HashMap()
     var boardId: Long = 0
     private var chartLead: HorizontalBarChart? = null
     private var chartCycle: HorizontalBarChart? = null
@@ -63,48 +58,48 @@ class StatsFragment(
         val view = inflater.inflate(R.layout.stats_fragment, container, false)
         recyclerView = view.findViewById(R.id.recycler_pie_chart_list)
         recyclerView!!.layoutManager = GridLayoutManager(context, 1)
-        val tasks_dict: HashMap<String, HashMap<String, Int>>? = HashMap()
-        val users: ArrayList<String>? = ArrayList()
-        val user: User =
-            User("No Asignado", "No asignado", "No asignado", "No asignado", "No asignado")
+        val taskDict: HashMap<String, HashMap<String, Int>> = HashMap()
+        val users: ArrayList<String> = ArrayList()
+        val noUser = "No Asignado"
+        val user =User(noUser, noUser, noUser, noUser, noUser)
         for (list in taskLists) {
             for (t in list.getTasks()!!) {
                 tasks!!.add(t!!)
-                if (t!!.getUsers()!!.isNotEmpty()) {
+                if (t.getUsers()!!.isNotEmpty()) {
                     for (u in t.getUsers()!!) {
-                        if (tasks_dict!!.containsKey(u.getUsername())) {
-                            if (tasks_dict[u.getUsername()]!!.contains(list.getTitle())) {
-                                tasks_dict[u.getUsername()]!![list.getTitle()!!] =
-                                    tasks_dict[u.getUsername()]!![list.getTitle()!!]!! + 1
+                        if (taskDict.containsKey(u.getUsername())) {
+                            if (taskDict[u.getUsername()]!!.contains(list.getTitle())) {
+                                taskDict[u.getUsername()]!![list.getTitle()!!] =
+                                    taskDict[u.getUsername()]!![list.getTitle()!!]!! + 1
                             } else {
-                                tasks_dict[u.getUsername()]!![list.getTitle()!!] = 1
+                                taskDict[u.getUsername()]!![list.getTitle()!!] = 1
                             }
                         } else {
                             val h: HashMap<String, Int> = HashMap()
                             h[list.getTitle()!!] = 1
-                            tasks_dict[u.getUsername()!!] = h
-                            users!!.add(u.getUsername()!!)
+                            taskDict[u.getUsername()!!] = h
+                            users.add(u.getUsername()!!)
                         }
                     }
                 } else {
-                    if (tasks_dict!!.containsKey(user.getUsername())) {
-                        if (tasks_dict[user.getUsername()]!!.contains(list.getTitle())) {
-                            tasks_dict[user.getUsername()]!![list.getTitle()!!] =
-                                tasks_dict[user.getUsername()]!![list.getTitle()!!]!! + 1
+                    if (taskDict.containsKey(user.getUsername())) {
+                        if (taskDict[user.getUsername()]!!.contains(list.getTitle())) {
+                            taskDict[user.getUsername()]!![list.getTitle()!!] =
+                                taskDict[user.getUsername()]!![list.getTitle()!!]!! + 1
                         } else {
-                            tasks_dict[user.getUsername()]!![list.getTitle()!!] = 1
+                            taskDict[user.getUsername()]!![list.getTitle()!!] = 1
                         }
                     } else {
                         val h: HashMap<String, Int> = HashMap()
                         h[list.getTitle()!!] = 1
-                        tasks_dict[user.getUsername()!!] = h
-                        users!!.add(user.getUsername()!!)
+                        taskDict[user.getUsername()!!] = h
+                        users.add(user.getUsername()!!)
                     }
                 }
 
             }
         }
-        recyclerView!!.adapter = PieAdapter(tasks_dict, users!!)
+        recyclerView!!.adapter = PieAdapter(taskDict, users)
         val timeActivated = taskLists[0].getBoard()!!.getTimeActivated()
         chartCycle = view.findViewById(R.id.chartcycle)
         chartLead = view.findViewById(R.id.chartlead)
@@ -236,14 +231,10 @@ class StatsFragment(
     }
 
     companion object {
-        private var sCreatedItems = 0
         fun newInstance(
-            taskLists: List<TaskList>,
-            presenter: TaskListPresenter,
-            supportFragmentManager: FragmentManager,
-            boardName: String
+            taskLists: List<TaskList>
         ): StatsFragment {
-            return StatsFragment(taskLists, presenter, supportFragmentManager, boardName)
+            return StatsFragment(taskLists)
         }
     }
 

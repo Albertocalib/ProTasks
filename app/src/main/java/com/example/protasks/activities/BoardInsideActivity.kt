@@ -264,7 +264,7 @@ class BoardInsideActivity : AppCompatActivity(), ITaskListContract.ViewNormal,IB
                 }
             }
             else -> {
-                fragment = StatsFragment(lists,presenter!!,supportFragmentManager,boardName!!)
+                fragment = StatsFragment(lists)
             }
         }
         showFragment(fragment!!)

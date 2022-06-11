@@ -13,8 +13,6 @@ import android.R
 
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
-import java.lang.Exception
-
 
 @RunWith(MockitoJUnitRunner::class)
 class LoginTest{

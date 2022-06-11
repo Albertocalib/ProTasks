@@ -40,10 +40,13 @@ class BoardTab(private val t: Toolbar) : Fragment() {
 
             override fun beforeTextChanged(s: CharSequence, start: Int,
                                            count: Int, after: Int) {
+                //I dont want to do anything before text change
             }
 
             override fun onTextChanged(s: CharSequence, start: Int,
                                        before: Int, count: Int) {
+                //I dont want to do anything on text change
+
             }})
         val spinner: Spinner = view.findViewById(R.id.spinnerBoards)
         val list: Array<String> =

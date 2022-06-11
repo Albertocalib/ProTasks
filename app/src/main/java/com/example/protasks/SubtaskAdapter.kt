@@ -46,13 +46,13 @@ class SubtaskAdapter(
     }
 
     fun getSubTasksSelected(): ArrayList<Task> {
-        val subtasks_sel = ArrayList<Task>()
+        val subtasksSel = ArrayList<Task>()
         for (elem in subtasks!!) {
             if (elem!!.isSelected()) {
-                subtasks_sel.add(elem)
+                subtasksSel.add(elem)
             }
         }
-        return subtasks_sel
+        return subtasksSel
 
     }
 

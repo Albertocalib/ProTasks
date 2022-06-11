@@ -19,7 +19,7 @@ import java.util.ArrayList
 class ListTab(private val boards: List<Board>, private val t: Toolbar) : Fragment() {
     var textView: TextView? = null
     var boardName: String? = null
-    val anySelectedItem:String="Ningún elemento seleccionado"
+    val anySelectedItem:String=getString(R.string.no_elements)
 
     override fun onCreateView(
         inflater: LayoutInflater,

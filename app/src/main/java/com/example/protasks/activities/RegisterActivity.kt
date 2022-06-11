@@ -51,12 +51,14 @@ class RegisterActivity : AppCompatActivity(), IRegisterContract.View, View.OnCli
                 s: CharSequence, start: Int, before: Int,
                 count: Int
             ) {
+                //I dont want to do anything on text changed
             }
 
             override fun beforeTextChanged(
                 s: CharSequence, start: Int, count: Int,
                 after: Int
             ) {
+                //I dont want to do anything before text changed
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -73,12 +75,14 @@ class RegisterActivity : AppCompatActivity(), IRegisterContract.View, View.OnCli
                 s: CharSequence, start: Int, before: Int,
                 count: Int
             ) {
+                //I dont want to do anything on text changed
             }
 
             override fun beforeTextChanged(
                 s: CharSequence, start: Int, count: Int,
                 after: Int
             ) {
+                //I dont want to do anything before text changed
             }
 
             override fun afterTextChanged(s: Editable) {

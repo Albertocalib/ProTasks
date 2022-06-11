@@ -21,7 +21,9 @@ class BoardUsersPermRel {
     @SerializedName("rol")
     private var rol: Rol? = null
 
-    fun BoardUsersPermRel() {}
+    fun BoardUsersPermRel() {
+        //constructor empty
+    }
 
     fun BoardUsersPermRel(
         board: Board,

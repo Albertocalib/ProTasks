@@ -56,6 +56,8 @@ class SettingsFragment(
     private var timeEndLabel: TextView?=null
     private var leadLabel: TextView?=null
     private var cycleLabel: TextView?=null
+    private val noElementsMessage = getString(R.string.no_elements)
+    private val sameCycleLeadMessage = getString(R.string.same_cycle_lead)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +77,7 @@ class SettingsFragment(
         wipLabelLimit=view.findViewById(R.id.label_wip)
         spinnerListWip = view.findViewById(R.id.spinner_list_wip)
         val list = ArrayList<String>()
-        list.add("Ningún elemento seleccionado")
+        list.add(noElementsMessage)
         for (e in taskLists) {
             listsIds[e.getTitle()!!] = e.getId()
             list.add(e.getTitle()!!)
@@ -260,13 +262,13 @@ class SettingsFragment(
                     position: Int,
                     id: Long
                 ) {
-                    if (spinnerListCycleStart!!.selectedItem.toString()!="Ningún elemento seleccionado" && spinnerListCycleStart!!.selectedItem.toString()==spinnerListCycleEnd!!.selectedItem.toString()){
+                    if (spinnerListCycleStart!!.selectedItem.toString()!=noElementsMessage && spinnerListCycleStart!!.selectedItem.toString()==spinnerListCycleEnd!!.selectedItem.toString()){
                         if (board!!.getCycleStartList()!=null) {
                             spinnerListCycleStart!!.setSelection(list.indexOf(board!!.getCycleStartList()))
                         }else{
                             spinnerListCycleStart!!.setSelection(0)
                         }
-                        val toast: Toast = Toast.makeText(context, "No puedes seleccionar mismo estado de Inicio y fin para el Cycle Time", Toast.LENGTH_LONG)
+                        val toast: Toast = Toast.makeText(context, sameCycleLeadMessage, Toast.LENGTH_LONG)
                         toast.show()
                     }else {
                         presenter!!.updateTime(
@@ -293,13 +295,13 @@ class SettingsFragment(
                     position: Int,
                     id: Long
                 ) {
-                    if (spinnerListCycleStart!!.selectedItem.toString()!="Ningún elemento seleccionado" && spinnerListCycleStart!!.selectedItem.toString()==spinnerListCycleEnd!!.selectedItem.toString()){
+                    if (spinnerListCycleStart!!.selectedItem.toString()!=noElementsMessage && spinnerListCycleStart!!.selectedItem.toString()==spinnerListCycleEnd!!.selectedItem.toString()){
                         if (board!!.getCycleEndList()!=null) {
                             spinnerListCycleEnd!!.setSelection(list.indexOf(board!!.getCycleEndList()))
                         }else{
                             spinnerListCycleEnd!!.setSelection(0)
                         }
-                        val toast: Toast = Toast.makeText(context, "No puedes seleccionar mismo estado de Inicio y fin para el Cycle Time", Toast.LENGTH_LONG)
+                        val toast: Toast = Toast.makeText(context, sameCycleLeadMessage, Toast.LENGTH_LONG)
                         toast.show()
                     }else {
                         presenter!!.updateTime(
@@ -326,13 +328,13 @@ class SettingsFragment(
                     position: Int,
                     id: Long
                 ) {
-                    if (spinnerListLeadStart!!.selectedItem.toString()!="Ningún elemento seleccionado" && spinnerListLeadStart!!.selectedItem.toString()==spinnerListLeadEnd!!.selectedItem.toString()){
+                    if (spinnerListLeadStart!!.selectedItem.toString()!=noElementsMessage && spinnerListLeadStart!!.selectedItem.toString()==spinnerListLeadEnd!!.selectedItem.toString()){
                         if (board!!.getLeadStartList()!=null) {
                             spinnerListLeadStart!!.setSelection(list.indexOf(board!!.getLeadStartList()))
                         }else{
                             spinnerListLeadStart!!.setSelection(0)
                         }
-                        val toast: Toast = Toast.makeText(context, "No puedes seleccionar mismo estado de Inicio y fin para el Lead Time", Toast.LENGTH_LONG)
+                        val toast: Toast = Toast.makeText(context, sameCycleLeadMessage, Toast.LENGTH_LONG)
                         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
                         toast.show()
                     }else {
@@ -360,13 +362,13 @@ class SettingsFragment(
                     position: Int,
                     id: Long
                 ) {
-                    if (spinnerListLeadStart!!.selectedItem.toString()!="Ningún elemento seleccionado" && spinnerListLeadStart!!.selectedItem.toString()==spinnerListLeadEnd!!.selectedItem.toString()){
+                    if (spinnerListLeadStart!!.selectedItem.toString()!=noElementsMessage && spinnerListLeadStart!!.selectedItem.toString()==spinnerListLeadEnd!!.selectedItem.toString()){
                         if (board!!.getLeadEndList()!=null) {
                             spinnerListLeadEnd!!.setSelection(list.indexOf(board!!.getLeadEndList()))
                         }else{
                             spinnerListLeadEnd!!.setSelection(0)
                         }
-                        val toast: Toast = Toast.makeText(context, "No puedes seleccionar mismo estado de Inicio y fin para el Cycle Time", Toast.LENGTH_LONG)
+                        val toast: Toast = Toast.makeText(context, sameCycleLeadMessage, Toast.LENGTH_LONG)
                         toast.show()
                     }else {
                         presenter!!.updateTime(
