@@ -43,6 +43,8 @@ class BottomSheet(
     var task: Task? = null
     var board:Board? = null
     var radioGroup:RadioGroup?=null
+    private val anyElementSelected=getString(R.string.no_elements)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -246,7 +248,7 @@ class BottomSheet(
 
     override fun setBoard(list: List<Board>) {
         val boardListName = ArrayList<String>()
-        boardListName.add("Ningun elemento seleccionado")
+        boardListName.add(anyElementSelected)
         for (e in list) {
             boardListName.add(e.getName()!!)
             boards!![e.getName()!!] = e
@@ -275,7 +277,7 @@ class BottomSheet(
                 dismiss()
                 dialog.dismiss()
                 val nameSelected = spinnerBoards!!.selectedItem.toString()
-                if (nameSelected != "Ningun elemento seleccionado") {
+                if (nameSelected != anyElementSelected) {
                     if (type == "move" && nameSelected != boardName) {
                         presenter.moveTaskList(
                             boards!![boardName]!!,
@@ -314,7 +316,7 @@ class BottomSheet(
         spinnerLists =
             myView.findViewById<View>(R.id.spinnerTaskList) as Spinner
         val listNamesTaskList = ArrayList<String>()
-        listNamesTaskList.add("Ningun elemento seleccionado")
+        listNamesTaskList.add(anyElementSelected)
         val myAdapterTaskList = ArrayAdapter(
             requireActivity().baseContext,
             android.R.layout.simple_list_item_1, listNamesTaskList
@@ -347,7 +349,7 @@ class BottomSheet(
                 dialog.dismiss()
                 val nameSelected = spinnerBoards!!.selectedItem.toString()
                 val nameSelectedList = spinnerLists!!.selectedItem.toString()
-                if (nameSelected != "Ningun elemento seleccionado" && nameSelectedList!= "Ningun elemento seleccionado" ) {
+                if (nameSelected != anyElementSelected && nameSelectedList!= anyElementSelected ) {
                     if (type == "move" && (nameSelected != boardName || nameSelectedList!=listName)) {
                         presenter.moveTask(
                             boards!![boardName]!!,
@@ -383,8 +385,8 @@ class BottomSheet(
     }
     fun getTaskListByBoardSpinner(boardName: String): ArrayList<String> {
         val listName = ArrayList<String>()
-        listName.add("Ningun elemento seleccionado")
-        if (boardName!="Ningun elemento seleccionado") {
+        listName.add(anyElementSelected)
+        if (boardName!=anyElementSelected) {
             val taskList = boards?.get(boardName)?.getTaskLists()!!
             for (list in taskList) {
                 listName.add(list!!.getTitle()!!)

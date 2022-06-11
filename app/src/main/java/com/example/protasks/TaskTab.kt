@@ -18,7 +18,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
     var boardName: String? = null
     var lName: String? = null
     var descriptionView: TextView? = null
-    private val anyElementSelected="Ningun elemento seleccionado"
+    private val anyElementSelected=getString(R.string.no_elements)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +53,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
 
         mySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                Log.i("TASKSPINNER", "Nothing Selected")
+                Log.i("TASKSPINNER", anyElementSelected)
             }
 
             override fun onItemSelected(
@@ -74,7 +74,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
         }
         mySpinnerList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                Log.i("TASKSPINNER2", "Nothing Selected")
+                Log.i("TASKSPINNER2", anyElementSelected)
             }
 
             override fun onItemSelected(

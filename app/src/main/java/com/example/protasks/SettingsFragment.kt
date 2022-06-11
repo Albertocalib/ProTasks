@@ -186,19 +186,21 @@ class SettingsFragment(
                     s: CharSequence, start: Int,
                     count: Int, after: Int
                 ) {
+                    //I dont want to do anything before text changed
                 }
 
                 override fun onTextChanged(
                     s: CharSequence, start: Int,
                     before: Int, count: Int
                 ) {
+                    //I dont want to do anything on text changed
                 }
             })
 
 
             spinnerListWip!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    Log.i("WIPSPINNER", "Nothing Selected")
+                    Log.i("WIPSPINNER", noElementsMessage)
                 }
 
                 override fun onItemSelected(
@@ -253,7 +255,7 @@ class SettingsFragment(
             }
             spinnerListCycleStart!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    Log.i("WIPSPINNER", "Nothing Selected")
+                    Log.i("WIPSPINNER", noElementsMessage)
                 }
 
                 override fun onItemSelected(
@@ -286,7 +288,7 @@ class SettingsFragment(
             }
             spinnerListCycleEnd!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    Log.i("WIPSPINNER", "Nothing Selected")
+                    Log.i("WIPSPINNER", noElementsMessage)
                 }
 
                 override fun onItemSelected(
@@ -319,7 +321,7 @@ class SettingsFragment(
             }
             spinnerListLeadStart!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    Log.i("WIPSPINNER", "Nothing Selected")
+                    Log.i("WIPSPINNER", noElementsMessage)
                 }
 
                 override fun onItemSelected(
@@ -353,7 +355,7 @@ class SettingsFragment(
             }
             spinnerListLeadEnd!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    Log.i("WIPSPINNER", "Nothing Selected")
+                    Log.i("WIPSPINNER", noElementsMessage)
                 }
 
                 override fun onItemSelected(
