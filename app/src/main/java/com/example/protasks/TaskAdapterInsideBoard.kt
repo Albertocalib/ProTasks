@@ -19,7 +19,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.protasks.models.Rol
 import com.example.protasks.models.Tag
 import com.example.protasks.models.Task
-import com.example.protasks.presenters.TaskListPresenter
+import com.example.protasks.presenters.tasklist.TaskListPresenter
 import com.example.protasks.utils.BottomSheet
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -36,7 +36,7 @@ class TaskAdapterInsideBoard(
     private val supportFragmentManager: FragmentManager,
     private val boardName: String,
     private val boardId: Long,
-    private val presenter:TaskListPresenter,
+    private val presenter: TaskListPresenter,
     private val rol:Rol?=null
 ) :
     DragItemAdapter<Triple<Long, Task, Boolean>, TaskAdapterInsideBoard.ViewHolder>() {

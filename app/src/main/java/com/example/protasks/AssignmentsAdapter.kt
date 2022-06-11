@@ -11,11 +11,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.Task
 import com.example.protasks.models.User
-import com.example.protasks.presenters.TaskPresenter
+import com.example.protasks.presenters.task.TaskPresenter
 import com.example.protasks.utils.ImageHandler
 
 
-class AssignmentsAdapter(private val assignments : List<User>?,private val taskPresenter:TaskPresenter,private val task: Task) :RecyclerView.Adapter<AssignmentsAdapter.ViewHolderAssignment>(){
+class AssignmentsAdapter(private val assignments : List<User>?, private val taskPresenter: TaskPresenter, private val task: Task) :RecyclerView.Adapter<AssignmentsAdapter.ViewHolderAssignment>(){
 
     private val imageHandler: ImageHandler = ImageHandler()
 

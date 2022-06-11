@@ -1,6 +1,5 @@
 package com.example.protasks
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 
 import android.widget.LinearLayout
 import com.example.protasks.models.Message
-import com.example.protasks.utils.Preference
+import com.example.protasks.utils.PreferencesManager
 
 
 class MessagesAdapter(
     private val msgList: List<Message?>,
-    private val preference:Preference
+    private val preference: PreferencesManager
 ) : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

@@ -16,9 +16,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.*
-import com.example.protasks.presenters.BoardPresenter
+import com.example.protasks.presenters.board.BoardPresenter
 import com.example.protasks.utils.BottomSheet
-import com.example.protasks.views.IBoardsView
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -27,7 +26,9 @@ import kotlin.collections.ArrayList
 import android.view.Gravity
 
 import android.widget.Toast
+import com.example.protasks.presenters.board.IBoardContract
 import com.example.protasks.utils.Preference
+import com.example.protasks.utils.PreferencesManager
 
 
 class SettingsFragment(
@@ -35,7 +36,7 @@ class SettingsFragment(
     private val boardName: String,
     private val supportFragmentManager: FragmentManager,
     private val perm:BoardUsersPermRel
-) : Fragment(),IBoardsView {
+) : Fragment(),IBoardContract.View {
     private var wipLimit: TextInputEditText? = null
     private var wipLabelLimit: TextInputLayout?=null
     private var wipActivated: SwitchMaterial? = null
@@ -67,7 +68,8 @@ class SettingsFragment(
         savedInstanceState: Bundle?
     ): View {
         val view: View = inflater.inflate(R.layout.settings, container, false)
-        presenter= BoardPresenter(this, Preference(requireContext()))
+        val preference:PreferencesManager = Preference(requireContext())
+        presenter= BoardPresenter(this, preference)
         wipActivated = view.findViewById(R.id.wip_activated)
         wipLimit = view.findViewById(R.id.wipLimit)
         wipLabelLimit=view.findViewById(R.id.label_wip)
@@ -415,7 +417,12 @@ class SettingsFragment(
         }
     }
 
-    override fun setBoards(boards: List<Board>) {
+    override fun onResponseFailure(t: Throwable?) {
+        Log.e("SETTINGS", t!!.message!!)
+        Toast.makeText(context, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun setBoards(boards: ArrayList<Board>) {
         TODO("Not yet implemented")
     }
 
@@ -442,5 +449,9 @@ class SettingsFragment(
 
     override fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun addBoard(board: Board) {
+        TODO("Not yet implemented")
     }
 }

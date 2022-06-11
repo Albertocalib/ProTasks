@@ -1,6 +1,7 @@
 package com.example.protasks
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,38 +14,35 @@ import androidx.fragment.app.FragmentManager
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.*
-import com.example.protasks.presenters.MessagePresenter
+import com.example.protasks.presenters.message.IMessageContract
+import com.example.protasks.presenters.message.MessagePresenter
 import com.example.protasks.utils.Preference
-import com.example.protasks.views.ITasksView
+import com.example.protasks.utils.PreferencesManager
 
 
-class TaskCommentsTab(private val t: Toolbar,
-                      private var task: Task,
-                      private val boardName: String,
-                      private val boardId: Long,
-                      private val fragmentMgr: FragmentManager,
-                      private val viewHolder: TaskAdapterInsideBoard.ViewHolder?,
-                      val rol: Rol?) : Fragment(),ITasksView {
+class TaskCommentsTab(private var task: Task,
+                      val rol: Rol?) : Fragment(),IMessageContract.View {
     private var msgList: ArrayList<Message?>? = null
     private var inputText: EditText? = null
     private var send: Button? = null
     private var recyclerView: RecyclerView? = null
     private var adapter: MessagesAdapter? = null
     val layoutManager = LinearLayoutManager(context)
-    var presenter:MessagePresenter? =null
+    var presenter: MessagePresenter? = null
     private var user:User?=null
 
-    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, state: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, state: Bundle?): View {
         super.onCreateView(inflater, parent, state)
         val v: View = inflater.inflate(R.layout.message_fragment, parent, false)
         msgList= task.getMessages() as ArrayList<Message?>?
-        presenter=MessagePresenter(this,Preference(requireContext()))
+        val preference:PreferencesManager = Preference(requireContext())
+        presenter = MessagePresenter(this,preference)
         presenter!!.getUser()
         inputText = v.findViewById(R.id.input_text) as EditText?
         send = v.findViewById(R.id.send) as Button?
         recyclerView = v.findViewById(R.id.recycler_view) as RecyclerView?
         recyclerView!!.layoutManager = layoutManager
-        adapter = MessagesAdapter(msgList!!, Preference(requireContext()))
+        adapter = MessagesAdapter(msgList!!, preference)
         recyclerView!!.adapter = adapter
         send!!.setOnClickListener {
             val content = inputText!!.text.toString()
@@ -64,41 +62,15 @@ class TaskCommentsTab(private val t: Toolbar,
 
 
     companion object {
-        fun newInstance(t: Toolbar,task: Task,
-                        boardName: String,
-                        boardId: Long,
-                        fragmentMgr: FragmentManager,
-                        viewHolder: TaskAdapterInsideBoard.ViewHolder?,
-                        rol: Rol?): TaskCommentsTab = TaskCommentsTab(t,task,boardName,boardId,fragmentMgr,viewHolder,rol)
+        fun newInstance(task: Task,
+                        rol: Rol?): TaskCommentsTab = TaskCommentsTab(task,rol)
     }
 
-    override fun setTasks(tasks: List<Task>) {
-        TODO("Not yet implemented")
+    override fun onResponseFailure(t: Throwable?) {
+        Log.e("MESSAGE", t!!.message!!)
+        Toast.makeText(context, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
     }
 
-    override fun setAssignments(users: List<User>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setUsers(users: List<User>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setTags(tags: List<Tag>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setTagsBoard(tags: List<Tag>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun updateTags(tag: Tag) {
-        TODO("Not yet implemented")
-    }
-
-    override fun updateTask(t: Task) {
-        TODO("Not yet implemented")
-    }
 
     override fun setUser(u: User) {
         user=u
@@ -111,10 +83,6 @@ class TaskCommentsTab(private val t: Toolbar,
         adapter!!.notifyItemInserted(msgList!!.size - 1)
         recyclerView!!.scrollToPosition(msgList!!.size - 1)
         task.addMessage(msg)
-    }
-
-    override fun showToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
 

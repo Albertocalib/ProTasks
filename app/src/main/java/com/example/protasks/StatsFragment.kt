@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
 import com.example.protasks.models.User
-import com.example.protasks.presenters.TaskListPresenter
+import com.example.protasks.presenters.tasklist.TaskListPresenter
 import com.github.mikephil.charting.charts.HorizontalBarChart
 import com.github.mikephil.charting.components.Description
 import kotlin.collections.ArrayList

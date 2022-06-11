@@ -18,7 +18,7 @@ class TaskFragmentManagerDialog(fm: FragmentActivity, t: Toolbar,
                                 val rol: Rol?) :
     FragmentStateAdapter(fm) {
     private val detailsTab=TaskDetailsTab.newInstance(t,task,boardName,boardId,fragmentMgr,viewHolder,rol)
-    private val commentsTab=TaskCommentsTab.newInstance(t,task,boardName,boardId,fragmentMgr,viewHolder,rol)
+    private val commentsTab=TaskCommentsTab.newInstance(task,rol)
 
     override fun getItemCount(): Int = 2
 

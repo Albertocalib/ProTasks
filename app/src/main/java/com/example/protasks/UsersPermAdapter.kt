@@ -9,11 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
-import com.example.protasks.presenters.BoardPresenter
+import com.example.protasks.presenters.board.BoardPresenter
 import com.example.protasks.utils.ImageHandler
 import com.example.protasks.models.*
 
-class UsersPermAdapter(private val users : List<BoardUsersPermRel>?, private val presenter:BoardPresenter, private val context: Context,private val board:Board,private val perm:BoardUsersPermRel) :RecyclerView.Adapter<UsersPermAdapter.ViewHolderUsersPerm>()
+class UsersPermAdapter(private val users : List<BoardUsersPermRel>?, private val presenter: BoardPresenter, private val context: Context, private val board:Board, private val perm:BoardUsersPermRel) :RecyclerView.Adapter<UsersPermAdapter.ViewHolderUsersPerm>()
 {
 
     private val imageHandler: ImageHandler = ImageHandler()

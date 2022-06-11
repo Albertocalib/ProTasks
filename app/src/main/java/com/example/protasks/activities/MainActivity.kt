@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.widget.*
@@ -20,14 +21,15 @@ import com.example.protasks.*
 import com.example.protasks.models.Board
 import com.example.protasks.models.BoardUsersPermRel
 import com.example.protasks.models.User
-import com.example.protasks.presenters.BoardPresenter
+import com.example.protasks.presenters.board.BoardPresenter
+import com.example.protasks.presenters.board.IBoardContract
 import com.example.protasks.utils.Preference
-import com.example.protasks.views.IBoardsView
+import com.example.protasks.utils.PreferencesManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 
 
-class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
+class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardContract.View {
 
     private var actionBar: ActionBarDrawerToggle? = null
     var recyclerView2: RecyclerView? = null
@@ -43,11 +45,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
     private var presenter: BoardPresenter? = null
     var bottomNavView:BottomNavigationView? = null
     var fragment:Fragment?=null
+    private var boards:ArrayList<Board> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_screen)
-        presenter = BoardPresenter(this, Preference(baseContext))
+        val preference:PreferencesManager = Preference(baseContext)
+        presenter = BoardPresenter(this, preference)
         presenter!!.getBoards()
         toolbar = findViewById(R.id.toolbar)
         val changeViewModeButton:ImageButton = toolbar!!.findViewById(R.id.viewModeButton)
@@ -124,8 +128,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
 
     }
 
+    override fun onResponseFailure(t: Throwable?) {
+        Log.e("MAIN", t!!.message!!)
+        Toast.makeText(context, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
+    }
 
-    override fun setBoards(boards: List<Board>) {
+
+    override fun setBoards(boards: ArrayList<Board>) {
+        this.boards = boards
         boardAdapterMenu = BoardAdapterMenu(boards, R.layout.board_list_mode_menu)
         recyclerView2!!.adapter = boardAdapterMenu
     }
@@ -169,6 +179,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardsView {
 
     override fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun addBoard(board: Board) {
+        boards.add(board)
+        setBoards(boards)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

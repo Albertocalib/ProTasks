@@ -12,6 +12,7 @@ import com.example.protasks.R
 import com.example.protasks.presenters.login.ILoginContract
 import com.example.protasks.presenters.login.LoginPresenterImp
 import com.example.protasks.utils.Preference
+import com.example.protasks.utils.PreferencesManager
 
 
 class LoginActivity : AppCompatActivity(), ILoginContract.View, View.OnClickListener {
@@ -37,7 +38,8 @@ class LoginActivity : AppCompatActivity(), ILoginContract.View, View.OnClickList
         //set listener
         btnLogin!!.setOnClickListener(this)
         //init
-        loginPresenter = LoginPresenterImp(this, Preference(baseContext))
+        val preference:PreferencesManager = Preference(baseContext)
+        loginPresenter = LoginPresenterImp(this, preference)
         loginPresenter!!.setProgressBarVisiblity(View.INVISIBLE)
         loginPresenter!!.cheekKeepLogin()
     }
@@ -84,7 +86,7 @@ class LoginActivity : AppCompatActivity(), ILoginContract.View, View.OnClickList
     }
 
     override fun onResponseFailure(t: Throwable?) {
-        Log.e("LOGIN", t!!.message!!);
+        Log.e("LOGIN", t!!.message!!)
         Toast.makeText(this, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
     }
 

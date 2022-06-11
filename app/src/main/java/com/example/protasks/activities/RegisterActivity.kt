@@ -125,7 +125,7 @@ class RegisterActivity : AppCompatActivity(), IRegisterContract.View, View.OnCli
     }
 
     override fun onResponseFailure(t: Throwable?) {
-        Log.e("REGISTER", t!!.message!!);
+        Log.e("REGISTER", t!!.message!!)
         Toast.makeText(this, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
 
     }

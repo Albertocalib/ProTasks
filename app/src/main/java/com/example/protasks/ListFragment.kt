@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.protasks.models.Rol
 import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
-import com.example.protasks.presenters.TaskListPresenter
+import com.example.protasks.presenters.tasklist.ITaskListContract
+import com.example.protasks.presenters.tasklist.TaskListPresenter
 import com.example.protasks.utils.Preference
+import com.example.protasks.utils.PreferencesManager
 import com.woxthebox.draglistview.DragListView
 import com.woxthebox.draglistview.DragListView.DragListListenerAdapter
 import com.woxthebox.draglistview.swipe.ListSwipeHelper
@@ -21,7 +23,7 @@ import com.woxthebox.draglistview.swipe.ListSwipeItem
 import com.woxthebox.draglistview.swipe.ListSwipeItem.SwipeDirection
 import java.util.*
 
-class ListFragment : Fragment() {
+class ListFragment(private var boardsView: ITaskListContract.ViewNormal) : Fragment() {
     private var mItemArray: ArrayList<Triple<Long, Task, Boolean>>? =
         null
     private var mDragListView: DragListView? = null
@@ -49,7 +51,8 @@ class ListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         taskLists = arguments?.getParcelableArrayList("taskLists")
         boardName = arguments?.getString("boardName")
-        presenter = TaskListPresenter(null, Preference(requireContext()))
+        val preference:PreferencesManager = Preference(requireContext())
+        presenter = TaskListPresenter(boardsView, preference)
         supportFragmentManager = this.fragmentManager
         mDragListView!!.recyclerView.isVerticalScrollBarEnabled = true
         mDragListView!!.isDragEnabled = true
@@ -187,11 +190,11 @@ class ListFragment : Fragment() {
     }
 
     companion object {
-        fun instance(taskLists: List<TaskList>,boardName:String): ListFragment {
+        fun instance(boardsView: ITaskListContract.ViewNormal,taskLists: List<TaskList>,boardName:String): ListFragment {
             val bundle = Bundle()
             bundle.putParcelableArrayList("taskLists",taskLists as ArrayList<TaskList>)
             bundle.putString("boardName",boardName)
-            return ListFragment().apply { arguments = bundle }
+            return ListFragment(boardsView).apply { arguments = bundle }
         }
     }
 }

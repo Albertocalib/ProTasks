@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.widget.SearchView
@@ -21,16 +22,17 @@ import com.example.protasks.activities.BoardInsideActivity
 import com.example.protasks.models.Board
 import com.example.protasks.models.BoardUsersPermRel
 import com.example.protasks.models.User
-import com.example.protasks.presenters.BoardPresenter
+import com.example.protasks.presenters.board.BoardPresenter
+import com.example.protasks.presenters.board.IBoardContract
 import com.example.protasks.utils.ImageHandler
 import com.example.protasks.utils.Preference
-import com.example.protasks.views.IBoardsView
+import com.example.protasks.utils.PreferencesManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 
-class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment(),IBoardsView,PopupMenu.OnMenuItemClickListener,
+class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment(),IBoardContract.View,PopupMenu.OnMenuItemClickListener,
     BoardAdapter.OnItemClickListener {
     private var presenter: BoardPresenter? = null
     var recyclerView: RecyclerView? = null
@@ -42,6 +44,7 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
     private var imageBoard: Bitmap? = null
     var changeViewModeButton:ImageButton?=null
     private val imageHandler: ImageHandler = ImageHandler()
+    private var boards:ArrayList<Board> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +60,8 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
             menu.inflate(R.menu.view_mode_button)
             menu.show()
         }
-        presenter = BoardPresenter(this, Preference(cont))
+        val preference: PreferencesManager = Preference(cont)
+        presenter = BoardPresenter(this, preference)
         presenter!!.getBoards()
         recyclerView = view.findViewById(R.id.recycler_board_list)
         setLayoutManager()
@@ -172,7 +176,14 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
     companion object {
         fun newInstance(t: Toolbar,context:Context): MainBoardTab = MainBoardTab(t,context)
     }
-    override fun setBoards(boards: List<Board>) {
+
+    override fun onResponseFailure(t: Throwable?) {
+        Log.e("MAINBOARDTAB", t!!.message!!)
+        Toast.makeText(context, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun setBoards(boards: ArrayList<Board>) {
+        this.boards = boards
         boardAdapter = if (presenter!!.getViewPref()) {
             BoardAdapter(boards, R.layout.board_list_mode,this)
         } else {
@@ -202,6 +213,11 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
 
     override fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun addBoard(board: Board) {
+        this.boards.add(board)
+        this.setBoards(boards)
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {

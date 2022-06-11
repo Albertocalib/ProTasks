@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.Board
 import com.example.protasks.models.Task
 import com.example.protasks.models.TaskList
-import com.example.protasks.presenters.TaskListPresenter
+import com.example.protasks.presenters.tasklist.TaskListPresenter
 import com.example.protasks.utils.BottomSheet
 import com.woxthebox.draglistview.BoardView
 import com.woxthebox.draglistview.BoardView.BoardCallback
@@ -29,14 +29,13 @@ import com.woxthebox.draglistview.DragItem
 import java.util.*
 import kotlin.collections.HashMap
 import android.widget.Toast
-import androidx.core.view.children
 import com.example.protasks.models.Rol
+import com.example.protasks.presenters.tasklist.ITaskListContract
 import com.example.protasks.utils.Preference
 
-
-class BoardFragment : Fragment() {
+class BoardFragment(private var boardsView: ITaskListContract.ViewNormal) : Fragment() {
     private var taskLists: List<TaskList>? = null
-    private var presenter:TaskListPresenter? = null
+    private var presenter: TaskListPresenter? = null
     private var supportFragmentManager:FragmentManager? = null
     private var boardName:String? = null
     private var mBoardView: BoardView? = null
@@ -63,7 +62,7 @@ class BoardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         taskLists = arguments?.getParcelableArrayList("taskLists")
         boardName = arguments?.getString("boardName")
-        presenter = TaskListPresenter(null, Preference(requireContext()))
+        presenter = TaskListPresenter(boardsView, Preference(requireContext()))
         supportFragmentManager = this.fragmentManager
         mBoardView!!.setSnapToColumnsWhenScrolling(true)
         mBoardView!!.setSnapToColumnWhenDragging(true)
@@ -165,12 +164,15 @@ class BoardFragment : Fragment() {
                 if (oldColumn!=newColumn && board!=null && board!!.getWipActivated() &&
                     columnName==board!!.getWipList() && mBoardView!!.getAdapter(newColumn).itemCount>=board!!.getWipLimit()){
                     mBoardView!!.getHeaderView(newColumn).setBackgroundColor(Color.RED)
-                    if (toast==null){
-                        toast = Toast.makeText(context, "WIP Superado, no puedes añadir más tareas a esta columna", Toast.LENGTH_SHORT)
+                    if (toast != null) {
+                        toast!!.cancel()
                     }
-                    if (!toast!!.view!!.isShown){
-                        toast!!.show()
-                    }
+                    toast = Toast.makeText(
+                        context,
+                        "WIP Superado, no puedes añadir más tareas a esta columna",
+                        Toast.LENGTH_SHORT
+                    )
+                    toast!!.show()
                     Handler().postDelayed({
                         mBoardView!!.getHeaderView(newColumn).setBackgroundColor(Color.TRANSPARENT)
                     }, 1000)
@@ -440,11 +442,11 @@ class BoardFragment : Fragment() {
     }
 
     companion object {
-        fun instance(taskLists: List<TaskList>,boardName: String): BoardFragment {
+        fun instance(view:ITaskListContract.ViewNormal,taskLists: List<TaskList>,boardName: String): BoardFragment {
             val bundle = Bundle()
             bundle.putParcelableArrayList("taskLists",taskLists as ArrayList<TaskList>)
             bundle.putString("boardName",boardName)
-            return BoardFragment().apply { arguments = bundle }
+            return BoardFragment(view).apply { arguments = bundle }
 
         }
     }

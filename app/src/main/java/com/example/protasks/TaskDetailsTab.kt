@@ -24,12 +24,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.models.*
-import com.example.protasks.presenters.TaskPresenter
-import com.example.protasks.utils.BottomSheet
+import com.example.protasks.presenters.task.ITaskContract
+import com.example.protasks.presenters.task.TaskPresenter
+import com.example.protasks.utils.*
 import com.example.protasks.utils.DatePicker
-import com.example.protasks.utils.Preference
-import com.example.protasks.utils.SpinnerImage
-import com.example.protasks.views.ITasksView
 import com.google.android.material.textfield.TextInputEditText
 import java.text.DateFormat
 import java.util.*
@@ -43,7 +41,7 @@ class TaskDetailsTab(private val t: Toolbar,
                      private val boardId: Long,
                      private val fragmentMgr: FragmentManager,
                      private val viewHolder: TaskAdapterInsideBoard.ViewHolder?,
-                     val rol: Rol?) : Fragment(), ITasksView {
+                     val rol: Rol?) : Fragment(), ITaskContract.View {
     var name: TextInputEditText? = null
     var description: TextInputEditText? = null
     var toolbar: Toolbar? = null
@@ -102,7 +100,8 @@ class TaskDetailsTab(private val t: Toolbar,
         name = v.findViewById(R.id.taskname)
         description = v.findViewById(R.id.taskDescription)
 
-        taskPresenter = TaskPresenter(this, Preference(requireContext()),requireContext().contentResolver)
+        val preference: PreferencesManager = Preference(requireContext())
+        taskPresenter = TaskPresenter(this, preference,requireContext().contentResolver)
 
         name!!.setText(task.getTitle())
         if (task.getDescription() != null) {
@@ -481,6 +480,11 @@ class TaskDetailsTab(private val t: Toolbar,
 
     override fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onResponseFailure(t: Throwable?) {
+        Log.e("TASK", t!!.message!!)
+        Toast.makeText(context, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
     }
 
     fun updateVisibilityDeleteSubtasks(){

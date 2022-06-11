@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
@@ -19,17 +20,18 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.*
 import com.example.protasks.models.*
-import com.example.protasks.presenters.BoardPresenter
-import com.example.protasks.presenters.TaskListPresenter
+import com.example.protasks.presenters.board.BoardPresenter
+import com.example.protasks.presenters.tasklist.TaskListPresenter
+import com.example.protasks.presenters.board.IBoardContract
+import com.example.protasks.presenters.tasklist.ITaskListContract
 import com.example.protasks.utils.BottomSheet
 import com.example.protasks.utils.Preference
-import com.example.protasks.views.IBoardsView
-import com.example.protasks.views.IInsideBoardsView
+import com.example.protasks.utils.PreferencesManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
-import java.util.*
+import kotlin.collections.ArrayList
 
-class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,PopupMenu.OnMenuItemClickListener {
+class BoardInsideActivity : AppCompatActivity(), ITaskListContract.ViewNormal,IBoardContract.View,PopupMenu.OnMenuItemClickListener {
     private var lists: List<TaskList> = ArrayList()
     private var boardName: String? = null
     private var presenter: TaskListPresenter? = null
@@ -48,10 +50,11 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     var userCompleteName: TextView? = null
     var logoutButton: ImageButton? = null
     var viewMode: ImageButton? = null
-    private var preference:Preference?=null
+    private var preference:PreferencesManager?=null
     private var perms: BoardUsersPermRel? = null
     private var boardId: Long? = null
     private var filterButton:ImageButton?=null
+    private var boards:ArrayList<Board> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,7 +113,7 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
             true
         }
         if (savedInstanceState == null) {
-            showFragment(BoardFragment.instance(lists,boardName!!))
+            showFragment(BoardFragment.instance(this,lists,boardName!!))
         }
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
         recyclerView2 = navigationView.findViewById(R.id.recycler_board_navigation_view)
@@ -164,14 +167,21 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     override fun setTaskLists(taskList: List<TaskList>) {
         lists = taskList
         fragment = if (preference!!.getModeView()){
-            ListFragment.instance(lists,boardName!!)
+            ListFragment.instance(this,lists,boardName!!)
         }else{
-            BoardFragment.instance(lists,boardName!!)
+            BoardFragment.instance(this,lists,boardName!!)
 
         }
         showFragment(fragment!!)
     }
-    override fun setBoards(boards: List<Board>) {
+
+    override fun onResponseFailure(t: Throwable?) {
+        Log.e("BOARDINSIDEACTIVITY", t!!.message!!)
+        Toast.makeText(context, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun setBoards(boards: ArrayList<Board>) {
+        this.boards = boards
         boardAdapterMenu = BoardAdapterMenu(boards, R.layout.board_list_mode_menu)
         recyclerView2!!.adapter = boardAdapterMenu
     }
@@ -198,7 +208,12 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     }
 
     override fun showToast(message:String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun addBoard(board: Board) {
+        boards.add(board)
+        setBoards(boards)
     }
 
 
@@ -235,15 +250,15 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when {
             item!!.itemId==R.id.listViewMode -> {
-                fragment = ListFragment.instance(lists,boardName!!)
-                preference!!.setModeView(true,this)
+                fragment = ListFragment.instance(this,lists,boardName!!)
+                preference!!.setModeView(true)
                 if (perms!=null){
                     (fragment as ListFragment).rol=perms!!.getRol()
                 }
             }
             item.itemId==R.id.BoardViewMode -> {
-                fragment = BoardFragment.instance(lists,boardName!!)
-                preference!!.setModeView(false,this)
+                fragment = BoardFragment.instance(this,lists,boardName!!)
+                preference!!.setModeView(false)
                 if (perms!=null){
                     (fragment as BoardFragment).rol=perms!!.getRol()
                 }
@@ -258,12 +273,12 @@ class BoardInsideActivity : AppCompatActivity(), IInsideBoardsView,IBoardsView,P
     override fun updateTasks(listsUpdated:List<TaskList>){
         lists=listsUpdated
         if (preference!!.getModeView()){
-            fragment=ListFragment.instance(lists,boardName!!)
+            fragment=ListFragment.instance(this,lists,boardName!!)
             if (perms!=null){
                 (fragment as ListFragment).rol=perms!!.getRol()
             }
         }else{
-            fragment=BoardFragment.instance(lists,boardName!!)
+            fragment=BoardFragment.instance(this,lists,boardName!!)
             if (perms!=null){
                 (fragment as BoardFragment).rol=perms!!.getRol()
             }

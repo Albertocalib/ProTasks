@@ -20,21 +20,21 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.protasks.models.Rol
 import com.example.protasks.models.Task
-import com.example.protasks.presenters.TaskPresenter
+import com.example.protasks.presenters.task.TaskPresenter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 
 class SubtaskAdapter(
-        private val subtasks: List<Task?>?,
-        private val taskPresenter: TaskPresenter?,
-        private val task: Task?,
-        private val context: Context,
-        private val supportFragmentManager: FragmentManager,
-        private val taskDialogExtend: TaskDetailsTab,
-        private val boardId: Long,
-        private val boardName: String,
-        private val rol: Rol?
+    private val subtasks: List<Task?>?,
+    private val taskPresenter: TaskPresenter?,
+    private val task: Task?,
+    private val context: Context,
+    private val supportFragmentManager: FragmentManager,
+    private val taskDialogExtend: TaskDetailsTab,
+    private val boardId: Long,
+    private val boardName: String,
+    private val rol: Rol?
 ) : RecyclerView.Adapter<SubtaskAdapter.ViewHolderSubtask>() {
     override fun onCreateViewHolder(
             parent: ViewGroup,

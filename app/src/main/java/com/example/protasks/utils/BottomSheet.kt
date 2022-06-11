@@ -15,10 +15,11 @@ import com.example.protasks.R
 import com.example.protasks.models.Board
 import com.example.protasks.models.Rol
 import com.example.protasks.models.Task
-import com.example.protasks.presenters.BoardPresenter
+import com.example.protasks.presenters.board.BoardPresenter
 import com.example.protasks.presenters.IPresenter
-import com.example.protasks.presenters.TaskListPresenter
-import com.example.protasks.presenters.TaskPresenter
+import com.example.protasks.presenters.tasklist.TaskListPresenter
+import com.example.protasks.presenters.task.TaskPresenter
+import com.example.protasks.presenters.tasklist.ITaskListContract
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import top.defaults.colorpicker.ColorPickerPopup
@@ -30,7 +31,7 @@ class BottomSheet(
     private val listName: String,
     private val presenter: IPresenter,
     private val sheetMode: String
-) : BottomSheetDialogFragment() {
+) : BottomSheetDialogFragment(),ITaskListContract.ViewBottomSheet {
     var name: TextInputEditText? = null
     var description: TextInputEditText? = null
     var createBtn: Button? = null
@@ -243,7 +244,7 @@ class BottomSheet(
 
     }
 
-    fun setBoard(list: List<Board>) {
+    override fun setBoard(list: List<Board>) {
         val boardListName = ArrayList<String>()
         boardListName.add("Ningun elemento seleccionado")
         for (e in list) {
@@ -390,6 +391,16 @@ class BottomSheet(
             }
         }
         return listName
+    }
+
+    override fun onResponseFailure(t: Throwable?) {
+        Log.e("BOTTOMSHEET", t!!.message!!)
+        Toast.makeText(context, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
+
+    }
+
+    override fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
 }

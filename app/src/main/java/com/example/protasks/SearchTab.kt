@@ -3,6 +3,7 @@ package com.example.protasks
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -12,19 +13,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.activities.BoardInsideActivity
 import com.example.protasks.models.*
-import com.example.protasks.presenters.BoardPresenter
-import com.example.protasks.presenters.TaskPresenter
+import com.example.protasks.presenters.board.BoardPresenter
+import com.example.protasks.presenters.task.TaskPresenter
+import com.example.protasks.presenters.board.IBoardContract
+import com.example.protasks.presenters.task.ITaskContract
 import com.example.protasks.utils.Preference
-import com.example.protasks.views.IBoardsView
-import com.example.protasks.views.ITasksView
+import com.example.protasks.utils.PreferencesManager
 
-
-class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,BoardAdapter.OnItemClickListener {
+class SearchTab(private val cont:Context) : Fragment(),IBoardContract.View,ITaskContract.View,BoardAdapter.OnItemClickListener {
     private var presenter: BoardPresenter? = null
     var recyclerViewBoard: RecyclerView? = null
     var recyclerViewTask: RecyclerView? = null
     var searchView: SearchView? = null
     private var taskPresenter: TaskPresenter?=null
+    private var boards:ArrayList<Board>?=ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,9 +34,10 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,Bo
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.search_view, container, false)
-        presenter = BoardPresenter(this, Preference(cont))
+        val preference: PreferencesManager = Preference(requireContext())
+        presenter = BoardPresenter(this, preference)
         presenter!!.getBoards()
-        taskPresenter= TaskPresenter(this, Preference(requireContext()),requireContext().contentResolver)
+        taskPresenter= TaskPresenter(this, preference,requireContext().contentResolver)
         taskPresenter!!.getTasks()
         recyclerViewTask = view.findViewById(R.id.recycler_task_search)
         recyclerViewBoard = view.findViewById(R.id.recycler_board_search)
@@ -67,7 +70,14 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,Bo
     companion object {
         fun newInstance(context:Context): SearchTab = SearchTab(context)
     }
-    override fun setBoards(boards: List<Board>) {
+
+    override fun onResponseFailure(t: Throwable?) {
+        Log.e("SEARCHTAB", t!!.message!!)
+        Toast.makeText(context, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
+    }
+
+    override fun setBoards(boards: ArrayList<Board>) {
+        this.boards = boards
         recyclerViewBoard!!.adapter = BoardAdapter(boards, R.layout.board,this)
     }
 
@@ -97,6 +107,11 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardsView,ITasksView,Bo
 
     override fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun addBoard(board: Board) {
+        boards!!.add(board)
+        setBoards(boards!!)
     }
 
     override fun setTasks(tasks: List<Task>) {

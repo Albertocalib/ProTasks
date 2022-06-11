@@ -2,9 +2,10 @@ package com.example.protasks.presenters.login
 
 import com.example.protasks.models.User
 import com.example.protasks.utils.Preference
+import com.example.protasks.utils.PreferencesManager
 
 
-class LoginPresenterImp(private var iLoginView: ILoginContract.View, private val preference:Preference) :
+class LoginPresenterImp(private var iLoginView: ILoginContract.View, private val preference:PreferencesManager) :
     ILoginContract.Presenter,ILoginContract.Model.OnFinishedListener {
 
     private var keepLogin:Boolean = false
