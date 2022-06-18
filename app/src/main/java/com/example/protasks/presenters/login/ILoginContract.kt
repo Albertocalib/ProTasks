@@ -25,7 +25,7 @@ interface ILoginContract {
         fun getPassword():String
     }
 
-    interface Presenter {
+    interface Presenter:Model.OnFinishedListener {
         fun doLogin(userName:String, password:String, keepLogin:Boolean)
         fun setProgressBarVisiblity(visiblity:Int)
         fun cheekKeepLogin()

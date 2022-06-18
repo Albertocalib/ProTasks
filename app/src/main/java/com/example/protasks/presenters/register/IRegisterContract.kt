@@ -19,11 +19,14 @@ interface IRegisterContract {
         fun onSetProgressBarVisibility(visibility: Int)
         fun postResult(successful: Boolean?, code: Int)
         fun onResponseFailure(t: Throwable?)
+        fun passwordError(message: String)
+        fun emailError(message: String)
     }
 
     interface Presenter {
         fun createUser(name:String,surname:String,userName: String, password: String,email:String)
         fun setProgressBarVisiblity(visiblity:Int)
         fun checkEmail(email:String):Boolean
+        fun checkPassword(password:String,passwordRep:String):Boolean
     }
 }

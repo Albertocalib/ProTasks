@@ -62,9 +62,7 @@ class RegisterActivity : AppCompatActivity(), IRegisterContract.View, View.OnCli
             }
 
             override fun afterTextChanged(s: Editable) {
-                if (editPass!!.text.toString() !="" && editPassRepeat!!.text.toString()!=editPass!!.text.toString()){
-                    editPassRepeat!!.error = "Passwords doesn't match"
-                }
+                registerPresenter!!.checkPassword(editPass!!.text.toString(),editPassRepeat!!.text.toString())
             }
         }
         editPassRepeat!!.addTextChangedListener(watcherPassword)
@@ -86,14 +84,11 @@ class RegisterActivity : AppCompatActivity(), IRegisterContract.View, View.OnCli
             }
 
             override fun afterTextChanged(s: Editable) {
-                if (!registerPresenter!!.checkEmail(editEmail!!.text.toString())){
-                    editEmail!!.error = "This is not a valid e-mail (example@example.com)"
-                }
+                registerPresenter!!.checkEmail(editEmail!!.text.toString())
             }
         })
         //init
-        registerPresenter =
-            RegisterPresenterImp(this)
+        registerPresenter = RegisterPresenterImp(this)
         registerPresenter!!.setProgressBarVisiblity(View.INVISIBLE)
     }
 
@@ -133,5 +128,13 @@ class RegisterActivity : AppCompatActivity(), IRegisterContract.View, View.OnCli
         Toast.makeText(this, getString(R.string.communication_error), Toast.LENGTH_LONG).show()
 
     }
+
+    override fun passwordError(message: String) {
+        editPassRepeat!!.error = message
+    }
+    override fun emailError(message: String) {
+        editEmail!!.error = message
+    }
+
 }
 

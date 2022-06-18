@@ -5,7 +5,7 @@ import com.example.protasks.utils.PreferencesManager
 
 
 class LoginPresenterImp(private var iLoginView: ILoginContract.View, private val preference:PreferencesManager) :
-    ILoginContract.Presenter,ILoginContract.Model.OnFinishedListener {
+    ILoginContract.Presenter {
 
     private var keepLogin:Boolean = false
     private val loginModel: LoginModel = LoginModel()
