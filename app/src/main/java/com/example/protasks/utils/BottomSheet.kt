@@ -88,7 +88,7 @@ class BottomSheet(
                 val builder = AlertDialog.Builder(context)
                 builder.setMessage("¿Estás seguro que desea eliminarlo?")
                     .setCancelable(false)
-                    .setPositiveButton("Aceptar") { dialog, id ->
+                    .setPositiveButton("Aceptar") { dialog, _ ->
                         dismiss()
                         dialog.dismiss()
                         if (sheetMode == "menu") {

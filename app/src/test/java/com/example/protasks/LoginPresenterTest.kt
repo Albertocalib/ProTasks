@@ -2,7 +2,6 @@ package com.example.protasks
 
 import com.example.protasks.presenters.login.ILoginContract
 import com.example.protasks.presenters.login.LoginPresenterImp
-import com.example.protasks.utils.Preference
 import com.example.protasks.utils.PreferencesManager
 import org.junit.Before
 import org.junit.Test
@@ -10,7 +9,6 @@ import org.junit.runner.RunWith
 
 import org.mockito.*
 import org.mockito.junit.MockitoJUnitRunner
-import android.R
 import com.example.protasks.models.User
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify

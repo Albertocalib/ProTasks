@@ -27,6 +27,7 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardContract.View,ITask
     var searchView: SearchView? = null
     private var taskPresenter: TaskPresenter?=null
     private var boards:ArrayList<Board>?=ArrayList()
+    private var notYetImplemented = "Not Yet Implemented"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -82,27 +83,27 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardContract.View,ITask
     }
 
     override fun setUser(user: User) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun addMessage(msg: Message) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun logOut() {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun getBoards() {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun setBoard(board: Board) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun setRole(perm: BoardUsersPermRel) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun showToast(message: String) {
@@ -119,27 +120,27 @@ class SearchTab(private val cont:Context) : Fragment(),IBoardContract.View,ITask
     }
 
     override fun setAssignments(users: List<User>) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun setUsers(users: List<User>) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun setTags(tags: List<Tag>) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun setTagsBoard(tags: List<Tag>) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun updateTags(tag: Tag) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun updateTask(t: Task) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun onItemClicked(boardId: Long?, boardName: String) {

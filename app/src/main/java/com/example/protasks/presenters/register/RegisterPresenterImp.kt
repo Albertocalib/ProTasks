@@ -25,7 +25,7 @@ class RegisterPresenterImp(private var iRegisterView: IRegisterContract.View) :
 
     override fun checkEmail(email: String): Boolean {
         val anyChar =
-            "^([^\\s()<>,:;\\[\\]Çç%&@á-źÁ-Ź]+@[^\\s()<>,:;\\[\\]Çç%&@á-źÁ-Ź+.]+(\\.[^\\s()<>,:;\\[\\]Çç%&@á-źÁ-Ź+.]+)+)$"
+            "^([^\\s()<>,:;\\[\\]%&@Á-Ź]+@[^\\s()<>,:;\\[\\]%&@Á-Ź+.]+(\\.[^\\s()<>,:;\\[\\]%&@Á-Ź+.]+)+)$"
         if (!Pattern.compile(anyChar).matcher(email).matches()) {
             iRegisterView.emailError("This is not a valid e-mail (example@example.com)")
             return false
