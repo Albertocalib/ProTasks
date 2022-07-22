@@ -65,8 +65,8 @@ class SubtaskAdapter(
         holder.title.text = subtask!!.getTitle()!!
         holder.subTask = subtask
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //TODO Poner el color según el estado de la tarea
             holder.checkbox.buttonTintList = ColorStateList.valueOf(Color.BLUE)
+            TODO("Poner el color según el estado de la tarea")
         }
 
         holder.layout.setOnClickListener {

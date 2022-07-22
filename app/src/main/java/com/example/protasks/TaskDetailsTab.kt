@@ -72,6 +72,7 @@ class TaskDetailsTab(private val t: Toolbar,
     var deleteSubtasks: ImageView? = null
     var subtasksSelected:ArrayList<Task> = ArrayList()
     var spinnerPriorityList: ArrayList<SpinnerImage> = ArrayList()
+    private val notYetImplemented = "Not yet implemented"
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -392,7 +393,7 @@ class TaskDetailsTab(private val t: Toolbar,
     }
 
     override fun setTasks(tasks: List<Task>) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun setAssignments(users: List<User>) {
@@ -471,11 +472,11 @@ class TaskDetailsTab(private val t: Toolbar,
     }
 
     override fun setUser(u: User) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun addMessage(msg: Message) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun showToast(message: String) {

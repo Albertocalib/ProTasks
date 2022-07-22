@@ -58,6 +58,7 @@ class SettingsFragment(
     private var cycleLabel: TextView?=null
     private val noElementsMessage = getString(R.string.no_elements)
     private val sameCycleLeadMessage = getString(R.string.same_cycle_lead)
+    private val notYetImplemented = "Not yet implemented"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -427,19 +428,19 @@ class SettingsFragment(
     }
 
     override fun setBoards(boards: ArrayList<Board>) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun setUser(user: User) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun logOut() {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun getBoards() {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun setBoard(board:Board){
@@ -448,7 +449,7 @@ class SettingsFragment(
     }
 
     override fun setRole(perm: BoardUsersPermRel) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun showToast(message: String) {
@@ -456,6 +457,6 @@ class SettingsFragment(
     }
 
     override fun addBoard(board: Board) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 }
