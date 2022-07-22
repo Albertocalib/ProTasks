@@ -48,6 +48,39 @@ class StatsFragment(
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
+    private fun addUsers(t:Task,list:TaskList,taskDict:HashMap<String,HashMap<String,Int>>,users:ArrayList<String>){
+        for (u in t.getUsers()!!) {
+            if (taskDict.containsKey(u.getUsername())) {
+                if (taskDict[u.getUsername()]!!.contains(list.getTitle())) {
+                    taskDict[u.getUsername()]!![list.getTitle()!!] =
+                        taskDict[u.getUsername()]!![list.getTitle()!!]!! + 1
+                } else {
+                    taskDict[u.getUsername()]!![list.getTitle()!!] = 1
+                }
+            } else {
+                val h: HashMap<String, Int> = HashMap()
+                h[list.getTitle()!!] = 1
+                taskDict[u.getUsername()!!] = h
+                users.add(u.getUsername()!!)
+            }
+        }
+    }
+
+    private fun addElementsToDict(taskDict:HashMap<String,HashMap<String,Int>>,user:User,list:TaskList,users:ArrayList<String>){
+        if (taskDict.containsKey(user.getUsername())) {
+            if (taskDict[user.getUsername()]!!.contains(list.getTitle())) {
+                taskDict[user.getUsername()]!![list.getTitle()!!] =
+                    taskDict[user.getUsername()]!![list.getTitle()!!]!! + 1
+            } else {
+                taskDict[user.getUsername()]!![list.getTitle()!!] = 1
+            }
+        } else {
+            val h: HashMap<String, Int> = HashMap()
+            h[list.getTitle()!!] = 1
+            taskDict[user.getUsername()!!] = h
+            users.add(user.getUsername()!!)
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -61,40 +94,14 @@ class StatsFragment(
         val taskDict: HashMap<String, HashMap<String, Int>> = HashMap()
         val users: ArrayList<String> = ArrayList()
         val noUser = "No Asignado"
-        val user =User(noUser, noUser, noUser, noUser, noUser)
+        val user = User(noUser, noUser, noUser, noUser, noUser)
         for (list in taskLists) {
             for (t in list.getTasks()!!) {
                 tasks!!.add(t!!)
                 if (t.getUsers()!!.isNotEmpty()) {
-                    for (u in t.getUsers()!!) {
-                        if (taskDict.containsKey(u.getUsername())) {
-                            if (taskDict[u.getUsername()]!!.contains(list.getTitle())) {
-                                taskDict[u.getUsername()]!![list.getTitle()!!] =
-                                    taskDict[u.getUsername()]!![list.getTitle()!!]!! + 1
-                            } else {
-                                taskDict[u.getUsername()]!![list.getTitle()!!] = 1
-                            }
-                        } else {
-                            val h: HashMap<String, Int> = HashMap()
-                            h[list.getTitle()!!] = 1
-                            taskDict[u.getUsername()!!] = h
-                            users.add(u.getUsername()!!)
-                        }
-                    }
+                    addUsers(t,list,taskDict,users)
                 } else {
-                    if (taskDict.containsKey(user.getUsername())) {
-                        if (taskDict[user.getUsername()]!!.contains(list.getTitle())) {
-                            taskDict[user.getUsername()]!![list.getTitle()!!] =
-                                taskDict[user.getUsername()]!![list.getTitle()!!]!! + 1
-                        } else {
-                            taskDict[user.getUsername()]!![list.getTitle()!!] = 1
-                        }
-                    } else {
-                        val h: HashMap<String, Int> = HashMap()
-                        h[list.getTitle()!!] = 1
-                        taskDict[user.getUsername()!!] = h
-                        users.add(user.getUsername()!!)
-                    }
+                    addElementsToDict(taskDict,user,list,users)
                 }
 
             }
