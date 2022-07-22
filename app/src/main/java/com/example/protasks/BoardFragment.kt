@@ -144,10 +144,7 @@ class BoardFragment(private var boardsView: ITaskListContract.ViewNormal) : Frag
                 dragPosition: Int
             ): Boolean {
                 // Add logic here to prevent an item to be dragged
-                if (rol===Rol.WATCHER){
-                    return false
-                }
-                return true
+                return rol!==Rol.WATCHER
             }
 
             override fun canDropItemAtPosition(
@@ -232,7 +229,7 @@ class BoardFragment(private var boardsView: ITaskListContract.ViewNormal) : Frag
         (header.findViewById<View>(R.id.item_count) as TextView).text ="""${list.getTasks()!!.size}"""
         listMap!![list.getTitle()!!] = list.getId()
         val buttonAddTask= (header.findViewById<View>(R.id.btnAddTask) as Button)
-        buttonAddTask.setOnClickListener { v ->
+        buttonAddTask.setOnClickListener {
             val columnName = (header.findViewById<TextView>(R.id.text)).text
             val bottomSheet = BottomSheet(boardName!!,columnName.toString(),presenter!!,"task")
             bottomSheet.show(supportFragmentManager!!, "bottomSheet")
@@ -240,7 +237,7 @@ class BoardFragment(private var boardsView: ITaskListContract.ViewNormal) : Frag
                 mItemArray.size.toString()
         }
         val buttonOptions = (header.findViewById<View>(R.id.options) as ImageButton)
-        buttonOptions.setOnClickListener { v ->
+        buttonOptions.setOnClickListener {
             val columnName = (header.findViewById<TextView>(R.id.text)).text
             val bottomSheet = BottomSheet(boardName!!,columnName.toString(),presenter!!,"menu")
             bottomSheet.show(supportFragmentManager!!, "bottomSheet")

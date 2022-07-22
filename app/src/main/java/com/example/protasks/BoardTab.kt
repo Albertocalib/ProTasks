@@ -96,7 +96,7 @@ class BoardTab(private val t: Toolbar) : Fragment() {
                     }
                     else -> {
                         spinner[0].isEnabled=false
-                        list[0] =""
+                        list[0] ="Elige un elemento"
                         myAdapter.notifyDataSetChanged()
                     }
                 }

@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardContract.Vi
     var bottomNavView:BottomNavigationView? = null
     var fragment:Fragment?=null
     private var boards:ArrayList<Board> = ArrayList()
+    private val notYetImplemented = "Not yet implemented"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,7 +152,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardContract.Vi
     }
 
     override fun onClick(v: View?) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun logOut() {
@@ -170,11 +171,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,IBoardContract.Vi
     }
 
     override fun setBoard(board: Board) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun setRole(perm: BoardUsersPermRel) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun showToast(message: String) {

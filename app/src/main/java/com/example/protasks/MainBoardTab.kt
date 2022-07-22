@@ -45,6 +45,50 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
     var changeViewModeButton:ImageButton?=null
     private val imageHandler: ImageHandler = ImageHandler()
     private var boards:ArrayList<Board> = ArrayList()
+    private val notYetImplemented = "Not yet implemented"
+
+    private fun onMenuItemSelectedC(it:MenuItem,tabLayout: TabLayout,adapter:FragmentManagerDialog,nagDialog2:Dialog){
+        when (it.itemId) {
+            R.id.action_save -> {
+                when (tabLayout.selectedTabPosition) {
+                    0 -> {
+                        var b: Bitmap? = null
+                        if (adapter.boardTab.colorNew != null) {
+                            adapter.boardTab.image = imageHandler.setTextToImage(
+                                adapter.boardTab.colorNew!!,
+                                adapter.boardTab.textView!!.text.toString()
+                            )
+                            b = adapter.boardTab.image
+                        } else if (imageBoard != null) {
+                            b = imageBoard
+                        }
+                        presenter!!.createBoard(
+                            adapter.boardTab.textView!!.text.toString(),
+                            b!!
+                        )
+
+                    }
+                    1 -> {
+                        presenter!!.createTaskList(
+                            adapter.listTab.boardName!!,
+                            adapter.listTab.textView!!.text.toString()
+                        )
+
+                    }
+                    else -> {
+                        presenter!!.createTask(
+                            adapter.taskTab.boardName!!,
+                            adapter.taskTab.textView!!.text.toString(),
+                            adapter.taskTab.lName!!,
+                            adapter.taskTab.descriptionView!!.text.toString()
+                        )
+
+                    }
+                }
+                nagDialog2.dismiss()
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -125,46 +169,7 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
                 }
             mediator.attach()
             toolbar.setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.action_save -> {
-                        when (tabLayout.selectedTabPosition) {
-                            0 -> {
-                                var b: Bitmap? = null
-                                if (adapter.boardTab.colorNew != null) {
-                                    adapter.boardTab.image = imageHandler.setTextToImage(
-                                        adapter.boardTab.colorNew!!,
-                                        adapter.boardTab.textView!!.text.toString()
-                                    )
-                                    b = adapter.boardTab.image
-                                } else if (imageBoard != null) {
-                                    b = imageBoard
-                                }
-                                presenter!!.createBoard(
-                                    adapter.boardTab.textView!!.text.toString(),
-                                    b!!
-                                )
-
-                            }
-                            1 -> {
-                                presenter!!.createTaskList(
-                                    adapter.listTab.boardName!!,
-                                    adapter.listTab.textView!!.text.toString()
-                                )
-
-                            }
-                            else -> {
-                                presenter!!.createTask(
-                                    adapter.taskTab.boardName!!,
-                                    adapter.taskTab.textView!!.text.toString(),
-                                    adapter.taskTab.lName!!,
-                                    adapter.taskTab.descriptionView!!.text.toString()
-                                )
-
-                            }
-                        }
-                        nagDialog2.dismiss()
-                    }
-                }
+                onMenuItemSelectedC(it,tabLayout,adapter,nagDialog2)
                 true
             }
             nagDialog2.show()
@@ -193,10 +198,11 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
     }
 
     override fun setUser(user: User) {
+        TODO(notYetImplemented)
     }
 
     override fun logOut() {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun getBoards() {
@@ -204,11 +210,11 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
     }
 
     override fun setBoard(board: Board) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun setRole(perm: BoardUsersPermRel) {
-        TODO("Not yet implemented")
+        TODO(notYetImplemented)
     }
 
     override fun showToast(message: String) {

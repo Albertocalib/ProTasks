@@ -19,7 +19,7 @@ import java.util.ArrayList
 class ListTab(private val boards: List<Board>, private val t: Toolbar) : Fragment() {
     var textView: TextView? = null
     var boardName: String? = null
-    val anySelectedItem:String=getString(R.string.no_elements)
+    var anySelectedItem:String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,6 +27,7 @@ class ListTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add_tasklist, container, false)
+        anySelectedItem = view.context.getString(R.string.no_elements)
         val mySpinner: Spinner = view.findViewById(R.id.spinnerBoard)
         textView = view.findViewById(R.id.addList)
         textView!!.addTextChangedListener(object : TextWatcher {
@@ -45,7 +46,7 @@ class ListTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
                 // I don't want to do anything onTextChanged
             }})
         val listName = ArrayList<String>()
-        listName.add(anySelectedItem)
+        listName.add(anySelectedItem!!)
         for (e in boards) {
             listName.add(e.getName()!!)
         }

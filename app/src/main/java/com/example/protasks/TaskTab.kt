@@ -18,7 +18,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
     var boardName: String? = null
     var lName: String? = null
     var descriptionView: TextView? = null
-    private val anyElementSelected=getString(R.string.no_elements)
+    private var anyElementSelected:String?=null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,11 +26,12 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add_tasks, container, false)
+        anyElementSelected = view.context.getString(R.string.no_elements)
         textView = view.findViewById(R.id.taskname)
         descriptionView = view.findViewById(R.id.taskDescription)
         val mySpinner: Spinner = view.findViewById(R.id.spinnerBoardTask)
         val listName = ArrayList<String>()
-        listName.add(anyElementSelected)
+        listName.add(anyElementSelected!!)
         for (e in boards) {
             listName.add(e.getName()!!)
         }
@@ -43,7 +44,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
 
         val mySpinnerList: Spinner = view.findViewById(R.id.spinnerTaskList)
         val listNamesTaskList = ArrayList<String>()
-        listNamesTaskList.add(anyElementSelected)
+        listNamesTaskList.add(anyElementSelected!!)
         val myAdapterTaskList = ArrayAdapter(
             requireActivity().baseContext,
             android.R.layout.simple_list_item_1, listNamesTaskList
@@ -53,7 +54,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
 
         mySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                Log.i("TASKSPINNER", anyElementSelected)
+                Log.i("TASKSPINNER", anyElementSelected!!)
             }
 
             override fun onItemSelected(
@@ -74,7 +75,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
         }
         mySpinnerList.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                Log.i("TASKSPINNER2", anyElementSelected)
+                Log.i("TASKSPINNER2", anyElementSelected!!)
             }
 
             override fun onItemSelected(
@@ -120,7 +121,7 @@ class TaskTab(private val boards: List<Board>, private val t: Toolbar) : Fragmen
     fun getTaskListByBoard(position: Int): ArrayList<String> {
         val taskList = boards[position].getTaskLists()!!
         val listName = ArrayList<String>()
-        listName.add(anyElementSelected)
+        listName.add(anyElementSelected!!)
         for (list in taskList) {
             listName.add(list!!.getTitle()!!)
         }

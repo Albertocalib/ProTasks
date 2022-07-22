@@ -48,6 +48,39 @@ class ListFragment(private var boardsView: ITaskListContract.ViewNormal) : Fragm
         mDragListView = view.findViewById<View>(R.id.drag_list_view) as DragListView
         return view
     }
+
+    fun onItemDragEndedC(fromPosition: Int, toPosition: Int){
+        mRefreshLayout!!.isEnabled = true
+        if (fromPosition != toPosition) {
+            val tripleEl =
+                mDragListView!!.adapter.itemList[toPosition] as Triple<*, *, *>
+            val tripleElBef =
+                mDragListView!!.adapter.itemList[toPosition - 1] as Triple<*, *, *>
+            val taskBef = tripleElBef.second as Task
+            val task = tripleEl.second as Task
+            if (taskBef.getTaskList().getTitle() != task.getTaskList().getTitle()) {
+                presenter!!.updateTaskPosition(
+                    task.getId()!!,
+                    taskBef.getPosition()!!.toLong() + 1,
+                    taskBef.getTaskList().getId(),
+                    true
+                )
+            } else {
+                var pos = taskBef.getPosition()!!.toLong()
+                if (fromPosition >= toPosition) {
+                    pos += 1
+                }
+                presenter!!.updateTaskPosition(
+                    task.getId()!!,
+                    taskBef.getPosition()!!.toLong(),
+                    task.getTaskList().getId(),
+                    true
+                )
+
+            }
+
+        }
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         taskLists = arguments?.getParcelableArrayList("taskLists")
         boardName = arguments?.getString("boardName")
@@ -63,40 +96,7 @@ class ListFragment(private var boardsView: ITaskListContract.ViewNormal) : Fragm
             }
 
             override fun onItemDragEnded(fromPosition: Int, toPosition: Int) {
-                mRefreshLayout!!.isEnabled = true
-                if (fromPosition != toPosition) {
-                    val tripleEl =
-                        mDragListView!!.adapter.itemList[toPosition] as Triple<*, *, *>
-                    val tripleElBef =
-                        mDragListView!!.adapter.itemList[toPosition - 1] as Triple<*, *, *>
-                    val taskBef = tripleElBef.second as Task
-                    val task = tripleEl.second as Task
-                    if (taskBef.getTaskList().getTitle() != task.getTaskList().getTitle()) {
-                        presenter!!.updateTaskPosition(
-                            task.getId()!!,
-                            taskBef.getPosition()!!.toLong() + 1,
-                            taskBef.getTaskList().getId(),
-                            true
-                        )
-                    } else {
-                        if (fromPosition < toPosition) {
-                            presenter!!.updateTaskPosition(
-                                task.getId()!!,
-                                taskBef.getPosition()!!.toLong(),
-                                task.getTaskList().getId(),
-                                true
-                            )
-                        } else {
-                            presenter!!.updateTaskPosition(
-                                task.getId()!!,
-                                taskBef.getPosition()!!.toLong() + 1,
-                                task.getTaskList().getId(),
-                                true
-                            )
-                        }
-                    }
-
-                }
+                onItemDragEndedC(fromPosition,toPosition)
             }
         })
         mItemArray =
