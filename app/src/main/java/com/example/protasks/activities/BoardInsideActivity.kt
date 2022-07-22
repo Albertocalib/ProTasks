@@ -198,12 +198,14 @@ class BoardInsideActivity : AppCompatActivity(), ITaskListContract.ViewNormal,IB
     }
     override fun setRole(perm:BoardUsersPermRel){
         perms=perm
-        if (preference!!.getModeView()){
-            (fragment as ListFragment).rol=perm.getRol()
-            (fragment as ListFragment).setWatcherVisibility()
-        }else{
-            (fragment as BoardFragment).rol=perm.getRol()
-            (fragment as BoardFragment).setWatcherVisibility()
+        if (fragment!=null){
+            if (preference!!.getModeView()) {
+                (fragment as ListFragment).rol = perm.getRol()
+                (fragment as ListFragment).setWatcherVisibility()
+            } else {
+                (fragment as BoardFragment).rol = perm.getRol()
+                (fragment as BoardFragment).setWatcherVisibility()
+            }
         }
     }
 
