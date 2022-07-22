@@ -3,22 +3,48 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/drawable/card_view_drag_foreground.xml" value="0.22239583333333332" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/drawable/ic_add_box.xml" value="0.371875" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/drawable/ic_baseline_flag_24.xml" value="0.371875" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/drawable/ic_baseline_tag_in_24.xml" value="0.371875" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/drawable/ic_checkbox.xml" value="0.371875" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/drawable/message_shape.xml" value="0.22239583333333332" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/drawable/message_shape_incoming.xml" value="0.371875" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/drawable/message_shape_outgoing.xml" value="0.22239583333333332" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/activity_main.xml" value="0.29981884057971014" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/activity_main_screen.xml" value="0.29981884057971014" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/add_elements.xml" value="0.20625" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/assignment_element.xml" value="0.29981884057971014" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/board_layout.xml" value="0.20625" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/column_drag_layout.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/column_header.xml" value="0.19947916666666668" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/column_item.xml" value="0.20625" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/filter_dialog.xml" value="0.27853260869565216" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/fragment_add_elements_to_board.xml" value="0.20625" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/fragment_add_tasklist.xml" value="0.20625" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/list_layout.xml" value="0.3125" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/main_content.xml" value="0.20625" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/message_fragment.xml" value="0.20625" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/message_item.xml" value="0.6666666666666666" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/move_task_dialog.xml" value="0.29981884057971014" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/options_task_tasklist_dialog.xml" value="0.2758152173913043" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/pie_chart.xml" value="0.271286231884058" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/search_view.xml" value="0.20625" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/settings.xml" value="0.3125" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/stats_fragment.xml" value="0.29981884057971014" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/tag_dialog.xml" value="0.27853260869565216" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/tag_element.xml" value="1.0" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/task.xml" value="0.19895833333333332" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/task_dialog.xml" value="0.19895833333333332" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/task_dialog_extend.xml" value="0.30842391304347827" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/task_extend_tabs.xml" value="0.20625" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/tasklist_dialog.xml" value="0.27853260869565216" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/user_dialog.xml" value="0.29981884057971014" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/user_element.xml" value="0.29981884057971014" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout-v26/user_extend_perm.xml" value="0.20885416666666667" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout/activity_login.xml" value="0.2907608695652174" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/layout/spinner_image_item.xml" value="0.2857789855072464" />
+        <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/menu/create_elements_menu.xml" value="0.20625" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/menu/menu.xml" value="0.35989583333333336" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/menu/menu_config.xml" value="0.35989583333333336" />
         <entry key="..\:/Users/Alberto/StudioProjects/ProTasks/app/src/main/res/xml/preference.xml" value="0.29981884057971014" />

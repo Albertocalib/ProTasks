@@ -22,7 +22,7 @@ class LoginActivity : AppCompatActivity(), ILoginContract.View, View.OnClickList
     private var linkSignUp: TextView? = null
     private var loginPresenter: LoginPresenterImp? = null
     private var progressBar: ProgressBar? = null
-    private var keep_login: CheckBox? = null
+    private var keepLogin: CheckBox? = null
     private val handler: Handler = Handler(Looper.myLooper()!!)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +31,7 @@ class LoginActivity : AppCompatActivity(), ILoginContract.View, View.OnClickList
         //find view
         editUser = findViewById(R.id.emailLogin)
         editPass = findViewById(R.id.passwordText)
-        keep_login = findViewById(R.id.checkBox)
+        keepLogin = findViewById(R.id.checkBox)
         linkSignUp = findViewById(R.id.link_signup)
         btnLogin = findViewById(R.id.loginButton)
         progressBar = findViewById(R.id.progress_login)
@@ -49,7 +49,7 @@ class LoginActivity : AppCompatActivity(), ILoginContract.View, View.OnClickList
             R.id.loginButton -> {
                 loginPresenter!!.setProgressBarVisiblity(View.VISIBLE)
                 btnLogin!!.isEnabled = false
-                loginPresenter!!.doLogin(getUserName(), getPassword(),keep_login!!.isChecked)
+                loginPresenter!!.doLogin(getUserName(), getPassword(),keepLogin!!.isChecked)
             }
             R.id.link_signup -> {
                 goToSignUpActivity()
