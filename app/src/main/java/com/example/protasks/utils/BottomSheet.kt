@@ -70,12 +70,7 @@ class BottomSheet(
                 viewId = R.layout.user_dialog
                 nameFieldId = R.id.usernameOrEmail
                 buttonNameId = R.id.AddUserButton
-            }"filter"->{
-                viewId = R.layout.tag_dialog
-                nameFieldId = R.id.tagName
-                buttonNameId = R.id.createTagBtn
-            }
-            else -> {
+            }else -> {
                 viewId = R.layout.tag_dialog
                 nameFieldId = R.id.tagName
                 buttonNameId = R.id.createTagBtn
@@ -83,49 +78,7 @@ class BottomSheet(
         }
         val v: View = inflater.inflate(viewId, container, false)
         if (sheetMode.startsWith("menu")) {
-            val delOpt = v.findViewById<TextView>(R.id.delete)
-            delOpt.setOnClickListener {
-                val builder = AlertDialog.Builder(context)
-                builder.setMessage("¿Estás seguro que desea eliminarlo?")
-                    .setCancelable(false)
-                    .setPositiveButton("Aceptar") { dialog, _ ->
-                        dismiss()
-                        dialog.dismiss()
-                        if (sheetMode == "menu") {
-                            (presenter as TaskListPresenter).deleteTaskList(
-                                boardName,
-                                listName
-                            )
-                        } else {
-                            (presenter as TaskListPresenter).deleteTask(
-                                task!!.getId()!!,boardName
-                            )
-                        }
-                    }
-                    .setNegativeButton("Cancelar") { dialog, _ ->
-                        // Dismiss the dialog
-                        dismiss()
-                        dialog.dismiss()
-                    }
-                val alert = builder.create()
-                alert.show()
-            }
-            val moveOpt = v.findViewById<TextView>(R.id.move)
-            moveOpt.setOnClickListener {
-                if (sheetMode == "menu") {
-                    dialogCopyOrMoveTaskList("move", inflater)
-                } else {
-                    dialogCopyOrMoveTask("move", inflater)
-                }
-            }
-            val copyOpt = v.findViewById<TextView>(R.id.copy)
-            copyOpt.setOnClickListener {
-                if (sheetMode == "menu") {
-                    dialogCopyOrMoveTaskList("copy", inflater)
-                } else {
-                    dialogCopyOrMoveTask("copy", inflater)
-                }
-            }
+           menuSelected(v)
         } else {
             name = v.findViewById(nameFieldId)
             if (sheetMode == "task" || sheetMode == "subtask")  {
@@ -158,33 +111,7 @@ class BottomSheet(
             createBtn = v.findViewById(buttonNameId)
             createBtn!!.isEnabled = false
             createBtn!!.background.alpha = 150
-            val textWatcher: TextWatcher = object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    val notEmpty = name!!.text.toString() != ""
-                    if (notEmpty) {
-                        createBtn!!.background.alpha = 255
-                    } else {
-                        createBtn!!.background.alpha = 150
-                    }
-                    createBtn!!.isEnabled = notEmpty
-
-                }
-
-                override fun beforeTextChanged(
-                    s: CharSequence, start: Int,
-                    count: Int, after: Int
-                ) {
-                    // I don't want to do anything beforeTextChanged
-                }
-
-                override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-                ) {
-                    // I don't want to do anything onTextChanged
-                }
-            }
-            name!!.addTextChangedListener(textWatcher)
+            addTextWatcher(name!!)
             createBtn!!.setOnClickListener {
                 when (sheetMode) {
                     "task" -> {
@@ -244,6 +171,64 @@ class BottomSheet(
         }
         return v
 
+    }
+    private fun addTextWatcher(name:TextInputEditText){
+        val textWatcher: TextWatcher = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val notEmpty = name.text.toString() != ""
+                if (notEmpty) {
+                    createBtn!!.background.alpha = 255
+                } else {
+                    createBtn!!.background.alpha = 150
+                }
+                createBtn!!.isEnabled = notEmpty
+
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int,
+                count: Int, after: Int
+            ) {
+                // I don't want to do anything beforeTextChanged
+            }
+
+            override fun onTextChanged(
+                s: CharSequence, start: Int,
+                before: Int, count: Int
+            ) {
+                // I don't want to do anything onTextChanged
+            }
+        }
+        name.addTextChangedListener(textWatcher)
+    }
+    private fun menuSelected(v:View) {
+        val delOpt = v.findViewById<TextView>(R.id.delete)
+        delOpt.setOnClickListener {
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage("¿Estás seguro que desea eliminarlo?")
+                .setCancelable(false)
+                .setPositiveButton("Aceptar") { dialog, _ ->
+                    dismiss()
+                    dialog.dismiss()
+                    if (sheetMode == "menu") {
+                        (presenter as TaskListPresenter).deleteTaskList(
+                            boardName,
+                            listName
+                        )
+                    } else {
+                        (presenter as TaskListPresenter).deleteTask(
+                            task!!.getId()!!,boardName
+                        )
+                    }
+                }
+                .setNegativeButton("Cancelar") { dialog, _ ->
+                    // Dismiss the dialog
+                    dismiss()
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
+        }
     }
 
     override fun setBoard(list: List<Board>) {
