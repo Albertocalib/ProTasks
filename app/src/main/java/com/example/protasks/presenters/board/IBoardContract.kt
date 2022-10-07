@@ -47,7 +47,6 @@ interface IBoardContract {
         fun onResponseFailure(t: Throwable?)
         fun setBoards(boards:ArrayList<Board>)
         fun setUser(user:User)
-        fun logOut()
         fun getBoards()
         fun setBoard(board: Board)
         fun setRole(perm:BoardUsersPermRel)

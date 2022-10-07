@@ -1,22 +1,18 @@
 package com.example.protasks.activities
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.view.Window
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.protasks.*
 import com.example.protasks.models.*
@@ -48,13 +44,13 @@ class BoardInsideActivity : AppCompatActivity(), ITaskListContract.ViewNormal,IB
     var userPhoto: ImageView? = null
     var userEmail: TextView? = null
     var userCompleteName: TextView? = null
-    var logoutButton: ImageButton? = null
-    var viewMode: ImageButton? = null
     private var preference:PreferencesManager?=null
     private var perms: BoardUsersPermRel? = null
     private var boardId: Long? = null
     private var filterButton:ImageButton?=null
     private var boards:ArrayList<Board> = ArrayList()
+    private var navigationViewObj:com.example.protasks.NavigationView?=null
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,46 +112,7 @@ class BoardInsideActivity : AppCompatActivity(), ITaskListContract.ViewNormal,IB
             showFragment(BoardFragment.instance(this,lists,boardName!!))
         }
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
-        recyclerView2 = navigationView.findViewById(R.id.recycler_board_navigation_view)
-        setLayoutManager()
-        val headerView = navigationView.getHeaderView(0)
-        userPhoto = headerView.findViewById(R.id.profilePic)
-        userCompleteName = headerView.findViewById(R.id.nameProfile)
-        userEmail = headerView.findViewById(R.id.userEmailProfile)
-        userPhoto!!.setOnClickListener {
-            val nagDialog = Dialog(this, android.R.style.ThemeOverlay_Material_Dark)
-            nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            nagDialog.setCancelable(false)
-            nagDialog.setContentView(R.layout.image_dialog)
-            val btnClose = nagDialog.findViewById(R.id.btnIvClose) as Button
-            val btnDownload = nagDialog.findViewById(R.id.btnDownload) as Button
-            val btnChangePhoto = nagDialog.findViewById(R.id.btnChangePhoto) as Button
-            val ivPreview = nagDialog.findViewById(R.id.iv_preview_image) as ImageView
-            ivPreview.setImageDrawable(userPhoto!!.drawable)
-            btnClose.setOnClickListener {
-                nagDialog.dismiss()
-            }
-            btnDownload.setOnClickListener {
-                presenter!!.downloadImage(ivPreview, this)
-                Toast.makeText(this, "Download completed", Toast.LENGTH_SHORT).show()
-            }
-            btnChangePhoto.setOnClickListener {
-                nagDialog.dismiss()
-                val intent = Intent(
-                    Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                )
-                startActivityForResult(intent, 1111)
-            }
-
-            nagDialog.show()
-        }
-
-        logoutButton = headerView.findViewById(R.id.logOutButton)
-        logoutButton!!.setOnClickListener {
-            logOut()
-        }
-        viewMode = headerView.findViewById(R.id.viewModeButton)
+        navigationViewObj = NavigationView(navigationView,recyclerView2,userPhoto,this,this,userCompleteName,userEmail,boardPresenter)
     }
 
     private fun showFragment(fragment: Fragment) {
@@ -183,17 +140,17 @@ class BoardInsideActivity : AppCompatActivity(), ITaskListContract.ViewNormal,IB
     override fun setBoards(boards: ArrayList<Board>) {
         this.boards = boards
         boardAdapterMenu = BoardAdapterMenu(boards, R.layout.board_list_mode_menu)
-        recyclerView2!!.adapter = boardAdapterMenu
+        navigationViewObj!!.recyclerView2!!.adapter = boardAdapterMenu
     }
 
     override fun setUser(user: User) {
         if (user.getPhoto() != null) {
             val decodedImage = boardPresenter!!.getPhoto(user)
-            userPhoto!!.setImageBitmap(decodedImage)
+            navigationViewObj!!.userPhoto!!.setImageBitmap(decodedImage)
         }
-        userEmail!!.text = user.getEmail()
+        navigationViewObj!!.userEmail!!.text = user.getEmail()
         val completeName = user.getName()!! + " " + user.getSurname()!!
-        userCompleteName!!.text = completeName
+        navigationViewObj!!.userCompleteName!!.text = completeName
         boardPresenter!!.getRole(user.getId()!!,boardId!!)
     }
     override fun setRole(perm:BoardUsersPermRel){
@@ -216,18 +173,6 @@ class BoardInsideActivity : AppCompatActivity(), ITaskListContract.ViewNormal,IB
     override fun addBoard(board: Board) {
         boards.add(board)
         setBoards(boards)
-    }
-
-
-    override fun logOut() {
-        boardPresenter!!.removePreferences()
-        val intent = Intent(this, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
-    }
-
-    private fun setLayoutManager() {
-        recyclerView2!!.layoutManager = GridLayoutManager(this, 1)
     }
 
     override fun getBoards() {

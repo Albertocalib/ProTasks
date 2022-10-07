@@ -201,10 +201,6 @@ class MainBoardTab(private val t: Toolbar,private val cont:Context) : Fragment()
         TODO(notYetImplemented)
     }
 
-    override fun logOut() {
-        TODO(notYetImplemented)
-    }
-
     override fun getBoards() {
         presenter!!.getBoards()
     }

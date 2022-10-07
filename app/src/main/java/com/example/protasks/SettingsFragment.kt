@@ -457,9 +457,6 @@ class SettingsFragment(
         TODO(notYetImplemented)
     }
 
-    override fun logOut() {
-        TODO(notYetImplemented)
-    }
 
     override fun getBoards() {
         TODO(notYetImplemented)
