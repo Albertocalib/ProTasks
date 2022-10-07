@@ -68,6 +68,9 @@ class User(@Expose
     fun setId(id:Long){
         this.id=id
     }
+    fun getCompleteName(): String{
+        return this.getName()!! + " " + this.getSurname()!!
+    }
 
 
 }

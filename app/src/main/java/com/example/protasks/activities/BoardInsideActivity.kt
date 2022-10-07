@@ -26,6 +26,7 @@ import com.example.protasks.utils.PreferencesManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import kotlin.collections.ArrayList
+import com.example.protasks.NavigationView as NavigationView2
 
 class BoardInsideActivity : AppCompatActivity(), ITaskListContract.ViewNormal,IBoardContract.View,PopupMenu.OnMenuItemClickListener {
     private var lists: List<TaskList> = ArrayList()
@@ -39,7 +40,6 @@ class BoardInsideActivity : AppCompatActivity(), ITaskListContract.ViewNormal,IB
     var bottomNavView: BottomNavigationView? = null
     var fragment:Fragment?=null
     var recyclerView2: RecyclerView? = null
-    var boardAdapterMenu: BoardAdapterMenu? = null
     var context: Context? = null
     var userPhoto: ImageView? = null
     var userEmail: TextView? = null
@@ -49,7 +49,7 @@ class BoardInsideActivity : AppCompatActivity(), ITaskListContract.ViewNormal,IB
     private var boardId: Long? = null
     private var filterButton:ImageButton?=null
     private var boards:ArrayList<Board> = ArrayList()
-    private var navigationViewObj:com.example.protasks.NavigationView?=null
+    private var navigationViewObj:NavigationView2?=null
 
 
 
@@ -112,7 +112,7 @@ class BoardInsideActivity : AppCompatActivity(), ITaskListContract.ViewNormal,IB
             showFragment(BoardFragment.instance(this,lists,boardName!!))
         }
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
-        navigationViewObj = NavigationView(navigationView,recyclerView2,userPhoto,this,this,userCompleteName,userEmail,boardPresenter)
+        navigationViewObj = NavigationView2(navigationView,recyclerView2,userPhoto,this,this,userCompleteName,userEmail,boardPresenter)
     }
 
     private fun showFragment(fragment: Fragment) {
@@ -139,18 +139,16 @@ class BoardInsideActivity : AppCompatActivity(), ITaskListContract.ViewNormal,IB
 
     override fun setBoards(boards: ArrayList<Board>) {
         this.boards = boards
-        boardAdapterMenu = BoardAdapterMenu(boards, R.layout.board_list_mode_menu)
-        navigationViewObj!!.recyclerView2!!.adapter = boardAdapterMenu
+        navigationViewObj!!.recyclerView2!!.adapter = BoardAdapterMenu(boards, R.layout.board_list_mode_menu)
     }
 
     override fun setUser(user: User) {
         if (user.getPhoto() != null) {
-            val decodedImage = boardPresenter!!.getPhoto(user)
-            navigationViewObj!!.userPhoto!!.setImageBitmap(decodedImage)
+            navigationViewObj!!.userPhoto!!.setImageBitmap(boardPresenter!!.getPhoto(user))
         }
-        navigationViewObj!!.userEmail!!.text = user.getEmail()
-        val completeName = user.getName()!! + " " + user.getSurname()!!
-        navigationViewObj!!.userCompleteName!!.text = completeName
+        val email = user.getEmail()
+        navigationViewObj!!.userEmail!!.text = email
+        navigationViewObj!!.userCompleteName!!.text = user.getCompleteName()
         boardPresenter!!.getRole(user.getId()!!,boardId!!)
     }
     override fun setRole(perm:BoardUsersPermRel){
