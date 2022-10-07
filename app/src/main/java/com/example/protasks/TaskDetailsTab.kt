@@ -93,7 +93,119 @@ class TaskDetailsTab(private val t: Toolbar,
             }
         }
     }
-
+    private fun addMultiChoiceTags(){
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val items = arrayOfNulls<CharSequence>(boardTagList!!.size)
+        val itemsChecked = BooleanArray(items.size)
+        val tagsListIds = HashSet<Long>()
+        tagList!!.forEach {
+            tagsListIds.add(it.getId())
+        }
+        boardTagList!!.forEachIndexed { i, tag ->
+            items[i] = tag.getName()
+            itemsChecked[i] = tagsListIds.contains(tag.getId())
+        }
+        val builderObj = builder.setTitle("Añadir Tag")
+            .setMultiChoiceItems(
+                items, itemsChecked
+            ) { _, which, isChecked ->
+                if (isChecked) {
+                    // Guardar indice seleccionado
+                    val tagId = boardTagList!![which]
+                    taskPresenter!!.addTag(task.getId()!!, tagId.getId())
+                } else {
+                    // Remover indice sin selección
+                    val tagId = boardTagList!![which]
+                    taskPresenter!!.removeTag(task.getId()!!, tagId.getId(), false)
+                }
+            }.setPositiveButton(
+                "OK"
+            ) { _, _ ->
+                taskPresenter!!.getTags(task.getId()!!)
+            }
+            .setNegativeButton(
+                "CANCELAR"
+            ) { _, _ ->
+                taskPresenter!!.getTags(task.getId()!!)
+            }
+            .setNeutralButton("CREAR TAG") { _, _ ->
+                val bottomSheet = BottomSheet(boardName, "", taskPresenter!!, "tag")
+                bottomSheet.show(fragmentMgr, "bottomSheet")
+            }
+            .create()
+        builderObj.show()
+        if (tagsListIds.size > 8) {
+            builderObj.window!!.setLayout(1000, 1200)
+        }
+    }
+    private fun addMultiChoiceUsers(){
+        val items = arrayOfNulls<CharSequence>(boardUserList!!.size)
+        val itemsChecked = BooleanArray(items.size)
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val usersListIds = HashSet<Long>()
+        usersList!!.forEach {
+            usersListIds.add(it.getId()!!)
+        }
+        boardUserList!!.forEachIndexed { i, user ->
+            val name = user.getName() + ' ' + user.getSurname()
+            items[i] = name
+            itemsChecked[i] = usersListIds.contains(user.getId()!!)
+        }
+        val builderObj = builder.setTitle("Asignar Personas")
+            .setMultiChoiceItems(
+                items, itemsChecked
+            ) { _, which, isChecked ->
+                if (isChecked) {
+                    // Guardar indice seleccionado
+                    val userId = boardUserList!![which]
+                    taskPresenter!!.addAssignment(task.getId()!!, userId.getId()!!)
+                } else {
+                    // Remover indice sin selección
+                    val userId = boardUserList!![which]
+                    taskPresenter!!.removeAssignment(task.getId()!!, userId.getId()!!, false)
+                }
+            }.setPositiveButton(
+                "OK"
+            ) { _, _ ->
+                taskPresenter!!.getUsers(task.getId()!!)
+            }
+            .setNegativeButton(
+                "CANCELAR"
+            ) { _, _ ->
+                taskPresenter!!.getUsers(task.getId()!!)
+            }
+            .create()
+        builderObj.show()
+        if (boardUserList!!.size > 8) {
+            builderObj.window!!.setLayout(1000, 1200)
+        }
+    }
+    private fun setImageTaskPhoto(){
+        val photos = task.getPhotos()
+        if (photos.isEmpty()) {
+            imageTask!!.visibility = View.GONE
+        } else {
+            imageTask!!.setImageBitmap(photos[0])
+        }
+    }
+    private fun setSubTasksVisivility(){
+        if (!task.getSubtasks().isNullOrEmpty()){
+            // recyclerViewSubtasks!!.adapter =
+            //   SubtaskAdapter(task.getSubtasks()!!,taskPresenter,task,requireContext(),fragmentMgr,this,boardId,boardName,rol)
+            recyclerViewSubtasks!!.visibility=View.VISIBLE
+        }else{
+            recyclerViewSubtasks!!.visibility=View.GONE
+        }
+    }
+    private fun setAttachments(){
+        if (!task.getAttachments().isNullOrEmpty()){
+            recyclerViewAttachments!!.adapter =
+                AttachmentsAdapter(task.getAttachments()!!,taskPresenter,task,requireContext())
+            viewAttachments!!.visibility=View.VISIBLE
+        }else{
+            viewAttachments!!.visibility=View.GONE
+        }
+    }
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, state: Bundle?): View? {
         super.onCreateView(inflater, parent, state)
@@ -155,12 +267,7 @@ class TaskDetailsTab(private val t: Toolbar,
         recyclerViewAssignments!!.layoutManager = layoutManager
         taskPresenter!!.getUsers(task.getId()!!)
         imageTask = v.findViewById(R.id.image_task)
-        val photos = task.getPhotos()
-        if (photos.isEmpty()) {
-            imageTask!!.visibility = View.GONE
-        } else {
-            imageTask!!.setImageBitmap(photos[0])
-        }
+        setImageTaskPhoto()
 
         nameBoardList = v.findViewById(R.id.list_board_name)
         val comp = if (task.getParentTask()!=null){
@@ -178,46 +285,7 @@ class TaskDetailsTab(private val t: Toolbar,
         taskPresenter!!.getTagsInBoard(boardId)
         addUsersButton = v.findViewById(R.id.add_assignment)
         addUsersButton!!.setOnClickListener {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-            val items = arrayOfNulls<CharSequence>(boardUserList!!.size)
-            val itemsChecked = BooleanArray(items.size)
-            val usersListIds = HashSet<Long>()
-            usersList!!.forEach {
-                usersListIds.add(it.getId()!!)
-            }
-            boardUserList!!.forEachIndexed { i, user ->
-                val name = user.getName() + ' ' + user.getSurname()
-                items[i] = name
-                itemsChecked[i] = usersListIds.contains(user.getId()!!)
-            }
-            val builderObj = builder.setTitle("Asignar Personas")
-                .setMultiChoiceItems(
-                    items, itemsChecked
-                ) { _, which, isChecked ->
-                    if (isChecked) {
-                        // Guardar indice seleccionado
-                        val userId = boardUserList!![which]
-                        taskPresenter!!.addAssignment(task.getId()!!, userId.getId()!!)
-                    } else {
-                        // Remover indice sin selección
-                        val userId = boardUserList!![which]
-                        taskPresenter!!.removeAssignment(task.getId()!!, userId.getId()!!, false)
-                    }
-                }.setPositiveButton(
-                    "OK"
-                ) { _, _ ->
-                    taskPresenter!!.getUsers(task.getId()!!)
-                }
-                .setNegativeButton(
-                    "CANCELAR"
-                ) { _, _ ->
-                    taskPresenter!!.getUsers(task.getId()!!)
-                }
-                .create()
-            builderObj.show()
-            if (boardUserList!!.size > 8) {
-                builderObj.window!!.setLayout(1000, 1200)
-            }
+            addMultiChoiceUsers()
 
         }
         recyclerViewTags = v.findViewById(R.id.recycler_tags)
@@ -225,50 +293,7 @@ class TaskDetailsTab(private val t: Toolbar,
         taskPresenter!!.getTags(task.getId()!!)
         addTagsButton = v.findViewById(R.id.add_tags)
         addTagsButton!!.setOnClickListener {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-            val items = arrayOfNulls<CharSequence>(boardTagList!!.size)
-            val itemsChecked = BooleanArray(items.size)
-            val tagsListIds = HashSet<Long>()
-            tagList!!.forEach {
-                tagsListIds.add(it.getId())
-            }
-            boardTagList!!.forEachIndexed { i, tag ->
-                items[i] = tag.getName()
-                itemsChecked[i] = tagsListIds.contains(tag.getId())
-            }
-            val builderObj = builder.setTitle("Añadir Tag")
-                .setMultiChoiceItems(
-                    items, itemsChecked
-                ) { _, which, isChecked ->
-                    if (isChecked) {
-                        // Guardar indice seleccionado
-                        val tagId = boardTagList!![which]
-                        taskPresenter!!.addTag(task.getId()!!, tagId.getId())
-                    } else {
-                        // Remover indice sin selección
-                        val tagId = boardTagList!![which]
-                        taskPresenter!!.removeTag(task.getId()!!, tagId.getId(), false)
-                    }
-                }.setPositiveButton(
-                    "OK"
-                ) { _, _ ->
-                    taskPresenter!!.getTags(task.getId()!!)
-                }
-                .setNegativeButton(
-                    "CANCELAR"
-                ) { _, _ ->
-                    taskPresenter!!.getTags(task.getId()!!)
-                }
-                .setNeutralButton("CREAR TAG") { _, _ ->
-                    val bottomSheet = BottomSheet(boardName, "", taskPresenter!!, "tag")
-                    bottomSheet.show(fragmentMgr, "bottomSheet")
-                }
-                .create()
-            builderObj.show()
-            if (tagsListIds.size > 8) {
-                builderObj.window!!.setLayout(1000, 1200)
-            }
-
+            addMultiChoiceTags()
         }
         dateEnd = v.findViewById(R.id.date_picker)
         if (task.getDateEnd() != null) {
@@ -295,22 +320,10 @@ class TaskDetailsTab(private val t: Toolbar,
         viewAttachments = v.findViewById(R.id.linear_layout_attachments)
         recyclerViewAttachments = v.findViewById(R.id.recycler_attachments)
         recyclerViewAttachments!!.layoutManager = layoutManagerAttachments
-        if (!task.getAttachments().isNullOrEmpty()){
-            recyclerViewAttachments!!.adapter =
-                AttachmentsAdapter(task.getAttachments()!!,taskPresenter,task,requireContext())
-            viewAttachments!!.visibility=View.VISIBLE
-        }else{
-            viewAttachments!!.visibility=View.GONE
-        }
+        setAttachments()
         recyclerViewSubtasks= v.findViewById(R.id.recycler_subtasks)
         recyclerViewSubtasks!!.layoutManager = layoutManagerSubtasks
-        if (!task.getSubtasks().isNullOrEmpty()){
-           // recyclerViewSubtasks!!.adapter =
-             //   SubtaskAdapter(task.getSubtasks()!!,taskPresenter,task,requireContext(),fragmentMgr,this,boardId,boardName,rol)
-            recyclerViewSubtasks!!.visibility=View.VISIBLE
-        }else{
-            recyclerViewSubtasks!!.visibility=View.GONE
-        }
+        setSubTasksVisivility()
         buttonAddSubtasks  = v.findViewById(R.id.button_add_subtask)
         buttonAddSubtasks!!.setOnClickListener {
             val bottomSheet = BottomSheet(boardName, "", taskPresenter!!, "subtask")
