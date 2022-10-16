@@ -75,11 +75,13 @@ class TaskAdapterInsideBoard(
             holder.image!!.setImageBitmap(photos[0])
         }
         val tags=task.getTags()
-        if (tags!!.isEmpty()){
-            holder.tags!!.visibility=View.GONE
-        }else {
-            holder.tags!!.layoutManager = GridLayoutManager(context, tags.size)
-            holder.tags!!.adapter = TagsAdapter(tags as List<Tag>?, presenter, task,false)
+        if (tags!=null) {
+            if (tags.isEmpty()) {
+                holder.tags!!.visibility = View.GONE
+            } else {
+                holder.tags!!.layoutManager = GridLayoutManager(context, tags.size)
+                holder.tags!!.adapter = TagsAdapter(tags as List<Tag>?, presenter, task, false)
+            }
         }
 
     }

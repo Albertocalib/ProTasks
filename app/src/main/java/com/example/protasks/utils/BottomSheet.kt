@@ -43,7 +43,7 @@ class BottomSheet(
     var task: Task? = null
     var board:Board? = null
     var radioGroup:RadioGroup?=null
-    private val anyElementSelected=getString(R.string.no_elements)
+    private var anyElementSelected:String?=null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,6 +77,7 @@ class BottomSheet(
             }
         }
         val v: View = inflater.inflate(viewId, container, false)
+        anyElementSelected = v.context.getString(R.string.no_elements)
         if (sheetMode.startsWith("menu")) {
            menuSelected(v)
         } else {
@@ -233,7 +234,7 @@ class BottomSheet(
 
     override fun setBoard(list: List<Board>) {
         val boardListName = ArrayList<String>()
-        boardListName.add(anyElementSelected)
+        boardListName.add(anyElementSelected!!)
         for (e in list) {
             boardListName.add(e.getName()!!)
             boards!![e.getName()!!] = e
@@ -301,7 +302,7 @@ class BottomSheet(
         spinnerLists =
             myView.findViewById<View>(R.id.spinnerTaskList) as Spinner
         val listNamesTaskList = ArrayList<String>()
-        listNamesTaskList.add(anyElementSelected)
+        listNamesTaskList.add(anyElementSelected!!)
         val myAdapterTaskList = ArrayAdapter(
             requireActivity().baseContext,
             android.R.layout.simple_list_item_1, listNamesTaskList
@@ -370,7 +371,7 @@ class BottomSheet(
     }
     fun getTaskListByBoardSpinner(boardName: String): ArrayList<String> {
         val listName = ArrayList<String>()
-        listName.add(anyElementSelected)
+        listName.add(anyElementSelected!!)
         if (boardName!=anyElementSelected) {
             val taskList = boards?.get(boardName)?.getTaskLists()!!
             for (list in taskList) {
