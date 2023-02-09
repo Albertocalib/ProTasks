@@ -60,6 +60,22 @@ public class TaskListRestController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+    
+    @JsonView(TaskList.TaskListBasicInfo.class)
+    @PostMapping(value = "/newList/boardId={boardId}")
+    public ResponseEntity<TaskList> createTaskListByBoardId(@RequestBody TaskList list, @PathVariable Long boardId) {
+        if (boardId == null || list == null ) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Optional<Board> b = boardService.findById(boardId);
+        if (b.isPresent()) {
+            list.setBoard(b.get());
+            list.setCreate_date(new Date());
+            listService.save(list);
+            return new ResponseEntity<>(list, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
     @JsonView(TaskListRequest.class)
     @GetMapping(value = "/board={boardName}&username={username}")

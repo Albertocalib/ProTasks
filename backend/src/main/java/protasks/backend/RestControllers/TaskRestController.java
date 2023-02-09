@@ -42,6 +42,25 @@ public class TaskRestController {
     FileService fileService;
 
     @JsonView(TaskRequest.class)
+    @PostMapping(value = "/newTask/listId={listId}")
+    public ResponseEntity<Task> createTaskByListId(@RequestBody Task task, @PathVariable Long listId) {
+        if (listId == null || task == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        TaskList t = listService.findById(listId);
+        if (t != null) {
+            task.setTaskList(t);
+            Board b = t.getBoard();
+            if (b.getTimeActivated()!=null && b.getTimeActivated()) {
+                updateTaskTime(t, task, b);
+            }
+            taskService.save(task);
+            return new ResponseEntity<>(task, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @JsonView(TaskRequest.class)
     @PostMapping(value = "/newTask/board={boardName}&list={listName}&username={username}")
     public ResponseEntity<Task> createTask(@RequestBody Task task, @PathVariable String boardName, @PathVariable String listName, @PathVariable String username) {
         if (boardName == null || task == null || username == null || listName == null) {
