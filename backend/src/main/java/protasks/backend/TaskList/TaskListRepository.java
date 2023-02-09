@@ -36,5 +36,7 @@ public interface TaskListRepository extends JpaRepository<TaskList, Long> {
             "WHERE b.id=:board_id and LOWER(tl.title)=LOWER(:list)", nativeQuery = true)
     List<TaskList> findTaskList(@Param("board_id") Long board_id, @Param("list") String list);
 
+    List<TaskList> findByBoardIdOrderByPositionAsc(long id);
+
 
 }

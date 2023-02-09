@@ -73,6 +73,18 @@ public class TaskListRestController {
         }
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
     }
+    @JsonView(TaskListRequest.class)
+    @GetMapping(value = "/board={boardId}")
+    public ResponseEntity<List<TaskList>> getTaskListsByBoardId(@PathVariable Long boardId) {
+        if (boardId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        List<TaskList> tl = listService.findTaskListsByBoardId(boardId);
+        if (tl != null) {
+            return new ResponseEntity<>(tl, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+    }
 
     @JsonView(TaskList.TaskListBasicInfo.class)
     @PutMapping(value = "/id={id}&position={position}")

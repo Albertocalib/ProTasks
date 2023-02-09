@@ -30,6 +30,7 @@ public class TaskList implements Comparable<TaskList>,Cloneable {
 
     @JsonView(TaskList.TaskListExtendedInfo.class)
     @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL)
+    @OrderBy("position asc")
     private List<Task> tasks;
 
     @JsonView(TaskList.TaskListExtendedInfo.class)
