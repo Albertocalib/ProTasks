@@ -31,6 +31,8 @@ public class TaskListRestController {
 
     interface TaskListRequest extends TaskList.TaskListExtendedInfo, TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Board.BoardBasicInfo, BoardUsersPermRel.BoardBasicInfo,User.UserBasicInfo, File.FileBasicInfo,Tag.TagBasicInfo, Message.MessageBasicInfo {
     }
+    interface TaskListBasicRequest extends TaskList.TaskListBasicInfo,TaskList.TaskListExtendedInfo,Board.BoardBasicInfo, BoardUsersPermRel.BoardBasicInfo,User.UserBasicInfo{
+    }
 
     @Autowired
     TaskListService listService;
@@ -60,7 +62,7 @@ public class TaskListRestController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    
+
     @JsonView(TaskList.TaskListBasicInfo.class)
     @PostMapping(value = "/newList/boardId={boardId}")
     public ResponseEntity<TaskList> createTaskListByBoardId(@RequestBody TaskList list, @PathVariable Long boardId) {
@@ -178,6 +180,44 @@ public class TaskListRestController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+    @DeleteMapping(value = "/id={listId}")
+    public ResponseEntity<Boolean> deleteTaskListById(@PathVariable Long listId) {
+        if (listId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        TaskList tl = listService.findById(listId);
+        if (tl != null) {
+            updatePositions(tl, tl.getBoard().getTaskLists().size(), "delete");
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @JsonView(TaskListBasicRequest.class)
+    @PutMapping(value = "id={tasklistId}&boardDestId={boardDestId}")
+    public ResponseEntity<TaskList> MoveTaskList(@PathVariable("tasklistId") Long tasklistId, @PathVariable("boardDestId") Long boardDestId) {
+        if (tasklistId == null || boardDestId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Optional<Board> b = boardService.findById(boardDestId);
+        if (b.isPresent()) {
+            TaskList tl = listService.findById(tasklistId);
+            if (tl != null) {
+                updatePositions(tl, tl.getBoard().getTaskLists().size(), "delete");
+
+                tl.setPosition(b.get().getTaskLists().size() + 1);
+                tl.setBoard(b.get());
+                listService.save(tl);
+                return new ResponseEntity<>(tl, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
     @PutMapping(value = "name={listName}&board={boardName}&boardDestId={boardDestId}&username={username}")
     public ResponseEntity<Boolean> moveTaskList(@PathVariable("boardName") String boardName, @PathVariable("listName") String listName, @PathVariable("boardDestId") Long boardDestId, @PathVariable("username") String username) {
@@ -217,24 +257,7 @@ public class TaskListRestController {
             List<TaskList> tl = listService.findTaskList(username, boardName, listName);
             if (tl != null && tl.size() == 1) {
                 TaskList t = tl.get(0);
-                TaskList ntl= (TaskList) t.clone();
-                ntl.setPosition(b.get().getTaskLists().size() + 1);
-                ntl.setBoard(b.get());
-                ntl.setCreate_date(new Date());
-                listService.save(ntl);
-                List<Task> tasks=ntl.getTasks();
-                for (Task t0:t.getTasks()) {
-                    if (!t0.getUsers().isEmpty()) {
-                        Optional<Task> nt = tasks.stream().filter(taskI -> taskI.getTitle().equals(t0.getTitle())).findFirst();
-                        if (nt.isPresent()) {
-                            for (User u : t0.getUsers()) {
-                                u.addTask(nt.get());
-                                u.setWrite_date();
-                                this.userService.save(u);
-                            }
-                        }
-                    }
-                }
+                this.cloneTaskList(t,b);
                 return new ResponseEntity<>(true, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -246,4 +269,50 @@ public class TaskListRestController {
 
 
     }
+    private TaskList cloneTaskList(TaskList tl,Optional<Board> b) throws CloneNotSupportedException {
+        TaskList ntl= (TaskList) tl.clone();
+        ntl.setPosition(b.get().getTaskLists().size() + 1);
+        ntl.setBoard(b.get());
+        ntl.setCreate_date(new Date());
+        listService.save(ntl);
+        List<Task> tasks=ntl.getTasks();
+        for (Task t0:tl.getTasks()) {
+            if (!t0.getUsers().isEmpty()) {
+                Optional<Task> nt = tasks.stream().filter(taskI -> taskI.getTitle().equals(t0.getTitle())).findFirst();
+                if (nt.isPresent()) {
+                    for (User u : t0.getUsers()) {
+                        u.addTask(nt.get());
+                        u.setWrite_date();
+                        this.userService.save(u);
+                    }
+                }
+            }
+        }
+        return ntl;
+    }
+
+    @JsonView(TaskListRequest.class)
+    @PostMapping(value = "id={tasklistId}&boardDestId={boardDestId}")
+    public ResponseEntity<TaskList> copyTaskList(@PathVariable("tasklistId") Long tasklistId, @PathVariable("boardDestId") Long boardDestId) throws CloneNotSupportedException {
+        if (tasklistId == null || boardDestId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Board> b = boardService.findById(boardDestId);
+        if (b.isPresent()) {
+            TaskList tl = listService.findById(tasklistId);
+            if (tl != null) {
+                TaskList ntl = this.cloneTaskList(tl,b);
+                return new ResponseEntity<>(ntl, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+
+    }
+
 }
