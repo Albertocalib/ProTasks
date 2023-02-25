@@ -28,6 +28,8 @@ public class TaskRestController {
 
     interface UserRequest extends User.UserBasicInfo, User.UserDetailsInfo, Board.BoardBasicInfo, BoardUsersPermRel.UserBasicInfo {
     }
+    interface TaskRequestCopyOrMove extends TaskList.TaskListBasicInfo, TaskList.TaskListBoard, Board.BoardBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo,File.FileBasicInfo, Message.MessageBasicInfo, User.UserBasicInfo {
+    }
 
     @Autowired
     TaskListService listService;
@@ -78,6 +80,21 @@ public class TaskRestController {
             return new ResponseEntity<>(task, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping(value = "/id={taskId}")
+    public ResponseEntity<Boolean> deleteTaskById(@PathVariable Long taskId) {
+        if (taskId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Task t = taskService.findById(taskId);
+        if (t!= null) {
+            updatePositions(t, null, 0, true);
+            this.taskService.delete(t);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     private void updateTaskTime(TaskList list, Task task1, Board b) {
@@ -278,7 +295,7 @@ public class TaskRestController {
 
     @JsonView(TaskRequest.class)
     @PutMapping(value = "id={taskId}&listDestName={listDestName}&boardDestId={boardDestId}&username={username}")
-    public ResponseEntity<Boolean> moveTask(@PathVariable("taskId") Long taskId,
+    public ResponseEntity<Task> moveTask(@PathVariable("taskId") Long taskId,
                                             @PathVariable("listDestName") String listDestName,
                                             @PathVariable("boardDestId") Long boardDestId,
                                             @PathVariable("username") String username) throws CloneNotSupportedException {
@@ -292,7 +309,7 @@ public class TaskRestController {
                 if (tl != null && tl.size() == 1) {
                     //Update old list (eraseMode=True)
                     updatePositions(t, null, 0, true);
-                    return updateTaskListAndPosition(t, tl);
+                    return updateTaskListAndPosition(t, tl.get(0));
                 }
             }
         }
@@ -302,18 +319,18 @@ public class TaskRestController {
 
     }
 
-    private ResponseEntity<Boolean> updateTaskListAndPosition(Task t, List<TaskList> tl) {
-        t.setPosition(tl.get(0).getTasks().size()+1);
-        t.setTaskList(tl.get(0));
+    private ResponseEntity<Task> updateTaskListAndPosition(Task t, TaskList tl) {
+        t.setPosition(tl.getTasks().size()+1);
+        t.setTaskList(tl);
         taskService.save(t);
-        tl.get(0).addTask(t);
-        listService.save(tl.get(0));
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        tl.addTask(t);
+        listService.save(tl);
+        return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
     @JsonView(TaskRequest.class)
     @PostMapping(value = "id={taskId}&listDestName={listDestName}&boardDestId={boardDestId}&username={username}")
-    public ResponseEntity<Boolean> copyTask(@PathVariable("taskId") Long taskId,
+    public ResponseEntity<Task> copyTask(@PathVariable("taskId") Long taskId,
                                             @PathVariable("listDestName") String listDestName,
                                             @PathVariable("boardDestId") Long boardDestId,
                                             @PathVariable("username") String username) throws CloneNotSupportedException {
@@ -326,7 +343,7 @@ public class TaskRestController {
             if (t2!=null) {
                 List<TaskList> tl = listService.findTaskList(boardDestId, listDestName);
                 if (tl != null && tl.size() == 1) {
-                    return updateTaskListAndPosition(t2, tl);
+                    return updateTaskListAndPosition(t2, tl.get(0));
                 }
 
             }
@@ -336,6 +353,54 @@ public class TaskRestController {
 
 
     }
+
+    @JsonView(TaskRequestCopyOrMove.class)
+    @PostMapping(value = "id={taskId}&taskListId={listDestId}")
+    public ResponseEntity<Task> copyTaskById(@PathVariable("taskId") Long taskId,
+                                            @PathVariable("listDestId") Long listDestId) throws CloneNotSupportedException {
+        if (taskId == null || listDestId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Task t = taskService.findById(taskId);
+        if (t != null) {
+            Task t2 = (Task)t.clone();
+            if (t2!=null) {
+                TaskList tl = listService.findById(listDestId);
+                if (tl != null) {
+                    return updateTaskListAndPosition(t2, tl);
+                }
+
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    }
+
+    @JsonView(TaskRequestCopyOrMove.class)
+    @PutMapping(value = "id={taskId}&taskListId={listDestId}")
+    public ResponseEntity<Task> moveTaskById(@PathVariable("taskId") Long taskId,
+                                            @PathVariable("listDestId") Long listDestId) {
+        if (taskId == null || listDestId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Task t = taskService.findById(taskId);
+        if (t != null) {
+            if (t.getTaskList().getId()!=listDestId) {
+                TaskList tl = listService.findById(listDestId);
+                if (tl != null) {
+                    //Update old list (eraseMode=True)
+                    updatePositions(t, null, 0, true);
+                    return updateTaskListAndPosition(t, tl);
+                }
+            }
+        }
+
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    }
+
     @JsonView(TaskRequest.class)
     @PostMapping(value = "newAttachments/task={taskId}")
     public ResponseEntity<Task> addAttachments(@PathVariable("taskId")Long taskId, @RequestBody HashSet<File> files){

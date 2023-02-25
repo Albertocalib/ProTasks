@@ -17,7 +17,8 @@ public class TaskList implements Comparable<TaskList>,Cloneable {
     }
 
     public interface TaskListBasicInfo{}
-    public interface TaskListExtendedInfo{}
+    public interface TaskListBoard{}
+    public interface TaskListExtendedInfo extends TaskListBoard{}
     @JsonView(TaskList.TaskListBasicInfo.class)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,7 +34,7 @@ public class TaskList implements Comparable<TaskList>,Cloneable {
     @OrderBy("position asc")
     private List<Task> tasks;
 
-    @JsonView(TaskList.TaskListExtendedInfo.class)
+    @JsonView(TaskList.TaskListBoard.class)
     @ManyToOne
     private Board board;
 

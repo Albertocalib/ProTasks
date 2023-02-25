@@ -92,7 +92,7 @@ public class TaskListRestController {
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
     }
     @JsonView(TaskListRequest.class)
-    @GetMapping(value = "/board={boardId}")
+    @GetMapping(value = "/boardId={boardId}")
     public ResponseEntity<List<TaskList>> getTaskListsByBoardId(@PathVariable Long boardId) {
         if (boardId == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

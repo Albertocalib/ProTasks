@@ -567,7 +567,7 @@ class TaskRestControllerTests {
     void testMoveTaskAnyParameterNull() throws CloneNotSupportedException {
         MockitoAnnotations.initMocks(this);
         long taskIdOrBoardId = 2;
-        ResponseEntity<Boolean> response = taskRestController.moveTask(null, "", taskIdOrBoardId, "");
+        ResponseEntity<Task> response = taskRestController.moveTask(null, "", taskIdOrBoardId, "");
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
         response = taskRestController.moveTask(taskIdOrBoardId, null, taskIdOrBoardId, "");
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
@@ -582,7 +582,7 @@ class TaskRestControllerTests {
         MockitoAnnotations.initMocks(this);
         long id = 2;
         Mockito.when(taskService.findById(id)).thenReturn(null);
-        ResponseEntity<Boolean> response = taskRestController.moveTask(id, "", id, "");
+        ResponseEntity<Task> response = taskRestController.moveTask(id, "", id, "");
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
@@ -596,7 +596,7 @@ class TaskRestControllerTests {
         tl.addTask(t);
         t.setTaskList(tl);
         Mockito.when(taskService.findById(id)).thenReturn(t);
-        ResponseEntity<Boolean> response = taskRestController.moveTask(id, "Prueba", id, "");
+        ResponseEntity<Task> response = taskRestController.moveTask(id, "Prueba", id, "");
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
@@ -615,7 +615,7 @@ class TaskRestControllerTests {
         list.add(tl2);
         Mockito.when(taskService.findById(id)).thenReturn(t);
         Mockito.when(listService.findTaskList(id, "Prueba1")).thenReturn(null);
-        ResponseEntity<Boolean> response = taskRestController.moveTask(id, "Prueba1", id, "");
+        ResponseEntity<Task> response = taskRestController.moveTask(id, "Prueba1", id, "");
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
 
         Mockito.when(listService.findTaskList(id, "Prueba")).thenReturn(list);
@@ -654,9 +654,8 @@ class TaskRestControllerTests {
         list.add(tl);
         Mockito.when(taskService.findById(id)).thenReturn(t);
         Mockito.when(listService.findTaskList(id, "Prueba1")).thenReturn(list);
-        ResponseEntity<Boolean> response = taskRestController.moveTask(id, "Prueba1", id, "");
+        ResponseEntity<Task> response = taskRestController.moveTask(id, "Prueba1", id, "");
         Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
-        Assertions.assertEquals(Boolean.TRUE, response.getBody());
         Assertions.assertEquals(2, t.getPosition());
         Assertions.assertEquals(1, t_old1.getPosition());
         Assertions.assertEquals(2, t_old2.getPosition());
@@ -670,7 +669,7 @@ class TaskRestControllerTests {
     void testCopyTaskAnyParameterNull() throws CloneNotSupportedException {
         MockitoAnnotations.initMocks(this);
         long taskIdOrBoardId = 2;
-        ResponseEntity<Boolean> response = taskRestController.copyTask(null, "", taskIdOrBoardId, "");
+        ResponseEntity<Task> response = taskRestController.copyTask(null, "", taskIdOrBoardId, "");
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
         response = taskRestController.copyTask(taskIdOrBoardId, null, taskIdOrBoardId, "");
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
@@ -685,7 +684,7 @@ class TaskRestControllerTests {
         MockitoAnnotations.initMocks(this);
         long id = 2;
         Mockito.when(taskService.findById(id)).thenReturn(null);
-        ResponseEntity<Boolean> response = taskRestController.copyTask(id, "", id, "");
+        ResponseEntity<Task> response = taskRestController.copyTask(id, "", id, "");
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
@@ -705,7 +704,7 @@ class TaskRestControllerTests {
         list.add(tl2);
         Mockito.when(taskService.findById(id)).thenReturn(t);
         Mockito.when(listService.findTaskList(id, "Prueba1")).thenReturn(null);
-        ResponseEntity<Boolean> response = taskRestController.copyTask(id, "Prueba1", id, "");
+        ResponseEntity<Task> response = taskRestController.copyTask(id, "Prueba1", id, "");
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
 
         Mockito.when(listService.findTaskList(id, "Prueba")).thenReturn(list);
@@ -744,9 +743,8 @@ class TaskRestControllerTests {
         list.add(tl);
         Mockito.when(taskService.findById(id)).thenReturn(t);
         Mockito.when(listService.findTaskList(id, "Prueba1")).thenReturn(list);
-        ResponseEntity<Boolean> response = taskRestController.copyTask(id, "Prueba1", id, "");
+        ResponseEntity<Task> response = taskRestController.copyTask(id, "Prueba1", id, "");
         Assertions.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
-        Assertions.assertEquals(Boolean.TRUE, response.getBody());
     }
 
 }
