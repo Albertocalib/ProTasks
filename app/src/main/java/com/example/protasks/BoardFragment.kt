@@ -186,7 +186,7 @@ class BoardFragment(private var boardsView: ITaskListContract.ViewNormal) : Frag
     }
 
     private fun resetBoard() {
-        mBoardView!!.clearBoard()
+        mBoardView?.clearBoard()
         mBoardView!!.setCustomDragItem(MyDragItem(activity, R.layout.column_item))
         mBoardView!!.setCustomColumnDragItem(
             MyColumnDragItem(

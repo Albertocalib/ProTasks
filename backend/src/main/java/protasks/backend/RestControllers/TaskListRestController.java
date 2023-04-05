@@ -26,7 +26,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/list")
 public class TaskListRestController {
-    interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo, BoardUsersPermRel.BoardBasicInfo, Tag.TagBasicInfo {
+    interface TaskListRequestExt extends TaskListRequest,User.UserDetailsInfo {
     }
 
     interface TaskListRequest extends TaskList.TaskListExtendedInfo, TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Board.BoardBasicInfo, BoardUsersPermRel.BoardBasicInfo,User.UserBasicInfo, File.FileBasicInfo,Tag.TagBasicInfo, Message.MessageBasicInfo {
@@ -91,7 +91,7 @@ public class TaskListRestController {
         }
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
     }
-    @JsonView(TaskListRequest.class)
+    @JsonView(TaskListRequestExt.class)
     @GetMapping(value = "/boardId={boardId}")
     public ResponseEntity<List<TaskList>> getTaskListsByBoardId(@PathVariable Long boardId) {
         if (boardId == null) {
@@ -167,6 +167,7 @@ public class TaskListRestController {
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
     }
 
+    @JsonView(TaskListRequest.class)
     @DeleteMapping(value = "/board={boardName}&list={listName}&username={username}")
     public ResponseEntity<Boolean> deleteTaskList(@PathVariable("boardName") String boardName, @PathVariable("listName") String listName, @PathVariable("username") String username) {
         if (boardName == null || username == null || listName == null) {
@@ -180,6 +181,8 @@ public class TaskListRestController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @JsonView(TaskListRequest.class)
     @DeleteMapping(value = "/id={listId}")
     public ResponseEntity<Boolean> deleteTaskListById(@PathVariable Long listId) {
         if (listId == null) {
@@ -246,6 +249,8 @@ public class TaskListRestController {
 
 
     }
+
+    @JsonView(TaskListRequest.class)
     @PostMapping(value = "name={listName}&board={boardName}&boardDestId={boardDestId}&username={username}")
     public ResponseEntity<Boolean> copyTaskList(@PathVariable("boardName") String boardName, @PathVariable("listName") String listName, @PathVariable("boardDestId") Long boardDestId, @PathVariable("username") String username) throws CloneNotSupportedException {
         if (boardName == null || listName == null || boardDestId == null || username == null) {

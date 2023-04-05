@@ -11,6 +11,7 @@ import protasks.backend.File.File;
 import protasks.backend.File.FileService;
 import protasks.backend.Message.Message;
 import protasks.backend.Rol.Priority;
+import protasks.backend.Tag.Tag;
 import protasks.backend.Task.Task;
 import protasks.backend.Task.TaskService;
 import protasks.backend.TaskList.TaskList;
@@ -23,12 +24,12 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/task")
 public class TaskRestController {
-    interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo,File.FileBasicInfo, Message.MessageBasicInfo, User.UserBasicInfo {
+    interface TaskRequest extends TaskList.TaskListBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo,File.FileBasicInfo, Message.MessageBasicInfo, User.UserBasicInfo, Tag.TagBasicInfo {
     }
 
     interface UserRequest extends User.UserBasicInfo, User.UserDetailsInfo, Board.BoardBasicInfo, BoardUsersPermRel.UserBasicInfo {
     }
-    interface TaskRequestCopyOrMove extends TaskList.TaskListBasicInfo, TaskList.TaskListBoard, Board.BoardBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo,File.FileBasicInfo, Message.MessageBasicInfo, User.UserBasicInfo {
+    interface TaskRequestCopyOrMove extends TaskList.TaskListBasicInfo, TaskList.TaskListBoard, Board.BoardBasicInfo, Task.TaskListBasicInfo, Task.TaskListExtendedInfo,File.FileBasicInfo, Message.MessageBasicInfo, User.UserBasicInfo,Tag.TagBasicInfo {
     }
 
     @Autowired
