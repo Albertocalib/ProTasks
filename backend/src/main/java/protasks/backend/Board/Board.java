@@ -2,6 +2,7 @@ package protasks.backend.Board;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import protasks.backend.Tag.Tag;
+import protasks.backend.Task.Task;
 import protasks.backend.TaskList.TaskList;
 
 import javax.persistence.*;
@@ -10,7 +11,8 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-public class Board {
+public class Board implements Cloneable{
+
     public interface BoardBasicInfo{}
     public interface BoardDetailsInfo{}
     @JsonView(BoardBasicInfo.class)
@@ -230,6 +232,23 @@ public class Board {
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+
+    @Override
+    public Board clone() throws CloneNotSupportedException {
+        super.clone();
+        Board newBoard= new Board (this.name,this.photo);
+        for (TaskList tl:this.taskLists) {
+            TaskList ntl= (TaskList) tl.clone();
+            ntl.setBoard(newBoard);
+            newBoard.taskLists.add(ntl);
+        }
+        for (BoardUsersPermRel u: this.users) {
+            BoardUsersPermRel bs = new BoardUsersPermRel(newBoard, u.getUser(), u.getRol());
+            newBoard.addUser(bs);
+        }
+        return newBoard;
     }
 
 }

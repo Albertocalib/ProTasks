@@ -233,4 +233,23 @@ public class BoardRestController {
         }
     }
 
+    @JsonView(Board.BoardBasicInfo.class)
+    @PostMapping(value = "copyBoard/boardId={boardId}")
+    public ResponseEntity<Board> copyTaskList(@PathVariable("boardId") Long boardId) throws CloneNotSupportedException {
+        if (boardId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Board> b = boardService.findById(boardId);
+        if (b.isPresent()) {
+            Board newBoard = b.get().clone();
+            this.boardService.save(newBoard);
+            return new ResponseEntity<>(newBoard, HttpStatus.CREATED);
+
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+
+    }
+
 }
