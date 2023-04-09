@@ -2,6 +2,7 @@ package protasks.backend.Board;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import protasks.backend.File.File;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public class BoardService {
         return this.boardRepository.findBoardByTaskListId(id);
     }
     public Optional<Board> findById(Long id){ return this.boardRepository.findById(id);}
+    public void delete(Board b) {this.boardRepository.delete(b); }
 
 }
 

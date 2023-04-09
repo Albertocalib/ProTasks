@@ -79,12 +79,12 @@ class BoardModel:IBoardContract.Model{
     ) {
         val user = retrofitInsUser.service.updatePhoto(img, username)
         user!!.enqueue(object : Callback<User> {
-            override fun onFailure(call: Call<User>?, t: Throwable?) {
+            override fun onFailure(call: Call<User>, t: Throwable) {
                 onFinishedListener!!.onFailure(t)
             }
 
-            override fun onResponse(call: Call<User>?, response: Response<User>?) {
-                onFinishedListener!!.onFinishedGetUser(response!!.isSuccessful,response.code(),response.body()!!)
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                onFinishedListener!!.onFinishedGetUser(response.isSuccessful,response.code(),response.body()!!)
 
             }
 
@@ -98,12 +98,12 @@ class BoardModel:IBoardContract.Model{
     ) {
         val board = retrofitInsBoard.service.createBoard(b, username)
         board.enqueue(object : Callback<Board> {
-            override fun onFailure(call: Call<Board>?, t: Throwable?) {
+            override fun onFailure(call: Call<Board>, t: Throwable) {
                 onFinishedListener!!.onFailure(t)
             }
 
-            override fun onResponse(call: Call<Board>?, response: Response<Board>?) {
-                onFinishedListener!!.onFinishedCreateBoard(response!!.isSuccessful,response.code(),response.body()!!)
+            override fun onResponse(call: Call<Board>, response: Response<Board>) {
+                onFinishedListener!!.onFinishedCreateBoard(response.isSuccessful,response.code(),response.body()!!)
             }
 
         })

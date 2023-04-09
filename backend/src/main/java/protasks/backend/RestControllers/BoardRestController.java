@@ -222,4 +222,15 @@ public class BoardRestController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @DeleteMapping("/id={id}")
+    public ResponseEntity<Boolean> deleteBoard(@PathVariable Long id) {
+        Optional<Board> board = boardService.findById(id);
+        if (board.isPresent()) {
+            boardService.delete(board.get());
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
