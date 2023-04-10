@@ -9,6 +9,8 @@ import protasks.backend.Board.Board;
 import protasks.backend.Board.BoardService;
 import protasks.backend.Board.BoardUsersPermRel;
 import protasks.backend.Board.BoardUsersPermService;
+import protasks.backend.File.File;
+import protasks.backend.File.FileService;
 import protasks.backend.Rol.Rol;
 import protasks.backend.Tag.Tag;
 import protasks.backend.Task.Task;
@@ -25,10 +27,10 @@ import static protasks.backend.Rol.Rol.OWNER;
 @RestController
 @RequestMapping("/api/board")
 public class BoardRestController {
-    interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo, BoardUsersPermRel.BoardBasicInfo, TaskList.TaskListBasicInfo,Task.TaskListBasicInfo,Tag.TagBasicInfo {
+    interface BoardsRequest extends User.UserBasicInfo, Board.BoardBasicInfo, Board.BoardDetailsInfo, BoardUsersPermRel.BoardBasicInfo, TaskList.TaskListBasicInfo,Task.TaskListBasicInfo,Tag.TagBasicInfo, File.FileBasicInfo {
     }
 
-    interface BoardsUserRequest extends User.UserBasicInfo, Board.BoardBasicInfo, BoardUsersPermRel.BoardBasicInfo, TaskList.TaskListBasicInfo,Task.TaskListBasicInfo, Tag.TagBasicInfo {
+    interface BoardsUserRequest extends User.UserBasicInfo, Board.BoardBasicInfo, BoardUsersPermRel.BoardBasicInfo, TaskList.TaskListBasicInfo,Task.TaskListBasicInfo, Tag.TagBasicInfo, File.FileBasicInfo {
     }
 
     @Autowired
@@ -45,6 +47,9 @@ public class BoardRestController {
 
     @Autowired
     BoardUsersPermService boardUsersPermService;
+
+    @Autowired
+    FileService fileService;
 
     @JsonView(BoardsRequest.class)
     @GetMapping("/username={username}")
@@ -235,7 +240,7 @@ public class BoardRestController {
 
     @JsonView(Board.BoardBasicInfo.class)
     @PostMapping(value = "copyBoard/boardId={boardId}")
-    public ResponseEntity<Board> copyTaskList(@PathVariable("boardId") Long boardId) throws CloneNotSupportedException {
+    public ResponseEntity<Board> copyBoard(@PathVariable("boardId") Long boardId) throws CloneNotSupportedException {
         if (boardId == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -245,6 +250,33 @@ public class BoardRestController {
             Board newBoard = b.get().clone();
             this.boardService.save(newBoard);
             return new ResponseEntity<>(newBoard, HttpStatus.CREATED);
+
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+
+    }
+
+    @JsonView(Board.BoardBasicInfo.class)
+    @PutMapping(value = "updateBoard/{boardId}")
+    public ResponseEntity<Board> updateBoard(@RequestBody Board board, @PathVariable("boardId") Long boardId) {
+        if (boardId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Board> b = boardService.findById(boardId);
+        if (b.isPresent()) {
+            Board boardFind = b.get();
+            File updatedFIle = board.getFile_id();
+            File file = boardFind.getFile_id();
+            file.setContent(updatedFIle.getContent());
+            file.setName(updatedFIle.getName());
+            file.setType(updatedFIle.getType());
+            boardFind.setPhoto(updatedFIle.getContent());
+            boardFind.setName(board.getName());
+            this.fileService.save(file);
+            this.boardService.save(boardFind);
+            return new ResponseEntity<>(boardFind, HttpStatus.CREATED);
 
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

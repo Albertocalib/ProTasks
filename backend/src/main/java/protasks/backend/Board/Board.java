@@ -1,6 +1,7 @@
 package protasks.backend.Board;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import protasks.backend.File.File;
 import protasks.backend.Tag.Tag;
 import protasks.backend.Task.Task;
 import protasks.backend.TaskList.TaskList;
@@ -85,6 +86,18 @@ public class Board implements Cloneable{
     @JsonView(BoardBasicInfo.class)
     @Column(name="leadEndList")
     private String leadEndList;
+
+    @JsonView(BoardBasicInfo.class)
+    @ManyToOne(cascade = CascadeType.ALL)
+    private File file_id;
+
+    public File getFile_id() {
+        return file_id;
+    }
+
+    public void setFile_id(File file_id) {
+        this.file_id = file_id;
+    }
 
     public Boolean getTimeActivated() {
         return timeActivated;

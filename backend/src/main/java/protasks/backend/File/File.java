@@ -1,11 +1,14 @@
 package protasks.backend.File;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import protasks.backend.Board.Board;
 import protasks.backend.Task.Task;
 import protasks.backend.TaskList.TaskList;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class File {
@@ -33,6 +36,10 @@ public class File {
     @JsonView(FileExtendedInfo.class)
     @ManyToOne
     private Task task;
+
+    @JsonView(FileExtendedInfo.class)
+    @OneToMany
+    private List<Board> board_ids;
 
     @Column(name="write_date")
     @Temporal(TemporalType.TIMESTAMP)
@@ -107,6 +114,13 @@ public class File {
         this.type=type;
         this.create_date=new Date();
         this.task=task;
+        this.write_date =new Date();
+    }
+    public File(String name, String content, String type) {
+        this.name=name;
+        this.content=content;
+        this.type=type;
+        this.create_date=new Date();
         this.write_date =new Date();
     }
 }
