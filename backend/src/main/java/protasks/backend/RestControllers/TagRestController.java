@@ -102,6 +102,20 @@ public class TagRestController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+    @JsonView(Tag.TagBasicInfo.class)
+    @PostMapping("/newTag/boardId={boardId}")
+    public ResponseEntity<Tag> createTag(@RequestBody Tag tag, @PathVariable("boardId") Long boardId){
+        if (tag == null || boardId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Optional<Board> b = boardService.findById(boardId);
+        if (b.isPresent()) {
+            tag.setBoard(b.get());
+            tagService.save(tag);
+            return new ResponseEntity<>(tag, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
 
 }
