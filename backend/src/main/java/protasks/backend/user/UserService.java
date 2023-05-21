@@ -2,6 +2,7 @@ package protasks.backend.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import protasks.backend.Board.Board;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,5 +27,9 @@ public class UserService {
         return this.userRepository.findById(id);
     }
     public List<User> findByBoardId(Long id) {return this.userRepository.findByBoardId(id);}
+    public List<User> findAll(){
+        return this.userRepository.findAll();
+    }
+
 }
 

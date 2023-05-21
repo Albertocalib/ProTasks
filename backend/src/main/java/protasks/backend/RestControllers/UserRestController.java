@@ -80,5 +80,14 @@ public class UserRestController {
         }
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
+    @JsonView(UserRequest.class)
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getUsers(){
+        List<User> users = userService.findAll();
+        if(users == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
 
 }
