@@ -15,6 +15,8 @@ import protasks.backend.user.User;
 import protasks.backend.user.UserRepository;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static protasks.backend.Rol.Rol.OWNER;
@@ -57,6 +59,11 @@ public class DatabaseInitializer {
         b1.setTaskLists(tl);
         File file = new File((b1.getName()+"-photo.jpg"),s,"img");
         b1.setFile_id(file);
+        b1.setTimeActivated(true);
+        b1.setCycleStartList(t2.getTitle());
+        b1.setCycleEndList(t3.getTitle());
+        b1.setLeadStartList(t.getTitle());
+        b1.setLeadEndList(t3.getTitle());
         boardRepository.save(b1);
         Task task=new Task("TAREA 1","DESCRIPCIÓN 1",t);
         Tag tag= new Tag("Prueba 1","#FFFAAA",b1);
@@ -65,6 +72,22 @@ public class DatabaseInitializer {
         task.addTag(tag);
         task.addTag(tag2);
         task.addTag(tag3);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, -5);
+        Date fiveDaysAgo = calendar.getTime();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, -3);
+        Date threeDaysAgo = calendar.getTime();
+
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, -2);
+        Date twoDaysAgo = calendar.getTime();
+
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        Date onedayAgo = calendar.getTime();
+        task.setDate_start_lead_time(fiveDaysAgo);
         Message m1= new Message("Prueba mensa 1",u1,task);
         Message m2= new Message("Prueba mensa 2",u2,task);
         Message m3= new Message("Prueba mensa 3",u2,task);
@@ -73,12 +96,26 @@ public class DatabaseInitializer {
         task.addMessage(m3);
         taskRepository.save(task);
         task=new Task("TAREA 25","DESCRIPCIÓN 25",t2,3);
+        task.setDate_start_lead_time(threeDaysAgo);
+        task.setDate_start_cycle_time(onedayAgo);
         taskRepository.save(task);
         task=new Task("TAREA 2","DESCRIPCIÓN 2",t2);
+
+        task.setDate_start_lead_time(fiveDaysAgo);
+        task.setDate_start_cycle_time(threeDaysAgo);
+        task.setDate_end_cycle_time(onedayAgo);
+        task.setDate_end_lead_time(onedayAgo);
         taskRepository.save(task);
         task=new Task("TAREA 22","DESCRIPCIÓN 22",t2,2);
+
+        task.setDate_start_lead_time(fiveDaysAgo);
+        task.setDate_start_cycle_time(threeDaysAgo);
         taskRepository.save(task);
         task=new Task("TAREA 3","DESCRIPCIÓN 3",t3);
+        task.setDate_start_lead_time(fiveDaysAgo);
+        task.setDate_start_cycle_time(twoDaysAgo);
+        task.setDate_end_cycle_time(new Date());
+        task.setDate_end_lead_time(new Date());
         taskRepository.save(task);
 
 
