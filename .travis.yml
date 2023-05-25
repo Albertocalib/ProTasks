@@ -10,8 +10,8 @@ before_script:
   - chmod +x mvnw
 
 script:
-  - ./mvnw clean install
-  - ./mvnw test
+  - ./backend/mvnw clean install
+  - ./backend/mvnw test
 
 notifications:
   email:
