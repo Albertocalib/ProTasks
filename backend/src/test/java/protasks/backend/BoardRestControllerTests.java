@@ -148,11 +148,16 @@ class BoardRestControllerTests {
     }
     @Test
     void testUpdateWipOk() {
+        //Arrange
         MockitoAnnotations.initMocks(this);
         long id=2;
         Board b = new Board();
         Mockito.when(boardService.findById(id)).thenReturn(Optional.of(b));
+        
+        //Act
         ResponseEntity<Board> response = boardRestController.updateWip(id,true,3,"TO DO");
+
+        //Assert
         Assertions.assertEquals(HttpStatus.OK.value(),response.getStatusCodeValue());
         Assertions.assertEquals(true,b.getWipActivated());
         Assertions.assertEquals(3,b.getWipLimit());
